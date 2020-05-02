@@ -1,9 +1,10 @@
 **/.idea
 **/.directory
 **/.DS_Store
-**/Thumbs.db
-**/cmake-build-*
-**/build
+**/[Tt]humbs.db
+**/[Oo]ut
+**/[Bb]uild
+**/[Cc]make-build-*
 
 # ------------------------------------------------------
 # https://github.com/github/gitignore/blob/master/C.gitignore
