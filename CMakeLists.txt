@@ -18,8 +18,11 @@ set(${PROJECT_NAME}_HEADERS
         )
 
 set(${PROJECT_NAME}_SOURCES
-        ${CMAKE_CURRENT_LIST_DIR}/src/main.c
         ${CMAKE_CURRENT_LIST_DIR}/src/config.c
+        )
+
+set(${PROJECT_NAME}_ENTRYPOINT
+        ${CMAKE_CURRENT_LIST_DIR}/src/main.c
         )
 
 if (NOT TARGET mbedtls)
@@ -30,13 +33,27 @@ if (NOT TARGET facil.io)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/facil.io facil.io)
 endif ()
 
-add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_HEADERS} ${${PROJECT_NAME}_SOURCES})
+add_executable(${PROJECT_NAME}
+        ${${PROJECT_NAME}_HEADERS}
+        ${${PROJECT_NAME}_SOURCES}
+        ${${PROJECT_NAME}_ENTRYPOINT}
+        )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC facil.io mbedtls mbedx509 mbedcrypto)
-target_include_directories(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME}
+        PUBLIC facil.io
+        PUBLIC mbedtls
+        PUBLIC mbedx509
+        PUBLIC mbedcrypto
+        )
+
+target_include_directories(${PROJECT_NAME}
+        PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
+        )
 
 if (OPSICK_ENABLE_TESTS)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--wrap=malloc,--wrap=calloc")
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--wrap=malloc,--wrap=calloc")
+    endif()
 
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/cmocka cmocka)
 
@@ -51,7 +68,13 @@ if (OPSICK_ENABLE_TESTS)
             PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
             )
 
-    target_link_libraries(run_tests PUBLIC facil.io mbedtls mbedx509 mbedcrypto cmocka)
+    target_link_libraries(run_tests
+            PUBLIC facil.io
+            PUBLIC mbedtls
+            PUBLIC mbedx509
+            PUBLIC mbedcrypto
+            PUBLIC cmocka
+            )
 
     if (ENABLE_COVERAGE)
         find_package(codecov)

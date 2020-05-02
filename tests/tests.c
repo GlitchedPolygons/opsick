@@ -16,7 +16,9 @@
 #include <setjmp.h>
 #include <cmocka.h>
 
-#define TEST_OOM defined(__GNUC__) && !defined(__clang__)
+#if defined(__GNUC__) && !defined(__clang__)
+#define TEST_OOM
+#endif
 
 /* A test case that does nothing and succeeds. */
 static void null_test_success(void** state)
