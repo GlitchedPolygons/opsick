@@ -1,3 +1,9 @@
 [submodule "lib/facil.io"]
 	path = lib/facil.io
 	url = https://github.com/boazsegev/facil.io
+[submodule "lib/mbedtls"]
+	path = lib/mbedtls
+	url = https://github.com/ARMmbed/mbedtls
+[submodule "lib/cmocka"]
+	path = lib/cmocka
+	url = https://gitlab.com/cmocka/cmocka
