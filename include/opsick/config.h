@@ -14,42 +14,23 @@
    limitations under the License.
 */
 
-#ifndef OPSICK_CONSTANTS_H
-#define OPSICK_CONSTANTS_H
+#ifndef OPSICK_CONFIG_H
+#define OPSICK_CONFIG_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "http.h"
-
-int _opsick_constants_initialized = 0;
-FIOBJ HTTP_HEADER_X_DATA;
-
-void opsick_init_constants()
-{
-    if (_opsick_constants_initialized)
-    {
-        return;
-    }
-    _opsick_constants_initialized = 1;
-
-    HTTP_HEADER_X_DATA = fiobj_str_new("X-Data", 6);
-}
-
-void opsick_free_constants()
-{
-    if (!_opsick_constants_initialized)
-    {
-        return;
-    }
-    _opsick_constants_initialized = 0;
-
-    fiobj_free(HTTP_HEADER_X_DATA);
-}
+/**
+ * Opens the "opsick.conf" file,
+ * reads the user-defined preferences/settings in it
+ * and loads them into memory.
+ * @return Whether loading the opsick config from disk succeeded (1) or not (0).
+ */
+int opsick_load_config();
 
 #ifdef __cplusplus
 } // extern "C"
 #endif
 
-#endif // OPSICK_CONSTANTS_H
+#endif // OPSICK_CONFIG_H

@@ -5,6 +5,7 @@
 **/[Oo]ut
 **/[Bb]uild
 **/[Cc]make-build-*
+**/opsick.conf
 
 # ------------------------------------------------------
 # https://github.com/github/gitignore/blob/master/C.gitignore

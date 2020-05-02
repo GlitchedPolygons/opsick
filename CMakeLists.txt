@@ -7,12 +7,16 @@ set(${PROJECT_NAME}_INCLUDE_DIR
         ${CMAKE_CURRENT_LIST_DIR}/include)
 
 set(${PROJECT_NAME}_HEADERS
-        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/constants.h)
+        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/constants.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/config.h
+        )
 
 set(${PROJECT_NAME}_SOURCES
-        ${CMAKE_CURRENT_LIST_DIR}/src/main.c)
+        ${CMAKE_CURRENT_LIST_DIR}/src/main.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/config.c
+        )
 
-add_subdirectory(lib/facil.io facil.io)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/facil.io facil.io)
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_HEADERS} ${${PROJECT_NAME}_SOURCES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC facil.io)
