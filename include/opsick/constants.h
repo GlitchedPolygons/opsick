@@ -1,0 +1,4 @@
+#ifndef OPSICK_CONSTANTS_H
+#define OPSICK_CONSTANTS_H
+
+#endif // OPSICK_CONSTANTS_H

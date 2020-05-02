@@ -2,97 +2,19 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6"/>
 	<Project>
-		<Option title="opsick"/>
+		<Option title="facil.io"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
 		<Option virtualFolders="CMake Files\;CMake Files\lib\;CMake Files\lib\facil.io\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/Users/raphael/git/gp/opsick/cmake-build-debug"/>
+				<Option working_dir="/Users/raphael/git/gp/opsick/cmake-build-debug/facil.io"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="rebuild_cache">
-				<Option working_dir="/Users/raphael/git/gp/opsick/cmake-build-debug"/>
-				<Option type="4"/>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="edit_cache">
-				<Option working_dir="/Users/raphael/git/gp/opsick/cmake-build-debug"/>
-				<Option type="4"/>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="opsick">
-				<Option output="/Users/raphael/git/gp/opsick/cmake-build-debug/opsick" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir=""/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add directory="/Users/raphael/git/gp/opsick/include"/>
-					<Add directory="/Users/raphael/git/gp/opsick/lib/facil.io/lib"/>
-					<Add directory="/Users/raphael/git/gp/opsick/lib/facil.io/lib/facil"/>
-					<Add directory="/Users/raphael/git/gp/opsick/lib/facil.io/lib/facil/tls"/>
-					<Add directory="/Users/raphael/git/gp/opsick/lib/facil.io/lib/facil/fiobj"/>
-					<Add directory="/Users/raphael/git/gp/opsick/lib/facil.io/lib/facil/cli"/>
-					<Add directory="/Users/raphael/git/gp/opsick/lib/facil.io/lib/facil/http"/>
-					<Add directory="/Users/raphael/git/gp/opsick/lib/facil.io/lib/facil/http/parsers"/>
-					<Add directory="/Users/raphael/git/gp/opsick/lib/facil.io/lib/facil/redis"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.1/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
-					<Add directory="/System/Library/Frameworks"/>
-					<Add directory="/Library/Frameworks"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 opsick"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="opsick/fast">
-				<Option output="/Users/raphael/git/gp/opsick/cmake-build-debug/opsick" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir=""/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add directory="/Users/raphael/git/gp/opsick/include"/>
-					<Add directory="/Users/raphael/git/gp/opsick/lib/facil.io/lib"/>
-					<Add directory="/Users/raphael/git/gp/opsick/lib/facil.io/lib/facil"/>
-					<Add directory="/Users/raphael/git/gp/opsick/lib/facil.io/lib/facil/tls"/>
-					<Add directory="/Users/raphael/git/gp/opsick/lib/facil.io/lib/facil/fiobj"/>
-					<Add directory="/Users/raphael/git/gp/opsick/lib/facil.io/lib/facil/cli"/>
-					<Add directory="/Users/raphael/git/gp/opsick/lib/facil.io/lib/facil/http"/>
-					<Add directory="/Users/raphael/git/gp/opsick/lib/facil.io/lib/facil/http/parsers"/>
-					<Add directory="/Users/raphael/git/gp/opsick/lib/facil.io/lib/facil/redis"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.1/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
-					<Add directory="/System/Library/Frameworks"/>
-					<Add directory="/Library/Frameworks"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 opsick/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/facil.io/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/facil.io/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/facil.io/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/raphael/git/gp/opsick/cmake-build-debug/facil.io/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="facil.io">
@@ -152,9 +74,6 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/raphael/git/gp/opsick/include/opsick/constants.h">
-			<Option target="opsick"/>
-		</Unit>
 		<Unit filename="/Users/raphael/git/gp/opsick/lib/facil.io/lib/facil/cli/fio_cli.c">
 			<Option target="facil.io"/>
 		</Unit>
@@ -262,9 +181,6 @@
 		</Unit>
 		<Unit filename="/Users/raphael/git/gp/opsick/lib/facil.io/lib/facil/tls/fio_tls_openssl.c">
 			<Option target="facil.io"/>
-		</Unit>
-		<Unit filename="/Users/raphael/git/gp/opsick/src/main.c">
-			<Option target="opsick"/>
 		</Unit>
 		<Unit filename="/Users/raphael/git/gp/opsick/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
