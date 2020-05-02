@@ -2,6 +2,8 @@
 **/.directory
 **/.DS_Store
 **/Thumbs.db
+**/cmake-build-*
+**/build
 
 # ------------------------------------------------------
 # https://github.com/github/gitignore/blob/master/C.gitignore
