@@ -16,12 +16,17 @@
 
 #include "opsick/endpoints/home.h"
 
-static char html[8192];
-static size_t html_len;
+static char* html = NULL;
+static size_t html_len = 0;
+static uint8_t initialized = 0;
 
 void opsick_init_endpoint_home()
 {
-    memset(html, '\0', sizeof(html));
+    if (initialized)
+    {
+        return;
+    }
+    initialized = 1;
 
     FILE* fptr = fopen("index.html", "r");
     if (fptr == NULL)
@@ -33,6 +38,13 @@ void opsick_init_endpoint_home()
 
     fseek(fptr, 0L, SEEK_END);
     const long fsize = ftell(fptr);
+
+    html = malloc(fsize + 1);
+    if (html == NULL)
+    {
+        perror("ERROR: Memory allocation failed when attempting to read index.html into memory... Out of memory?");
+        exit(2);
+    }
 
     fseek(fptr, 0L, SEEK_SET);
     html_len = fread(html, 1, fsize, fptr);
@@ -49,6 +61,13 @@ void opsick_get_home(http_s* request)
 
 void opsick_free_endpoint_home()
 {
+    if (!initialized)
+    {
+        return;
+    }
+    initialized = 0;
+
+    free(html);
+    html = NULL;
     html_len = 0;
-    memset(html, '\0', sizeof(html));
 }
