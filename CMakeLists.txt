@@ -15,6 +15,7 @@ set(${PROJECT_NAME}_INCLUDE_DIR
 set(${PROJECT_NAME}_HEADERS
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/constants.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/config.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/strncmpic.h
         )
 
 set(${PROJECT_NAME}_SOURCES
@@ -33,6 +34,10 @@ if (NOT TARGET facil.io)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/facil.io facil.io)
 endif ()
 
+if (NOT TARGET l8w8jwt)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt l8w8jwt)
+endif()
+
 add_executable(${PROJECT_NAME}
         ${${PROJECT_NAME}_HEADERS}
         ${${PROJECT_NAME}_SOURCES}
@@ -44,6 +49,7 @@ target_link_libraries(${PROJECT_NAME}
         PUBLIC mbedtls
         PUBLIC mbedx509
         PUBLIC mbedcrypto
+        PUBLIC l8w8jwt
         )
 
 target_include_directories(${PROJECT_NAME}
