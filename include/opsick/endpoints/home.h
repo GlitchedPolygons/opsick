@@ -14,23 +14,20 @@
    limitations under the License.
 */
 
-#ifndef OPSICK_CONFIG_H
-#define OPSICK_CONFIG_H
+#ifndef OPSICK_HOME_H
+#define OPSICK_HOME_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**
- * Opens the opsick config file,
- * reads the user-defined preferences/settings in it
- * and loads them into memory.
- * @return Whether loading the opsick config from disk succeeded (1) or not (0).
+ * GET request to home (path "/").
  */
-int opsick_load_config();
+void opsick_get_home();
 
 #ifdef __cplusplus
 } // extern "C"
 #endif
 
-#endif // OPSICK_CONFIG_H
+#endif // OPSICK_HOME_H

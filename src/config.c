@@ -14,9 +14,8 @@
    limitations under the License.
 */
 
-#include <opsick/config.h>
-
 int opsick_load_config()
 {
     // TODO
+    return 1;
 }

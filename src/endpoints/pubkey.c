@@ -14,23 +14,15 @@
    limitations under the License.
 */
 
-#ifndef OPSICK_CONFIG_H
-#define OPSICK_CONFIG_H
+void opsick_get_pubkey()
+{
+    // TODO: read from file here
+}
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/**
- * Opens the opsick config file,
- * reads the user-defined preferences/settings in it
- * and loads them into memory.
- * @return Whether loading the opsick config from disk succeeded (1) or not (0).
- */
-int opsick_load_config();
-
-#ifdef __cplusplus
-} // extern "C"
-#endif
-
-#endif // OPSICK_CONFIG_H
+/*
+ *
+ * http_set_header(request, HTTP_HEADER_CONTENT_TYPE, http_mimetype_find("txt", 3));
+ * http_set_header(request, HTTP_HEADER_X_DATA, fiobj_str_new("my data", 7));
+ * http_send_body(request, "Hello World!\r\n", 14);
+ *
+ * */

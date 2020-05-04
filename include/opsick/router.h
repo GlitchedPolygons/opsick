@@ -14,23 +14,23 @@
    limitations under the License.
 */
 
-#ifndef OPSICK_CONFIG_H
-#define OPSICK_CONFIG_H
+#ifndef OPSICK_ROUTER_H
+#define OPSICK_ROUTER_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#include "http.h"
+
 /**
- * Opens the opsick config file,
- * reads the user-defined preferences/settings in it
- * and loads them into memory.
- * @return Whether loading the opsick config from disk succeeded (1) or not (0).
+ * Callback for handling HTTP requests.
+ * @param request The HTTP request that was obtained (this will be processed based on path, params, etc...).
  */
-int opsick_load_config();
+void opsick_on_request(http_s* request);
 
 #ifdef __cplusplus
 } // extern "C"
 #endif
 
-#endif // OPSICK_CONFIG_H
+#endif // OPSICK_ROUTER_H

@@ -15,11 +15,10 @@
 */
 
 #include <stdio.h>
-#include <http.h>
-#include <opsick/constants.h>
-
-// Callback for handling HTTP requests.
-void opsick_on_request(http_s* request);
+#include "http.h"
+#include "opsick/constants.h"
+#include "opsick/config.h"
+#include "opsick/router.h"
 
 // Read user config, start listening to HTTP requests
 // on the user-defined port and start facil.io
@@ -28,26 +27,11 @@ int main(void)
     // Initialize constants and pre-allocate various values that are used often.
     opsick_init_constants();
 
-    // Listen on port 3000 and any available network binding (NULL == 0.0.0.0).
+    // TODO: read user config and customize port, nr. of threads, etc...
+
     http_listen("3000", NULL, .on_request = opsick_on_request, .log = 1);
     fio_start(.threads = 4);
 
     // Deallocate constants.
     opsick_free_constants();
-}
-
-void opsick_on_request(http_s* request)
-{
-    FIOBJ path = request->path;
-    if (!fiobj_type_is(path, FIOBJ_T_STRING))
-    {
-        http_send_error(request, 400);
-        return;
-    }
-
-    fio_str_info_s pathstr = fiobj_obj2cstr(path);
-
-    http_set_header(request, HTTP_HEADER_CONTENT_TYPE, http_mimetype_find("txt", 3));
-    http_set_header(request, HTTP_HEADER_X_DATA, fiobj_str_new("my data", 7));
-    http_send_body(request, "Hello World!\r\n", 14);
 }
