@@ -16,7 +16,7 @@
 
 #include "opsick/endpoints/home.h"
 
-static char html[4096];
+static char html[8192];
 static size_t html_len;
 
 void opsick_init_endpoint_home()
