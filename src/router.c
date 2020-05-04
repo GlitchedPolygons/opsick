@@ -30,17 +30,17 @@ void opsick_on_request(http_s* request)
     }
 
     const fio_str_info_s pathstr = fiobj_obj2cstr(path);
-    const uint32_t pathstr_hash = murmur3(pathstr.data, (uint32_t)pathstr.len, MURMUR3_SEED);
+    const uint32_t pathstr_hash = murmur3(pathstr.data, (uint32_t)pathstr.len, OPSICK_MURMUR3_SEED);
 
     switch (pathstr_hash)
     {
         default:
             http_send_error(request, 404);
             break;
-        case HOME_PATH_HASH:
+        case OPSICK_HOME_PATH_HASH:
             opsick_get_home();
             break;
-        case PUBKEY_PATH_HASH:
+        case OPSICK_PUBKEY_PATH_HASH:
             opsick_get_pubkey();
             break;
     }

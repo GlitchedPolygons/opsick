@@ -25,12 +25,12 @@ extern "C" {
 
 int _opsick_constants_initialized = 0;
 
-FIOBJ HTTP_HEADER_X_DATA;
-FIOBJ HTTP_HEADER_SIGNATURE;
+FIOBJ OPSICK_HTTP_HEADER_X_DATA;
+FIOBJ OPSICK_HTTP_HEADER_SIGNATURE;
 
-const uint32_t MURMUR3_SEED = 133769420;
-const uint32_t HOME_PATH_HASH = 2818192833;
-const uint32_t PUBKEY_PATH_HASH = 3855421118;
+const uint32_t OPSICK_MURMUR3_SEED = 133769420;
+const uint32_t OPSICK_HOME_PATH_HASH = 2818192833;
+const uint32_t OPSICK_PUBKEY_PATH_HASH = 3855421118;
 
 void opsick_init_constants()
 {
@@ -40,8 +40,8 @@ void opsick_init_constants()
     }
     _opsick_constants_initialized = 1;
 
-    HTTP_HEADER_X_DATA = fiobj_str_new("X-Data", 6);
-    HTTP_HEADER_SIGNATURE = fiobj_str_new("Signature", 9);
+    OPSICK_HTTP_HEADER_X_DATA = fiobj_str_new("X-Data", 6);
+    OPSICK_HTTP_HEADER_SIGNATURE = fiobj_str_new("Signature", 9);
 }
 
 void opsick_free_constants()
@@ -52,8 +52,8 @@ void opsick_free_constants()
     }
     _opsick_constants_initialized = 0;
 
-    fiobj_free(HTTP_HEADER_X_DATA);
-    fiobj_free(HTTP_HEADER_SIGNATURE);
+    fiobj_free(OPSICK_HTTP_HEADER_X_DATA);
+    fiobj_free(OPSICK_HTTP_HEADER_SIGNATURE);
 }
 
 #ifdef __cplusplus
