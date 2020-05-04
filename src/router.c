@@ -20,8 +20,24 @@
 #include "opsick/endpoints/home.h"
 #include "opsick/endpoints/pubkey.h"
 
+static int _opsick_router_initialized = 0;
+
+void opsick_init_router()
+{
+    if (_opsick_router_initialized)
+    {
+        return;
+    }
+    _opsick_router_initialized = 1;
+}
+
 void opsick_on_request(http_s* request)
 {
+    if (!_opsick_router_initialized)
+    {
+        return;
+    }
+
     const FIOBJ path = request->path;
     if (!fiobj_type_is(path, FIOBJ_T_STRING))
     {
@@ -45,3 +61,26 @@ void opsick_on_request(http_s* request)
             break;
     }
 }
+
+void opsick_free_router()
+{
+    if (!_opsick_router_initialized)
+    {
+        return;
+    }
+    _opsick_router_initialized = 0;
+}
+
+/*
+
+OPSICK_HTTP_HEADER_X_DATA = fiobj_str_new("X-Data", 6);
+OPSICK_HTTP_HEADER_SIGNATURE = fiobj_str_new("Signature", 9);
+
+http_set_header(request, OPSICK_HTTP_HEADER_CONTENT_TYPE, http_mimetype_find("txt", 3));
+http_set_header(request, OPSICK_HTTP_HEADER_X_DATA, fiobj_str_new("my data", 7));
+http_send_body(request, "Hello World!\r\n", 14);
+
+fiobj_free(OPSICK_HTTP_HEADER_X_DATA);
+fiobj_free(OPSICK_HTTP_HEADER_SIGNATURE);
+
+*/

@@ -24,6 +24,16 @@ extern "C" {
 #include "http.h"
 
 /**
+ * Initializes the HTTP request router, pre-allocating values that are used often.
+ */
+void opsick_init_router();
+
+/**
+ * Disables and deallocates the HTTP request router.
+ */
+void opsick_free_router();
+
+/**
  * Callback for handling HTTP requests.
  * @param request The HTTP request that was obtained (this will be processed based on path, params, etc...).
  */

@@ -23,38 +23,24 @@ extern "C" {
 
 #include "http.h"
 
-int _opsick_constants_initialized = 0;
+/**
+ * The seed value to use for the MurmurHash v3 algo.
+ */
+#define OPSICK_MURMUR3_SEED 133769420
 
-FIOBJ OPSICK_HTTP_HEADER_X_DATA;
-FIOBJ OPSICK_HTTP_HEADER_SIGNATURE;
+/**
+ * <c>
+ * murmur3("/")
+ * </c>
+ */
+#define OPSICK_HOME_PATH_HASH 2818192833
 
-const uint32_t OPSICK_MURMUR3_SEED = 133769420;
-const uint32_t OPSICK_HOME_PATH_HASH = 2818192833;
-const uint32_t OPSICK_PUBKEY_PATH_HASH = 3855421118;
-
-void opsick_init_constants()
-{
-    if (_opsick_constants_initialized)
-    {
-        return;
-    }
-    _opsick_constants_initialized = 1;
-
-    OPSICK_HTTP_HEADER_X_DATA = fiobj_str_new("X-Data", 6);
-    OPSICK_HTTP_HEADER_SIGNATURE = fiobj_str_new("Signature", 9);
-}
-
-void opsick_free_constants()
-{
-    if (!_opsick_constants_initialized)
-    {
-        return;
-    }
-    _opsick_constants_initialized = 0;
-
-    fiobj_free(OPSICK_HTTP_HEADER_X_DATA);
-    fiobj_free(OPSICK_HTTP_HEADER_SIGNATURE);
-}
+/**
+ * <c>
+ * murmur3("/pubkey")
+ * </c>
+ */
+#define OPSICK_PUBKEY_PATH_HASH 3855421118
 
 #ifdef __cplusplus
 } // extern "C"

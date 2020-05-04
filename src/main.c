@@ -24,14 +24,12 @@
 // on the user-defined port and start facil.io
 int main(void)
 {
-    // Initialize constants and pre-allocate various values that are used often.
-    opsick_init_constants();
+    opsick_init_router();
 
     // TODO: read user config and customize port, nr. of threads, etc...
 
     http_listen("3000", NULL, .on_request = opsick_on_request, .log = 1);
     fio_start(.threads = 4);
 
-    // Deallocate constants.
-    opsick_free_constants();
+    opsick_free_router();
 }

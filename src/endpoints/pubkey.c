@@ -18,11 +18,3 @@ void opsick_get_pubkey()
 {
     // TODO: read from file here
 }
-
-/*
- *
- * http_set_header(request, HTTP_HEADER_CONTENT_TYPE, http_mimetype_find("txt", 3));
- * http_set_header(request, HTTP_HEADER_X_DATA, fiobj_str_new("my data", 7));
- * http_send_body(request, "Hello World!\r\n", 14);
- *
- * */
