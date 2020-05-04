@@ -20,15 +20,15 @@
 #include "opsick/endpoints/home.h"
 #include "opsick/endpoints/pubkey.h"
 
-static int _opsick_router_initialized = 0;
+static int initialized = 0;
 
 void opsick_init_router()
 {
-    if (_opsick_router_initialized)
+    if (initialized)
     {
         return;
     }
-    _opsick_router_initialized = 1;
+    initialized = 1;
 
     opsick_init_endpoint_home();
     opsick_init_endpoint_pubkey();
@@ -36,7 +36,7 @@ void opsick_init_router()
 
 void opsick_on_request(http_s* request)
 {
-    if (!_opsick_router_initialized)
+    if (!initialized)
     {
         return;
     }
@@ -53,25 +53,36 @@ void opsick_on_request(http_s* request)
 
     switch (pathstr_hash)
     {
-        default:
+        default: {
             http_send_error(request, 404);
             break;
-        case OPSICK_HOME_PATH_HASH:
+        }
+        case OPSICK_FAVICON_PATH_HASH: {
+            const int fd = open("favicon.ico", O_RDONLY);
+            struct stat st;
+            fstat(fd, &st);
+            http_sendfile(request, fd, st.st_size, 0);
+            close(fd);
+            break;
+        }
+        case OPSICK_HOME_PATH_HASH: {
             opsick_get_home(request);
             break;
-        case OPSICK_PUBKEY_PATH_HASH:
+        }
+        case OPSICK_PUBKEY_PATH_HASH: {
             opsick_get_pubkey(request);
             break;
+        }
     }
 }
 
 void opsick_free_router()
 {
-    if (!_opsick_router_initialized)
+    if (!initialized)
     {
         return;
     }
-    _opsick_router_initialized = 0;
+    initialized = 0;
 
     opsick_free_endpoint_home();
     opsick_free_endpoint_pubkey();

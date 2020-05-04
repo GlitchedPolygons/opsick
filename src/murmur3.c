@@ -29,31 +29,26 @@ SOFTWARE.
 
 */
 
-#include <stddef.h>
 #include "opsick/murmur3.h"
 
 uint32_t murmur3(const char* string, uint32_t string_length, uint32_t seed)
 {
-    uint32_t c1 = 0xcc9e2d51;
-    uint32_t c2 = 0x1b873593;
-    uint32_t r1 = 15;
-    uint32_t r2 = 13;
-    uint32_t m = 5;
-    uint32_t n = 0xe6546b64;
-    uint32_t h = 0;
+    const uint32_t c1 = 0xcc9e2d51;
+    const uint32_t c2 = 0x1b873593;
+    const uint32_t r1 = 15;
+    const uint32_t r2 = 13;
+    const uint32_t m = 5;
+    const uint32_t n = 0xe6546b64;
+    const uint32_t l = string_length / 4;
+
     uint32_t k = 0;
+    uint32_t h = seed;
     uint8_t* d = (uint8_t*)string;
-    const uint32_t* chunks = NULL;
-    const uint8_t* tail = NULL;
-    int i = 0;
-    uint32_t l = string_length / 4;
 
-    h = seed;
+    const uint32_t* chunks = (const uint32_t*)(d + l * 4);
+    const uint8_t* tail = (const uint8_t*)(d + l * 4);
 
-    chunks = (const uint32_t*)(d + l * 4);
-    tail = (const uint8_t*)(d + l * 4);
-
-    for (i = -l; i != 0; ++i)
+    for (int i = -l; i != 0; ++i)
     {
         k = chunks[i];
 

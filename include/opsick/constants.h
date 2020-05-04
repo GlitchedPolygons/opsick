@@ -37,6 +37,13 @@ extern "C" {
 
 /**
  * <c>
+ * murmur3("/favicon.ico")
+ * </c>
+ */
+#define OPSICK_FAVICON_PATH_HASH 1051445893
+
+/**
+ * <c>
  * murmur3("/pubkey")
  * </c>
  */

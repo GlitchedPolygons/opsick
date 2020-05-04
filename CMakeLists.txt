@@ -60,9 +60,8 @@ if (NOT TARGET l8w8jwt)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt l8w8jwt)
 endif ()
 
-file(COPY ${CMAKE_CURRENT_LIST_DIR}/src/index.html
-        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-        )
+file(COPY ${CMAKE_CURRENT_LIST_DIR}/src/index.html DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_LIST_DIR}/src/favicon.ico DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(${PROJECT_NAME}
         ${${PROJECT_NAME}_HEADERS}
