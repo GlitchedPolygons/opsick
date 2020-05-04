@@ -29,6 +29,9 @@ void opsick_init_router()
         return;
     }
     _opsick_router_initialized = 1;
+
+    opsick_init_endpoint_home();
+    opsick_init_endpoint_pubkey();
 }
 
 void opsick_on_request(http_s* request)
@@ -54,10 +57,10 @@ void opsick_on_request(http_s* request)
             http_send_error(request, 404);
             break;
         case OPSICK_HOME_PATH_HASH:
-            opsick_get_home();
+            opsick_get_home(request);
             break;
         case OPSICK_PUBKEY_PATH_HASH:
-            opsick_get_pubkey();
+            opsick_get_pubkey(request);
             break;
     }
 }
@@ -69,6 +72,9 @@ void opsick_free_router()
         return;
     }
     _opsick_router_initialized = 0;
+
+    opsick_free_endpoint_home();
+    opsick_free_endpoint_pubkey();
 }
 
 /*

@@ -21,11 +21,24 @@
 extern "C" {
 #endif
 
+#include "http.h"
+
+/**
+ * Initializes the "/pubkey" endpoint.
+ */
+void opsick_init_endpoint_pubkey();
+
 /**
  * GET request to "/pubkey". <p>
  * Gets the server's public key and returns it in the HTTP response body.
+ * @param request The HTTP request.
  */
-void opsick_get_pubkey();
+void opsick_get_pubkey(http_s* request);
+
+/**
+ * Frees the "/pubkey" endpoint resources.
+ */
+void opsick_free_endpoint_pubkey();
 
 #ifdef __cplusplus
 } // extern "C"

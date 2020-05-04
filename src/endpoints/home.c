@@ -14,7 +14,41 @@
    limitations under the License.
 */
 
-void opsick_get_home()
+#include "opsick/endpoints/home.h"
+
+static char html[4096];
+static size_t html_len;
+
+void opsick_init_endpoint_home()
 {
-    // TODO: send something
+    memset(html, '\0', sizeof(html));
+
+    FILE* fptr = fopen("index.html", "r");
+    if (fptr == NULL)
+    {
+        perror("ERROR: Couldn't open index.html file! ");
+        // Program should exit if file pointer returned by fopen() is NULL.
+        exit(1);
+    }
+
+    fseek(fptr, 0L, SEEK_END);
+    const long fsize = ftell(fptr);
+
+    fseek(fptr, 0L, SEEK_SET);
+    html_len = fread(html, 1, fsize, fptr);
+
+    html[html_len++] = '\0';
+    fclose(fptr);
+}
+
+void opsick_get_home(http_s* request)
+{
+    // TODO: sign response body (set signature header)
+    http_send_body(request, html, html_len);
+}
+
+void opsick_free_endpoint_home()
+{
+    html_len = 0;
+    memset(html, '\0', sizeof(html));
 }

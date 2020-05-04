@@ -14,7 +14,21 @@
    limitations under the License.
 */
 
-void opsick_get_pubkey()
+#include "opsick/endpoints/pubkey.h"
+
+static FIOBJ OPSICK_RESPONSE_BODY;
+
+void opsick_init_endpoint_pubkey()
+{
+    //nop
+}
+
+void opsick_get_pubkey(http_s* request)
 {
     // TODO: read from file here
+}
+
+void opsick_free_endpoint_pubkey()
+{
+    //nop
 }

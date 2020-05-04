@@ -21,10 +21,23 @@
 extern "C" {
 #endif
 
+#include "http.h"
+
+/**
+* Initializes the "/" endpoint.
+*/
+void opsick_init_endpoint_home();
+
+/**
+ * Frees the "/" endpoint resources.
+ */
+void opsick_free_endpoint_home();
+
 /**
  * GET request to home (path "/").
+ * @param request The HTTP request.
  */
-void opsick_get_home();
+void opsick_get_home(http_s* request);
 
 #ifdef __cplusplus
 } // extern "C"

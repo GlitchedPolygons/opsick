@@ -58,7 +58,11 @@ endif ()
 
 if (NOT TARGET l8w8jwt)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt l8w8jwt)
-endif()
+endif ()
+
+file(COPY ${CMAKE_CURRENT_LIST_DIR}/src/index.html
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
+        )
 
 add_executable(${PROJECT_NAME}
         ${${PROJECT_NAME}_HEADERS}
@@ -82,17 +86,17 @@ target_include_directories(${PROJECT_NAME}
 if (OPSICK_ENABLE_TESTS)
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--wrap=malloc,--wrap=calloc")
-    endif()
+    endif ()
 
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/cmocka cmocka)
 
     add_executable(run_tests
-            ${CMAKE_CURRENT_LIST_DIR}/tests/tests.c 
-            ${${PROJECT_NAME}_HEADERS} 
+            ${CMAKE_CURRENT_LIST_DIR}/tests/tests.c
+            ${${PROJECT_NAME}_HEADERS}
             ${${PROJECT_NAME}_SOURCES}
             )
 
-    target_include_directories(run_tests 
+    target_include_directories(run_tests
             PUBLIC ${cmocka_INCLUDE_DIR}
             PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
             )
@@ -111,4 +115,4 @@ if (OPSICK_ENABLE_TESTS)
         add_coverage(run_tests)
         coverage_evaluate()
     endif ()
-endif()
+endif ()
