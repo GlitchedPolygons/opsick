@@ -1,3 +1,17 @@
+#  Copyright 2020 Raphael Beck
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 cmake_minimum_required(VERSION 3.15)
 project(opsick C)
 
@@ -14,12 +28,20 @@ set(${PROJECT_NAME}_INCLUDE_DIR
 
 set(${PROJECT_NAME}_HEADERS
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/constants.h
-        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/config.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/strncmpic.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/config.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/murmur3.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/router.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/home.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/pubkey.h
         )
 
 set(${PROJECT_NAME}_SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/src/config.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/murmur3.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/router.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/home.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/pubkey.c
         )
 
 set(${PROJECT_NAME}_ENTRYPOINT
@@ -54,6 +76,7 @@ target_link_libraries(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
         PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
+        PUBLIC ${CMAKE_CURRENT_LIST_DIR}/lib/mbedtls/include
         )
 
 if (OPSICK_ENABLE_TESTS)
