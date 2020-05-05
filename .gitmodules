@@ -10,3 +10,6 @@
 [submodule "lib/l8w8jwt"]
 	path = lib/l8w8jwt
 	url = https://github.com/GlitchedPolygons/l8w8jwt
+[submodule "lib/tomlc99"]
+	path = lib/tomlc99
+	url = https://github.com/GlitchedPolygons/tomlc99
