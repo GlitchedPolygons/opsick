@@ -14,8 +14,69 @@
    limitations under the License.
 */
 
-int opsick_config_load()
+#include <tomlc99/toml.h>
+#include "opsick/config.h"
+#include "opsick/constants.h"
+#include "opsick/strncmpic.h"
+
+static struct opsick_config_hostsettings hostsettings;
+static struct opsick_config_hostsettings adminsettings;
+
+bool opsick_config_load()
 {
-    // TODO
-    return 1;
+    bool r = false;
+
+    FILE* fp = fopen(OPSICK_CONFIG_FILE_PATH, "r");
+    if (fp == NULL)
+    {
+        return false;
+    }
+
+    char errbuf[1024];
+    memset(errbuf, '\0', sizeof(errbuf));
+
+    toml_table_t* conf = toml_parse_file(fp, errbuf, sizeof(errbuf));
+    fclose(fp);
+
+    if (conf == NULL)
+    {
+        fprintf(stderr, "ERROR: Opsick failed to parse the user config TOML file \"%s\" - error buffer: %s", OPSICK_CONFIG_FILE_PATH, errbuf);
+        return false;
+    }
+
+    toml_table_t* host = toml_table_in(conf, "host");
+    if (host == NULL)
+    {
+        fprintf(stderr, "ERROR: The loaded opsick config file \"%s\" does not contain the mandatory \"[host]\" section!", OPSICK_CONFIG_FILE_PATH);
+        goto exit;
+    }
+
+    hostsettings.log = false;
+    hostsettings.port = 6677;
+    hostsettings.threads = 2;
+    hostsettings.max_clients = 0;
+    hostsettings.max_header_size = 1024 * 16;
+    hostsettings.max_body_size = 1024 * 1024 * 16;
+
+    const char* log = toml_raw_in(host, "log");
+    hostsettings.log = opsick_strncmpic(log, "true", strlen(log)) == 0;
+
+    const char* port = toml_raw_in(host, "port");
+    if (port != NULL && toml_rtoi(port, (int64_t*)&hostsettings.port))
+    {
+        fprintf(stderr, "ERROR: Failed to parse \"port\" setting inside config - \"%s\" is not a valid port number!", port);
+        goto exit;
+    }
+
+    const char* threads = toml_raw_in(host, "threads");
+    if (threads != NULL && toml_rtoi(threads, (int64_t*)&hostsettings.threads))
+    {
+        fprintf(stderr, "ERROR: Failed to parse \"threads\" setting inside config - \"%s\" is not a valid integer!", threads);
+        goto exit;
+    }
+
+    r = true;
+exit:
+    toml_free(conf);
+    return r;
 }

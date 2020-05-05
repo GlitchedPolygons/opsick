@@ -24,7 +24,14 @@ extern "C" {
 #include "http.h"
 
 /**
+ * The user config file path (must be a <c>.toml</c> file!).
+ */
+#define OPSICK_CONFIG_FILE_PATH "config.toml"
+
+/**
  * The seed value to use for the MurmurHash v3 algo.
+ * Since all of the hash lookups are only correlated
+ * to endpoint routing, this value needn't be secret.
  */
 #define OPSICK_MURMUR3_SEED 133769420
 

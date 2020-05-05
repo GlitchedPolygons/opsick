@@ -50,16 +50,10 @@ struct opsick_config_hostsettings
     uint16_t port;
 
     /**
-     * The maximum request body size. <p>
-     * [DEFAULT] <c>16MB</c> (<c>1024 * 1024 * 16B</c>).
+     * The number of threads to dedicate to opsick. <p>
+     * [DEFAULT] <c>2</c>
      */
-    size_t max_body_size;
-
-    /**
-     * The maximum HTTP header size. <p>
-     * [DEFAULT] <c>16KB</c> (<c>1024 * 16B</c>).
-     */
-    uint64_t max_header_size;
+    uint8_t threads;
 
     /**
      * The maximum number of clients that are allowed to connect concurrently. <p>
@@ -68,10 +62,16 @@ struct opsick_config_hostsettings
     uint64_t max_clients;
 
     /**
-     * The number of threads to dedicate to opsick. <p>
-     * [DEFAULT] <c>2</c>
+     * The maximum HTTP header size. <p>
+     * [DEFAULT] <c>16KB</c> (<c>1024 * 16B</c>).
      */
-    uint8_t threads;
+    uint64_t max_header_size;
+
+    /**
+     * The maximum request body size. <p>
+     * [DEFAULT] <c>16MB</c> (<c>1024 * 1024 * 16B</c>).
+     */
+    size_t max_body_size;
 };
 
 /**
