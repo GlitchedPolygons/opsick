@@ -16,6 +16,7 @@ cmake_minimum_required(VERSION 3.15)
 project(opsick C)
 
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 option(OPSICK_ENABLE_TESTS "Build OPSICK tests." OFF)
 
