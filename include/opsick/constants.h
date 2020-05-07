@@ -56,6 +56,26 @@ extern "C" {
  */
 #define OPSICK_PUBKEY_PATH_HASH 3855421118
 
+/**
+ * The maximum postgres host name length.
+ */
+#define OPSICK_MAX_PG_HOST_LENGTH 256
+
+/**
+ * The maximum postgres database name length.
+ */
+#define OPSICK_MAX_PG_DBNAME_LENGTH 128
+
+/**
+ * The maximum postgres username length.
+ */
+#define OPSICK_MAX_PG_USER_LENGTH 128
+
+/**
+ * The maximum postgres user password length.
+ */
+#define OPSICK_MAX_PG_PASSWORD_LENGTH 1024
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

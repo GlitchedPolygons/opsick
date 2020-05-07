@@ -65,6 +65,8 @@ if (NOT TARGET tomlc99)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/tomlc99 tomlc99)
 endif ()
 
+find_package(PostgreSQL REQUIRED)
+
 file(COPY ${CMAKE_CURRENT_LIST_DIR}/src/index.html DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_LIST_DIR}/src/favicon.ico DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_LIST_DIR}/src/config.toml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
@@ -82,11 +84,13 @@ target_link_libraries(${PROJECT_NAME}
         PUBLIC mbedcrypto
         PUBLIC l8w8jwt
         PUBLIC tomlc99
+        PUBLIC PostgreSQL::PostgreSQL
         )
 
 target_include_directories(${PROJECT_NAME}
         PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
         PUBLIC ${CMAKE_CURRENT_LIST_DIR}/lib/mbedtls/include
+        PUBLIC ${PostgreSQL_INCLUDE_DIRS}
         )
 
 if (OPSICK_ENABLE_TESTS)

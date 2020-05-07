@@ -20,7 +20,8 @@
 #include "opsick/strncmpic.h"
 
 static struct opsick_config_hostsettings hostsettings;
-static struct opsick_config_hostsettings adminsettings;
+static struct opsick_config_adminsettings adminsettings;
+static struct opsick_config_pgsettings pgsettings;
 
 bool opsick_config_load()
 {

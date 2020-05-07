@@ -23,6 +23,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "opsick/constants.h"
 
 /**
  * Opens the opsick config file,
@@ -121,6 +122,57 @@ struct opsick_config_adminsettings
  * @return 1 if retrieval succeeded; 0 if retrieval failed due to the setting not being found; -1 if due to a parsing failure; -2 if due to invalid arguments (e.g. <c>NULL</c>).
  */
 int opsick_config_get_adminsettings(struct opsick_config_adminsettings* out);
+
+// ---------------------------------------------------------------------------------------------------
+
+/**
+ * The postgres section of the config file.
+ */
+struct opsick_config_pgsettings
+{
+    /**
+     * Postgres host to connect to (e.g. a raw IP address or a domain such as <c>postgres.example.com</c>). <p>
+     * [DEFAULT] <c>localhost</c>
+     */
+    char host[OPSICK_MAX_PG_HOST_LENGTH];
+
+    /**
+     * The port number to connect to on the specified pg host. <p>
+     * [DEFAULT] <c>5432</c>
+     */
+    uint16_t port;
+
+    /**
+     * The name of the postgres database to connect to.
+     * [DEFAULT] <c>opsick_pg_db</c>
+     */
+    char dbname[OPSICK_MAX_PG_DBNAME_LENGTH];
+
+    /**
+     * The name of the postgres user.
+     * [DEFAULT] <c>opsick_pg_user</c>
+     */
+    char user[OPSICK_MAX_PG_USER_LENGTH];
+
+    /**
+     * The opsick postgres user's password.
+     * [DEFAULT] <c>${OPSICK_POSTGRES_PASSWORD}</c> (uses shell substitution and thus tries to look for an environment variable called OPSICK_POSTGRES_PASSWORD).
+     */
+    char password[OPSICK_MAX_PG_PASSWORD_LENGTH];
+
+    /**
+     * Postgres maximum connection timeout to wait for in seconds. <p>
+     * [DEFAULT] <c>60</c>
+     */
+    uint16_t connect_timeout;
+};
+
+/**
+ * Gets the current postgres connection settings from the <c>[postgres]</c> section inside the opsick config file.
+ * @param out An opsick_config_pgsettings instance into which to write the parsed config values. If retrieval fails in any way, this is left untouched!
+ * @return 1 if retrieval succeeded; 0 if retrieval failed due to the setting not being found; -1 if due to a parsing failure; -2 if due to invalid arguments (e.g. <c>NULL</c>).
+ */
+int opsick_config_get_pgsettings(struct opsick_config_pgsettings* out);
 
 // ---------------------------------------------------------------------------------------------------
 
