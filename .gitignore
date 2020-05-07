@@ -6,6 +6,7 @@
 **/[Bb]uild
 **/[Cc]make-build-*
 **/opsick.conf
+latex/
 
 # ------------------------------------------------------
 # https://github.com/github/gitignore/blob/master/C.gitignore
