@@ -94,6 +94,25 @@ struct opsick_config_adminsettings
      * [DEFAULT] <c>0</c> (which means unlimited).
      */
     uint64_t max_users;
+
+    /**
+     * Set this to <c>true</c> if you want to let the home endpoint (reachable under "/")
+     * serve the index.html file that's located inside the directory where the opsick executable resides. <p>
+     * You could for example modify that index.html file and customize it to your needs,
+     * add some sort of welcome screen to your users and basically do whatever you like with it. <p>
+     * If set to <c>false</c>, the "/" endpoint just returns a plain HTTP status code 200 ("OK").
+     * In that case, the whole opsick instance would act as a plain Web API without any visual feedback/interface. <p>
+     * [DEFAULT] <c>true</c>
+     */
+    bool use_index_html;
+
+    /**
+     * Define the interval (in hours) at which the opsick server keys are auto-replaced with freshly generated ones. <p>
+     * These keys (one pair of public and private key) are used by the server to sign HTTP responses (private key),
+     * and by the clients to verify the HTTP responses' signature (public key).
+     * [DEFAULT] <c>72</c> (after 72 hours the server keys are regenerated and the old ones discarded).
+     */
+    uint32_t key_refresh_interval_hours;
 };
 
 /**

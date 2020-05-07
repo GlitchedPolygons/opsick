@@ -1,3 +1,6 @@
+# Check out the opsick API documentation (or the config.h header file)
+# to find out what each of these settings do.
+
 [host]
 log = false
 port = 6677
@@ -8,3 +11,13 @@ max_body_size = 16777216
 
 [admin]
 max_users = 0
+use_index_html = true
+key_refresh_interval_hours = 72
+
+[postgres]
+host = "localhost"
+port = 5432
+dbname = "opsick_pg_db"
+user = "opsick_pg_user"
+password = "${OPSICK_POSTGRES_PASSWORD}"
+connect_timeout = 60
