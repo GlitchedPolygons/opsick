@@ -23,6 +23,15 @@ static struct opsick_config_hostsettings hostsettings;
 static struct opsick_config_adminsettings adminsettings;
 static struct opsick_config_pgsettings pgsettings;
 
+static inline void parse_toml_int(toml_table_t* toml_table, const char* setting, int64_t* out)
+{
+    const char* value = toml_raw_in(toml_table, setting);
+    if (value != NULL && toml_rtoi(value, out) != 0)
+    {
+        fprintf(stderr, "ERROR: Failed to parse \"%s\" setting inside config - \"%s\" is not a valid integer!", setting, value);
+    }
+}
+
 bool opsick_config_load()
 {
     bool r = false;
@@ -60,22 +69,25 @@ bool opsick_config_load()
     hostsettings.max_body_size = 1024 * 1024 * 16;
 
     const char* log = toml_raw_in(host, "log");
-    hostsettings.log = opsick_strncmpic(log, "true", strlen(log)) == 0;
-
-    const char* port = toml_raw_in(host, "port");
-    if (port != NULL && toml_rtoi(port, (int64_t*)&hostsettings.port))
+    if (log != NULL)
     {
-        fprintf(stderr, "ERROR: Failed to parse \"port\" setting inside config - \"%s\" is not a valid port number!", port);
+        hostsettings.log = opsick_strncmpic(log, "true", strlen(log)) == 0;
+    }
+
+    parse_toml_int(host, "port", (int64_t*)&hostsettings.port);
+    parse_toml_int(host, "threads", (int64_t*)&hostsettings.threads);
+    parse_toml_int(host, "max_clients", (int64_t*)&hostsettings.max_clients);
+    parse_toml_int(host, "max_header_size", (int64_t*)&hostsettings.max_header_size);
+    parse_toml_int(host, "max_body_size", (int64_t*)&hostsettings.max_body_size);
+
+    toml_table_t* admin = toml_table_in(conf, "admin");
+    if (admin == NULL)
+    {
+        fprintf(stderr, "ERROR: The loaded opsick config file \"%s\" does not contain the mandatory \"[admin]\" section!", OPSICK_CONFIG_FILE_PATH);
         goto exit;
     }
 
-    const char* threads = toml_raw_in(host, "threads");
-    if (threads != NULL && toml_rtoi(threads, (int64_t*)&hostsettings.threads))
-    {
-        fprintf(stderr, "ERROR: Failed to parse \"threads\" setting inside config - \"%s\" is not a valid integer!", threads);
-        goto exit;
-    }
-
+    // TODO: parse admin and pg settings here
     r = true;
 exit:
     toml_free(conf);

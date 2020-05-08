@@ -65,7 +65,20 @@ if (NOT TARGET tomlc99)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/tomlc99 tomlc99)
 endif ()
 
-find_package(PostgreSQL REQUIRED)
+find_package(PostgreSQL)
+
+if (NOT PostgreSQL_FOUND)
+    message(FATAL_ERROR "
+    CMake failed to find PostgreSQL on your system!
+    Please make sure to install postgres and libpq (into default paths) and try again...
+    - Linux:
+      - Arch:                sudo pacman -S postgresql postgresql-libs
+      - Debian/*buntu:       sudo apt-get install postgresql libpq-dev
+      - CentOS/Fedora/RHEL:  https://wiki.postgresql.org/wiki/YUM_Installation
+    - macOS:
+      - brew install postgresql libpq
+    ")
+endif ()
 
 file(COPY ${CMAKE_CURRENT_LIST_DIR}/src/index.html DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_LIST_DIR}/src/favicon.ico DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
@@ -93,10 +106,9 @@ target_include_directories(${PROJECT_NAME}
         PUBLIC ${PostgreSQL_INCLUDE_DIRS}
         )
 
+get_target_property(${PROJECT_NAME}_DEPS_TARGETS ${PROJECT_NAME} LINK_LIBRARIES)
+
 if (OPSICK_ENABLE_TESTS)
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--wrap=malloc,--wrap=calloc")
-    endif ()
 
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/cmocka cmocka)
 
@@ -112,10 +124,7 @@ if (OPSICK_ENABLE_TESTS)
             )
 
     target_link_libraries(run_tests
-            PUBLIC facil.io
-            PUBLIC mbedtls
-            PUBLIC mbedx509
-            PUBLIC mbedcrypto
+            PUBLIC ${${PROJECT_NAME}_DEPS_TARGETS}
             PUBLIC cmocka
             )
 
