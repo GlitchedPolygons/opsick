@@ -13,11 +13,12 @@ max_body_size = 16777216
 max_users = 0
 use_index_html = true
 key_refresh_interval_hours = 72
+user_registration_password = "opsick_registration_password"
 
 [postgres]
 host = "localhost"
 port = 5432
 dbname = "opsick_pg_db"
 user = "opsick_pg_user"
-password = "${OPSICK_POSTGRES_PASSWORD}"
+password = "opsick_pg_db_password"
 connect_timeout = 60

@@ -78,7 +78,7 @@ struct opsick_config_hostsettings
 /**
  * Gets the current host settings from the <c>[host]</c> section inside the opsick config file.
  * @param out An opsick_config_hostsettings instance into which to write the parsed config values. If retrieval fails in any way, this is left untouched!
- * @return 1 if retrieval succeeded; 0 if retrieval failed due to the setting not being found; -1 if due to a parsing failure; -2 if due to invalid arguments (e.g. <c>NULL</c>).
+ * @return 1 if retrieval succeeded; 0 if retrieval failed due to invalid arguments (e.g. <c>NULL</c>).
  */
 int opsick_config_get_hostsettings(struct opsick_config_hostsettings* out);
 
@@ -110,16 +110,22 @@ struct opsick_config_adminsettings
     /**
      * Define the interval (in hours) at which the opsick server keys are auto-replaced with freshly generated ones. <p>
      * These keys (one pair of public and private key) are used by the server to sign HTTP responses (private key),
-     * and by the clients to verify the HTTP responses' signature (public key).
+     * and by the clients to verify the HTTP responses' signature (public key). <p>
      * [DEFAULT] <c>72</c> (after 72 hours the server keys are regenerated and the old ones discarded).
      */
     uint32_t key_refresh_interval_hours;
+
+    /**
+     * Define a password that is needed in order to register a new user. <p>
+     * [DEFAULT] <c>opsick_registration_password</c>
+     */
+    char user_registration_password[OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH];
 };
 
 /**
  * Gets the current admin settings from the <c>[admin]</c> section inside the opsick config file.
  * @param out An opsick_config_adminsettings instance into which to write the parsed config values. If retrieval fails in any way, this is left untouched!
- * @return 1 if retrieval succeeded; 0 if retrieval failed due to the setting not being found; -1 if due to a parsing failure; -2 if due to invalid arguments (e.g. <c>NULL</c>).
+ * @return 1 if retrieval succeeded; 0 if retrieval failed due to invalid arguments (e.g. <c>NULL</c>).
  */
 int opsick_config_get_adminsettings(struct opsick_config_adminsettings* out);
 
@@ -143,20 +149,20 @@ struct opsick_config_pgsettings
     uint16_t port;
 
     /**
-     * The name of the postgres database to connect to.
+     * The name of the postgres database to connect to. <p>
      * [DEFAULT] <c>opsick_pg_db</c>
      */
     char dbname[OPSICK_MAX_PG_DBNAME_LENGTH];
 
     /**
-     * The name of the postgres user.
+     * The name of the postgres user. <p>
      * [DEFAULT] <c>opsick_pg_user</c>
      */
     char user[OPSICK_MAX_PG_USER_LENGTH];
 
     /**
-     * The opsick postgres user's password.
-     * [DEFAULT] <c>${OPSICK_POSTGRES_PASSWORD}</c> (uses shell substitution and thus tries to look for an environment variable called OPSICK_POSTGRES_PASSWORD).
+     * The opsick postgres user's password. PLEASE REPLACE THIS VALUE AS SOON AS POSSIBLE AFTER INSTALLATION! <p>
+     * [DEFAULT] <c>opsick_pg_db_password</c>.
      */
     char password[OPSICK_MAX_PG_PASSWORD_LENGTH];
 
@@ -170,7 +176,7 @@ struct opsick_config_pgsettings
 /**
  * Gets the current postgres connection settings from the <c>[postgres]</c> section inside the opsick config file.
  * @param out An opsick_config_pgsettings instance into which to write the parsed config values. If retrieval fails in any way, this is left untouched!
- * @return 1 if retrieval succeeded; 0 if retrieval failed due to the setting not being found; -1 if due to a parsing failure; -2 if due to invalid arguments (e.g. <c>NULL</c>).
+ * @return 1 if retrieval succeeded; 0 if retrieval failed due to invalid arguments (e.g. <c>NULL</c>).
  */
 int opsick_config_get_pgsettings(struct opsick_config_pgsettings* out);
 

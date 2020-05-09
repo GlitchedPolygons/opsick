@@ -76,6 +76,11 @@ extern "C" {
  */
 #define OPSICK_MAX_PG_PASSWORD_LENGTH 1024
 
+/**
+ * The maximum length of the instance's user creation endpoint password.
+ */
+#define OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH 1024
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
