@@ -113,7 +113,7 @@ struct opsick_config_adminsettings
      * and by the clients to verify the HTTP responses' signature (public key). <p>
      * [DEFAULT] <c>72</c> (after 72 hours the server keys are regenerated and the old ones discarded).
      */
-    uint32_t key_refresh_interval_hours;
+    uint64_t key_refresh_interval_hours;
 
     /**
      * Define a password that is needed in order to register a new user. <p>
