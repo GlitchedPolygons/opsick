@@ -78,9 +78,9 @@ struct opsick_config_hostsettings
 /**
  * Gets the current host settings from the <c>[host]</c> section inside the opsick config file (as a copy, so it's read-only).
  * @param out An opsick_config_hostsettings instance into which to write the parsed config values. If retrieval fails in any way, this is left untouched!
- * @return 1 if retrieval succeeded; 0 if retrieval failed due to invalid arguments (e.g. <c>NULL</c>).
+ * @return <c>true</c> if retrieval succeeded; <c>false</c> if retrieval failed due to invalid arguments (e.g. <c>NULL</c>).
  */
-int opsick_config_get_hostsettings(struct opsick_config_hostsettings* out);
+bool opsick_config_get_hostsettings(struct opsick_config_hostsettings* out);
 
 // ---------------------------------------------------------------------------------------------------
 
@@ -125,9 +125,9 @@ struct opsick_config_adminsettings
 /**
  * Gets the current admin settings from the <c>[admin]</c> section inside the opsick config file (as a copy, so it's read-only).
  * @param out An opsick_config_adminsettings instance into which to write the parsed config values. If retrieval fails in any way, this is left untouched!
- * @return 1 if retrieval succeeded; 0 if retrieval failed due to invalid arguments (e.g. <c>NULL</c>).
+ * @return <c>true</c> if retrieval succeeded; <c>false</c> if retrieval failed due to invalid arguments (e.g. <c>NULL</c>).
  */
-int opsick_config_get_adminsettings(struct opsick_config_adminsettings* out);
+bool opsick_config_get_adminsettings(struct opsick_config_adminsettings* out);
 
 // ---------------------------------------------------------------------------------------------------
 
@@ -176,9 +176,9 @@ struct opsick_config_pgsettings
 /**
  * Gets the current postgres connection settings from the <c>[postgres]</c> section inside the opsick config file (as a copy, so it's read-only).
  * @param out An opsick_config_pgsettings instance into which to write the parsed config values. If retrieval fails in any way, this is left untouched!
- * @return 1 if retrieval succeeded; 0 if retrieval failed due to invalid arguments (e.g. <c>NULL</c>).
+ * @return <c>true</c> if retrieval succeeded; <c>false</c> if retrieval failed due to invalid arguments (e.g. <c>NULL</c>).
  */
-int opsick_config_get_pgsettings(struct opsick_config_pgsettings* out);
+bool opsick_config_get_pgsettings(struct opsick_config_pgsettings* out);
 
 // ---------------------------------------------------------------------------------------------------
 
