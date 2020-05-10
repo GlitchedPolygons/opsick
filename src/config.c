@@ -139,6 +139,8 @@ bool opsick_config_load()
         goto exit;
     }
 
+    // TODO: use toml_rtos instead of this strcpy to let it handle the quotes
+
     parse_toml_int(table, "max_users", (int64_t*)&adminsettings.max_users);
     parse_toml_int(table, "key_refresh_interval_hours", (int64_t*)&adminsettings.key_refresh_interval_hours);
     adminsettings.use_index_html = opsick_strncmpic(toml_raw_in(table, "use_index_html"), "true", 4) == 0;
@@ -152,7 +154,7 @@ bool opsick_config_load()
     }
 
     parse_toml_int(table, "port", (int64_t*)&pgsettings.port);
-    parse_toml_int(table, "connect_timeout", (int64_t*)&pgsettings.port);
+    parse_toml_int(table, "connect_timeout", (int64_t*)&pgsettings.connect_timeout);
     strcpy(pgsettings.host, toml_raw_in(table, "host"));
     strcpy(pgsettings.dbname, toml_raw_in(table, "dbname"));
     strcpy(pgsettings.user, toml_raw_in(table, "user"));

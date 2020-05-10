@@ -24,14 +24,16 @@ extern "C" {
 #include "http.h"
 
 /**
- * Initializes the HTTP request router, pre-allocating values that are used often.
+ * Pre-allocates values that are used often, reads user config,
+ * initializes the HTTP request router, starts listening to HTTP requests
+ * on the user-defined port and starts facil.io.
  */
-void opsick_init_router();
+void opsick_router_init();
 
 /**
  * Disables and deallocates the HTTP request router.
  */
-void opsick_free_router();
+void opsick_router_free();
 
 /**
  * Callback for handling HTTP requests.

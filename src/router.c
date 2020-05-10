@@ -15,6 +15,7 @@
 */
 
 #include "opsick/router.h"
+#include "opsick/config.h"
 #include "opsick/murmur3.h"
 #include "opsick/constants.h"
 #include "opsick/endpoints/home.h"
@@ -22,7 +23,9 @@
 
 static int initialized = 0;
 
-void opsick_init_router()
+// Read user config, start listening to HTTP requests
+// on the user-defined port and start facil.io
+void opsick_router_init()
 {
     if (initialized)
     {
@@ -30,8 +33,29 @@ void opsick_init_router()
     }
     initialized = 1;
 
+    // Initialize endpoints.
     opsick_init_endpoint_home();
     opsick_init_endpoint_pubkey();
+
+    // Start facil.io using the settings provided inside the user config.
+    struct opsick_config_hostsettings hostsettings;
+    opsick_config_get_hostsettings(&hostsettings);
+
+    char port[64];
+    memset(port,'\0', sizeof(port));
+    sprintf(port, "%d", hostsettings.port);
+
+    http_listen(
+            port,
+            NULL,
+            .on_request = opsick_on_request,
+            .max_header_size = hostsettings.max_header_size,
+            .max_body_size = hostsettings.max_body_size,
+            .max_clients = hostsettings.max_clients,
+            .log = hostsettings.log
+    );
+
+    fio_start(.threads = hostsettings.threads);
 }
 
 void opsick_on_request(http_s* request)
@@ -76,13 +100,15 @@ void opsick_on_request(http_s* request)
     }
 }
 
-void opsick_free_router()
+void opsick_router_free()
 {
     if (!initialized)
     {
         return;
     }
     initialized = 0;
+
+    fio_stop();
 
     opsick_free_endpoint_home();
     opsick_free_endpoint_pubkey();

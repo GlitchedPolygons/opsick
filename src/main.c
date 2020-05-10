@@ -15,28 +15,17 @@
 */
 
 #include <stdio.h>
-#include "http.h"
-#include "opsick/constants.h"
 #include "opsick/config.h"
 #include "opsick/router.h"
-#include <stdbool.h>
-// Read user config, start listening to HTTP requests
-// on the user-defined port and start facil.io
+
 int main(void)
 {
-    opsick_init_router();
-
     if (!opsick_config_load())
     {
         fprintf(stderr, "ERROR: Opsick failed to open, read or parse the config file.");
         exit(10);
     }
 
-    struct opsick_config_hostsettings* host_settings;
-    // TODO: read user config and customize port, nr. of threads, etc... (https://facil.io/0.7.x/http)
-
-    http_listen("3000", NULL, .on_request = opsick_on_request, .max_body_size = 1024 * 1024 * 16, .log = 1);
-    fio_start(.threads = 4);
-
-    opsick_free_router();
+    opsick_router_init();
+    opsick_router_free();
 }
