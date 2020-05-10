@@ -144,7 +144,6 @@ bool opsick_config_load()
     adminsettings.use_index_html = opsick_strncmpic(toml_raw_in(table, "use_index_html"), "true", 4) == 0;
     strcpy(adminsettings.user_registration_password, toml_raw_in(table, "user_registration_password"));
 
-    // TODO: Load postgres settings:
     table = toml_table_in(conf, "postgres");
     if (table == NULL)
     {
@@ -152,7 +151,13 @@ bool opsick_config_load()
         goto exit;
     }
 
-    parse_toml_int(table, "max_users", (int64_t*)&adminsettings.max_users);
+    parse_toml_int(table, "port", (int64_t*)&pgsettings.port);
+    parse_toml_int(table, "connect_timeout", (int64_t*)&pgsettings.port);
+    strcpy(pgsettings.host, toml_raw_in(table, "host"));
+    strcpy(pgsettings.dbname, toml_raw_in(table, "dbname"));
+    strcpy(pgsettings.user, toml_raw_in(table, "user"));
+    strcpy(pgsettings.password, toml_raw_in(table, "password"));
+
     r = true;
 exit:
     toml_free(conf);
