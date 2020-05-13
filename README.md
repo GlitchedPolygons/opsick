@@ -19,7 +19,7 @@ These two you can install using the following commands;
       - Arch:                sudo pacman -S postgresql postgresql-libs
       - Debian/*buntu:       sudo apt-get install postgresql libpq-dev
       - CentOS/Fedora/RHEL:  https://wiki.postgresql.org/wiki/YUM_Installation
-                                or
+                             or
                              https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-centos-8
 #### macOS:
       - brew install postgresql libpq
