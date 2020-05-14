@@ -28,4 +28,5 @@ int main(void)
 
     opsick_router_init();
     opsick_router_free();
+    return 0;
 }
