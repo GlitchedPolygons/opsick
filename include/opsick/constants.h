@@ -81,6 +81,11 @@ extern "C" {
  */
 #define OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH 1024
 
+/**
+ * Opsick RSA key size (values under 4096 are not recommended).
+ */
+#define OPSICK_KEY_SIZE 4096
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
