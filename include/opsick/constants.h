@@ -86,6 +86,11 @@ extern "C" {
  */
 #define OPSICK_KEY_SIZE 4096
 
+/**
+ * Exponent value to use for generating the opsick RSA keypair.
+ */
+#define OPSICK_KEY_EXPONENT 65537
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
