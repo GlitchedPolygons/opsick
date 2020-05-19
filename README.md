@@ -30,6 +30,10 @@ These two you can install using the following commands;
 The rest of the dependencies should be installed automatically with the below `git clone` command (git submodules) and the subsequent cmake command (third party libs were added to this project as CMake `add_subdirectory()` wherever possible).
 
 ### How to build
+
+If you choose to build from src, make sure that you have the necessary build tools installed, such as [CMake](https://cmake.org), a compiler, and so on...
+
+Then, execute the following commands:
 ```
 git clone --recursive https://github.com/GlitchedPolygons/opsick
 cd opsick
