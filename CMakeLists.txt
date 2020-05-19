@@ -76,9 +76,9 @@ if (NOT PostgreSQL_FOUND)
     CMake failed to find PostgreSQL on your system!
     Please make sure to install postgres and libpq (into default paths) and try again...
     - Linux:
-      - Arch:                sudo pacman -S postgresql postgresql-libs
-      - Debian/*buntu:       sudo apt-get install postgresql libpq-dev
-      - CentOS/Fedora/RHEL:  https://wiki.postgresql.org/wiki/YUM_Installation
+      - Arch:                sudo pacman -S postgresql postgresql-libs uuid-devel
+      - Debian/*buntu:       sudo apt-get install postgresql libpq-dev uuid-dev
+      - CentOS/Fedora/RHEL:  sudo dnf install libpq-devel uuid-devel
     - macOS:
       - brew install postgresql libpq
     ")
@@ -103,6 +103,10 @@ target_link_libraries(${PROJECT_NAME}
         PUBLIC tomlc99
         PUBLIC PostgreSQL::PostgreSQL
         )
+
+if (UNIX AND NOT APPLE)
+    target_link_libraries(${PROJECT_NAME} PRIVATE -luuid -lm)
+endif ()
 
 target_include_directories(${PROJECT_NAME}
         PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}

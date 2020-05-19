@@ -1,0 +1,16 @@
+[Unit]
+Description=Opsick Password Manager (Server Application)
+
+[Service]
+WorkingDirectory=/var/www/opsick
+ExecStart=/var/www/opsick/opsick
+Restart=always
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=opsick
+User=opsick
+Group=opsick
+
+[Install]
+WantedBy=multi-user.target
+
