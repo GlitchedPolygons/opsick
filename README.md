@@ -31,13 +31,19 @@ The rest of the dependencies should be installed automatically with the below `g
 
 ### How to build
 
+#### Cloning this repo
+
+Navigate into a directory where you wish to clone the opsick repository into. Then, run:
+
+`git clone --recursive https://github.com/GlitchedPolygons/opsick`
+
+#### Building
+
 If you choose to build from src, make sure that you have the necessary build tools installed, such as [CMake](https://cmake.org), a compiler, and so on...
 
 Then, either run the [build.sh](https://github.com/GlitchedPolygons/opsick/blob/master/build.sh) shell script **OR** execute the following commands:
 
 ```
-git clone --recursive https://github.com/GlitchedPolygons/opsick
-cd opsick
 mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
