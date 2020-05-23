@@ -29,6 +29,12 @@ extern "C" {
 #define OPSICK_CONFIG_FILE_PATH "config.toml"
 
 /**
+ * The current version of the opsick DB schema. <p>
+ * TODO: INCREASE THIS DB SCHEMA VERSION NUMBER WITH EVERY RELEASE THAT APPLIES CHANGES TO THE DB! Check naming convention inside the folder with the <c>.sql</c> scripts!
+ */
+#define OPSICK_DB_SCHEMA_VERSION 1
+
+/**
  * The seed value to use for the MurmurHash v3 algo.
  * Since all of the hash lookups are only correlated
  * to endpoint routing, this value needn't be secret.
