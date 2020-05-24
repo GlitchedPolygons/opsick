@@ -16,6 +16,33 @@ max_records_per_user = 1024
 use_index_html = true
 key_refresh_interval_hours = 72
 user_registration_password = "opsick_registration_password"
+api_key_public = '''
+-----BEGIN PUBLIC KEY-----
+MIIEIjANBgkqhkiG9w0BAQEFAAOCBA8AMIIECgKCBAEA5pJnApTGIPg7zIfotYeX
+DRNm0J6cgMd7dR+7Ks3Vf/0ri8Ik15DyaQLKhNXBOBKB/4o2bLxmrmt0DUSTGkzw
+J7Okau26Tqg3m11xz7cObCaO5k+aPMF+sShu+jzO6NCQstzLebRdvQEj/Wq6l68f
+tDX0jg6mOOYQFuiufimhtiDzm8Y/YQ4RO1gJNgFNGbU5yecJC0YZvtnF3pRQXTU9
+6zZcpajMb44VSoCL2zZgaBbVX0B06wa7ROxB83f1Kb608P+QS2pcJbF+5q8SXdiu
+GJa8VCkfFvywT3EpGMuohgX3D4QvOUvP1fTvpKDMJx7XmdSWNaGomF2C1wFdIsge
+B7rzUtSzLupgWactscvlb+MxHp2MKy3QWda9PZHtJtL2uVlTsCKgiZI4CIw3chRi
+cs5OcNVRvNuSBQXFf85yfRu4piQtp7Pl1u7FkwMDuficriBV2Nnc3UfpF/nKll6v
+MXq3avedF8dVDGaEObN8x/A85lMsdifcXKuw2m0JI9zs8WcBy4iD/TeeGSNTwxc9
+FSqPwxWG9Atq3WFlQ0pxWVIQe3YcUT8vfrTkwisrvboI1OS4P8gut8rt2bqhXo6D
++SB7rkuvQtoRLkjHcO2eXIhKtEejvZnW7RhGpiMke+WWSQyJYZZEkKF0Q/AlwErv
+8+Ihg7Y4UXi2IYDOLJdGRwJRPL7G4Yy4WnMyApAnU5w/bSYNhBrIxm+ol3D+jO8m
+8FQuiSTeSrZMkw+mKjU39vVIeRAvJSHhITCkpZS2860+MdXH7amBuv+lmnagaiDX
+TzJAPWFPu9UVwfpYI9jFJttI3PkMNIM7NhgVfK9tNwDG9O11mAek+C8upi0y/tm5
+7Y/BqkRWUcyifwP9dQzodjJLVu0Fh1GT85PulYq6yEI7lnb0NTZaj6CEa7QRS8nb
+qUDiZijxTO9Wvqi1ayWw+SEa5sNkVL27vDNQU4Vlbw+Fi60Epv5CKNTavsjcey8T
+KtRMgr3UbPyC0uSos8r7zcM+Er61vVnewOMXyh8dK2TodQ/sUf0pd306+Te+3oGR
+hvbJ0O+De6XycVY7pXjXYkxeh082S+k5jpFuBCB1VjwaAjeKRmNMWWsBMZKJxYdb
+DjlLox79bOoCSm7JBCRSseqZe5/HmnriNs0DO0dHoItILVjf8T6o98ih7qdM9gyq
+6w7HeU0AnHp5FmYr9lt+qVGgdvxn/8Q0lFYEhiiVVHpVaYTwQmDUrE+yDO05nYY5
+4/dHIJDqxC6ZRe/EoJ7+wMyXdh76keJXl+r/TW6ejXJaDUYdZSd7xefQKebxShvP
+NLWNs6hjJFi3BDIT64iMJu24gkS5obQ2b3+8E9KFNJu+0z1tWxsSmmRT9vmWJ6go
+zwIDAQAB
+-----END PUBLIC KEY-----
+'''
 
 [postgres]
 host = "localhost"
