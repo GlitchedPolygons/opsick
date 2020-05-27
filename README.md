@@ -19,7 +19,7 @@ These you can install using the following commands;
 #### Linux:
       - Arch:                sudo pacman -S postgresql postgresql-libs uuid-devel
       - Debian/*buntu:       sudo apt-get install postgresql libpq-dev uuid-dev
-      - - Note that on Ubuntu it's possible that you need to pass `-DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/` for CMake to detect PostgreSQL on your system!
+      - - Note that on *buntu it's possible that you need to pass `-DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/` to CMake for correct detection of PostgreSQL on your system!
       - CentOS/Fedora/RHEL:  sudo dnf install libpq-devel uuid-devel
 #### macOS:
       - brew install postgresql libpq
