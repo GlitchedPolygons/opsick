@@ -14,24 +14,36 @@
    limitations under the License.
 */
 
-#include <stdio.h>
-#include "opsick/config.h"
-#include "opsick/router.h"
 #include "opsick/db.h"
+#include "opsick/config.h"
 
-int main(void)
+static bool initialized = false;
+static uint64_t cached_db_schema_version_nr = 0;
+static time_t last_db_schema_version_nr_lookup = 0;
+
+bool opsick_db_init()
 {
-    if (!opsick_config_load())
+    if (initialized)
+        return true;
+
+    return initialized = true;
+}
+
+uint64_t opsick_db_get_schema_version_number()
+{
+    if (last_db_schema_version_nr_lookup + 3600 > time(NULL))
     {
-        fprintf(stderr, "ERROR: Opsick failed to open, read or parse the config file.");
-        exit(10);
+        last_db_schema_version_nr_lookup = time(NULL);
+        return cached_db_schema_version_nr;
     }
 
-    opsick_router_init();
-    opsick_db_init();
-
-    opsick_db_free();
-    opsick_router_free();
-    
     return 0;
+}
+
+void opsick_db_free()
+{
+    if (!initialized)
+        return;
+
+    initialized = false;
 }
