@@ -14,6 +14,7 @@ max_users = 0
 max_record_size = 524288
 max_records_per_user = 1024
 use_index_html = true
+key_length = 4096
 key_refresh_interval_hours = 72
 user_registration_password = "opsick_registration_password"
 api_key_public = '''

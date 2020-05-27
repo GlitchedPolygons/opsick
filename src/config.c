@@ -47,6 +47,22 @@ static inline void tablerr(const char* tablename)
     fprintf(stderr, "ERROR: The loaded opsick config file \"%s\" does not contain the mandatory \"[%s]\" section!", OPSICK_CONFIG_FILE_PATH, tablename);
 }
 
+static inline bool is_valid_keylength(const uint64_t kl)
+{
+    switch (kl)
+    {
+        case 2048:
+        case 3072:
+        case 4096:
+        case 6144:
+        case 8192:
+        case 16384:
+            return true;
+        default:
+            return false;
+    }
+}
+
 static inline void init()
 {
     memset(&hostsettings, '\0', sizeof(hostsettings));
@@ -128,6 +144,8 @@ static bool load_adminsettings(toml_table_t* conf)
     }
 
     parse_toml_uint(table, "max_users", &adminsettings.max_users);
+    parse_toml_uint(table, "max_record_size", &adminsettings.max_record_size);
+    parse_toml_uint(table, "max_records_per_user", &adminsettings.max_records_per_user);
     parse_toml_uint(table, "key_refresh_interval_hours", &adminsettings.key_refresh_interval_hours);
     adminsettings.use_index_html = opsick_strncmpic(toml_raw_in(table, "use_index_html"), "true", 4) == 0;
 
@@ -141,6 +159,36 @@ static bool load_adminsettings(toml_table_t* conf)
         strncpy(adminsettings.user_registration_password, user_registration_password, sizeof(adminsettings.user_registration_password));
     }
     free(user_registration_password);
+
+    char* api_key_public = NULL;
+    if (toml_rtos(toml_raw_in(table, "api_key_public"), &api_key_public))
+    {
+        fprintf(stderr, "ERROR: Failed to parse \"api_key_public\" setting string from the opsick user config file \"%s\".", OPSICK_CONFIG_FILE_PATH);
+    }
+    else
+    {
+        strncpy(adminsettings.api_key_public, api_key_public, sizeof(adminsettings.api_key_public));
+    }
+    free(api_key_public);
+
+    uint64_t key_length = 0;
+    parse_toml_uint(table, "key_length", &key_length);
+    if (!is_valid_keylength(key_length))
+    {
+        fprintf(stderr, "ERROR: Opsick \"key_length\" invalid. Please use something common, such as 4096");
+        exit(-4);
+    }
+    else if (key_length < OPSICK_MIN_KEYLENGTH)
+    {
+        fprintf(stderr, "ERROR: Opsick \"key_length\" too small! Please define a \"key_length\" greater than %d inside your config.toml", OPSICK_MIN_KEYLENGTH);
+        exit(-4);
+    }
+    else if (key_length > OPSICK_MAX_KEYLENGTH)
+    {
+        fprintf(stderr, "ERROR: Opsick \"key_length\" too big! Please define a \"key_length\" smaller than %d inside your config.toml", OPSICK_MAX_KEYLENGTH);
+        exit(-4);
+    }
+    adminsettings.key_length = (uint16_t)key_length;
 
     return true;
 }

@@ -97,6 +97,18 @@ struct opsick_config_adminsettings
     uint64_t max_users;
 
     /**
+     * Maximum size in bytes of a user's record (use this to protect your db from growing too big!). <p>
+     * [DEFAULT] <c>512KB</c>
+     */
+    uint64_t max_record_size;
+
+    /**
+     * Maximum number of total records each user can have (use this to protect your db from growing too big!). <p>
+     * [DEFAULT] <c>1024</c>
+     */
+    uint64_t max_records_per_user;
+
+    /**
      * Set this to <c>true</c> if you want to let the home endpoint (reachable under "/")
      * serve the index.html file that's located inside the directory where the opsick executable resides. <p>
      * You could for example modify that index.html file and customize it to your needs,
@@ -106,6 +118,12 @@ struct opsick_config_adminsettings
      * [DEFAULT] <c>true</c>
      */
     bool use_index_html;
+
+    /**
+     * The key length (in bits) that the server keys should have. <p>
+     * [DEFAULT] <c>4096</c>
+     */
+    uint16_t key_length;
 
     /**
      * Define the interval (in hours) at which the opsick server keys are auto-replaced with freshly generated ones. <p>
@@ -120,6 +138,12 @@ struct opsick_config_adminsettings
      * [DEFAULT] <c>opsick_registration_password</c>
      */
     char user_registration_password[OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH];
+
+    /**
+     * The public key to use for verifying requests that come from the API master,
+     * who signs the requests using this key's private counterpart.
+     */
+    char api_key_public[4096];
 };
 
 /**

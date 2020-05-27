@@ -29,6 +29,16 @@ extern "C" {
 #define OPSICK_CONFIG_FILE_PATH "config.toml"
 
 /**
+ * The minimum acceptable keylength for endpoint communication encryption.
+ */
+#define OPSICK_MIN_KEYLENGTH 2048
+
+/**
+ * The maximum acceptable keylength for endpoint communication encryption.
+ */
+#define OPSICK_MAX_KEYLENGTH 8192
+
+/**
  * The current version of the opsick DB schema. <p>
  * TODO: INCREASE THIS DB SCHEMA VERSION NUMBER WITH EVERY RELEASE THAT APPLIES CHANGES TO THE DB! Check naming convention inside the folder with the <c>.sql</c> scripts!
  */
