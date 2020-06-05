@@ -22,6 +22,8 @@ option(OPSICK_ENABLE_TESTS "Build OPSICK tests." OFF)
 
 option(ENABLE_TESTING "Build MbedTLS tests." OFF)
 option(ENABLE_PROGRAMS "Build MbedTLS example programs." OFF)
+option(OQS_USE_OPENSSL "Build liboqs OpenSSL support." OFF)
+option(OQS_BUILD_ONLY_LIB "Don't build liboqs tests and example programs." ON)
 
 set(${PROJECT_NAME}_INCLUDE_DIR
         ${CMAKE_CURRENT_LIST_DIR}/include
@@ -71,6 +73,10 @@ if (NOT TARGET tomlc99)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/tomlc99 tomlc99)
 endif ()
 
+if (NOT TARGET oqs)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/liboqs liboqs)
+endif ()
+
 find_package(PostgreSQL)
 
 if (NOT PostgreSQL_FOUND)
@@ -103,6 +109,7 @@ target_link_libraries(${PROJECT_NAME}
         PUBLIC mbedcrypto
         PUBLIC l8w8jwt
         PUBLIC tomlc99
+        PUBLIC oqs
         PUBLIC PostgreSQL::PostgreSQL
         )
 

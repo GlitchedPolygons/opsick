@@ -15,6 +15,8 @@
 */
 
 #include "opsick/router.h"
+
+#include "opsick/db.h"
 #include "opsick/config.h"
 #include "opsick/murmur3.h"
 #include "opsick/constants.h"
@@ -91,6 +93,7 @@ void opsick_on_request(http_s* request)
         }
         case OPSICK_HOME_PATH_HASH: {
             opsick_get_home(request);
+            const uint64_t v = opsick_db_get_schema_version_number();
             break;
         }
         case OPSICK_PUBKEY_PATH_HASH: {

@@ -13,3 +13,6 @@
 [submodule "lib/tomlc99"]
 	path = lib/tomlc99
 	url = https://github.com/GlitchedPolygons/tomlc99
+[submodule "lib/liboqs"]
+	path = lib/liboqs
+	url = git@github.com:open-quantum-safe/liboqs.git
