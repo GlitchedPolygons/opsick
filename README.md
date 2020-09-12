@@ -5,7 +5,7 @@
 It's an open-source password manager. This specific repo here is the server-side application, which is written in plain, naked, good old C. No sharp, no plusplus thingy. Just C.
 
 ### But why tho...
-Because why not? Every other pw manager out there is either just so bloated, closed-source proprietary or slow. Or maybe even all of these things together, dang it!
+Because why not? Every other pw manager out there is either just so bloated, closed-source (proprietary) or slow. Or maybe even all of these things together, dang it!
 
 This right here is as lightweight and as performant as it can possibly get, and you can basically do with it whatever you like. Neat, right?
 
