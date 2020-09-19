@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-#include "strncmpic.h"
+#include "opsick/strncmpic.h"
 
 int opsick_strncmpic(const char* str1, const char* str2, size_t n)
 {
