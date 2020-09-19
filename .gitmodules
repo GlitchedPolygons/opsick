@@ -1,18 +1,9 @@
 [submodule "lib/facil.io"]
 	path = lib/facil.io
 	url = https://github.com/boazsegev/facil.io
-[submodule "lib/mbedtls"]
-	path = lib/mbedtls
-	url = https://github.com/ARMmbed/mbedtls
-[submodule "lib/cmocka"]
-	path = lib/cmocka
-	url = https://gitlab.com/cmocka/cmocka
 [submodule "lib/l8w8jwt"]
 	path = lib/l8w8jwt
 	url = https://github.com/GlitchedPolygons/l8w8jwt
 [submodule "lib/tomlc99"]
 	path = lib/tomlc99
 	url = https://github.com/GlitchedPolygons/tomlc99
-[submodule "lib/liboqs"]
-	path = lib/liboqs
-	url = git@github.com:open-quantum-safe/liboqs.git
