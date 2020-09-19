@@ -7,3 +7,12 @@
 [submodule "lib/tomlc99"]
 	path = lib/tomlc99
 	url = https://github.com/GlitchedPolygons/tomlc99
+[submodule "lib/acutest"]
+	path = lib/acutest
+	url = https://github.com/mity/acutest
+[submodule "lib/cecies"]
+	path = lib/cecies
+	url = https://github.com/GlitchedPolygons/cecies
+[submodule "lib/qryptext"]
+	path = lib/qryptext
+	url = https://github.com/GlitchedPolygons/qryptext
