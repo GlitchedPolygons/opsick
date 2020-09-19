@@ -25,25 +25,18 @@ extern "C" {
 #include <mbedtls/pk.h>
 
 /**
- * Gets the currently used key context (a copy of the internally used MbedTLS pk_context struct).
+ * Gets the hex-encoded(-formatted) public key string from the currently used opsick keypair (use this to verify opsick HTTP response signatures).
+ * @param out The <c>char[]</c> array into which to write the hex-encoded key string.
+ * @return <c>0</c> if retrieval succeeds, <c>1</c> if the output array pointer was <c>NULL</c>, <c>2</c> if the output array is not big enough (please allocate ideally exactly 64B).
  */
-mbedtls_pk_context opsick_keys_get_pk_context();
+int opsick_keys_get_ed25519_pubkey_hex(char out[64]);
 
 /**
- * Gets the PEM-formatted public key string from the currently used opsick keypair (use this to verify opsick HTTP response signatures).
- * @param out The <c>char[]</c> array into which to write the PEM-formatted key string.
- * @param out_len The maximum output array size (must be at least 4KB)
- * @return <c>0</c> if retrieval succeeds, <c>1</c> if the output array pointer was <c>NULL</c>, <c>2</c> if the output array is not big enough (please allocate at least 4KB).
+ * Gets the hex-formatted private key string from the currently used opsick keypair (use this to sign opsick HTTP responses).
+ * @param out The <c>char[]</c> array into which to write the hex-encoded private key string (please allocate exactly 128B if possible!).
+ * @return <c>0</c> if retrieval succeeds, <c>1</c> if the output array pointer was <c>NULL</c>, <c>2</c> if the output array is not big enough (please allocate at least 128B).
  */
-int opsick_keys_get_pubkey_pem(char* out, size_t out_len);
-
-/**
- * Gets the PEM-formatted private key string from the currently used opsick keypair (use this to sign opsick HTTP responses).
- * @param out The <c>char[]</c> array into which to write the PEM-formatted key string.
- * @param out_len The maximum output array size (must be at least 4KB)
- * @return <c>0</c> if retrieval succeeds, <c>1</c> if the output array pointer was <c>NULL</c>, <c>2</c> if the output array is not big enough (please allocate at least 4KB).
- */
-int opsick_keys_get_prvkey_pem(char* out, size_t out_len);
+int opsick_keys_get_ed25519_prvkey_hex(char out[128]);
 
 #ifdef __cplusplus
 } // extern "C"

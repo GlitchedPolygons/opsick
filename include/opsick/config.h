@@ -129,7 +129,8 @@ struct opsick_config_adminsettings
 
     /**
      * The public key to use for verifying requests that come from the API master,
-     * who signs the requests using this key's private counterpart.
+     * who signs the requests using this key's private counterpart. <p>
+     * The API master is the "admin" user who is allowed to create and modify opsick users, extend them, etc...
      */
     char api_key_public[64];
 };

@@ -15,8 +15,6 @@
 */
 
 #include <time.h>
-#include <mbedtls/entropy.h>
-#include <mbedtls/ctr_drbg.h>
 #include "opsick/constants.h"
 #include "opsick/config.h"
 #include "opsick/keys.h"
@@ -25,7 +23,6 @@
 static char firstgen = 1;
 static char prvkey[8192];
 static char pubkey[8192];
-static mbedtls_pk_context pk;
 static time_t last_key_refresh = 0;
 static struct opsick_config_hostsettings hostsettings;
 static struct opsick_config_adminsettings adminsettings;
@@ -144,48 +141,27 @@ exit:
     mbedtls_mpi_free(&QP);
 }
 
-mbedtls_pk_context opsick_keys_get_pk_context()
-{
-    if (time(0) > last_key_refresh + (adminsettings.key_refresh_interval_hours * 3600))
-    {
-        keyregen();
-    }
-
-    mbedtls_pk_context out = pk;
-    return out;
-}
-
-int opsick_keys_get_pubkey_pem(char* out, const size_t out_len)
+int opsick_keys_get_ed25519_pubkey_hex(char out[64])
 {
     if (out == NULL)
     {
         return 1;
     }
 
-    if (out_len < 4096)
-    {
-        return 2;
-    }
-
     if (time(0) > last_key_refresh + (adminsettings.key_refresh_interval_hours * 3600))
     {
         keyregen();
     }
 
-    snprintf(out, out_len, "%s", pubkey);
+    snprintf(out, 64, "%s", pubkey);
     return 0;
 }
 
-int opsick_keys_get_prvkey_pem(char* out, const size_t out_len)
+int opsick_keys_get_ed25519_prvkey_hex(char out[128])
 {
     if (out == NULL)
     {
         return 1;
-    }
-
-    if (out_len < 4096)
-    {
-        return 2;
     }
 
     if (time(0) > last_key_refresh + (adminsettings.key_refresh_interval_hours * 3600))
@@ -193,6 +169,6 @@ int opsick_keys_get_prvkey_pem(char* out, const size_t out_len)
         keyregen();
     }
 
-    snprintf(out, out_len, "%s", prvkey);
+    snprintf(out, 128, "%s", prvkey);
     return 0;
 }
