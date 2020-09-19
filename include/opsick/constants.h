@@ -24,19 +24,24 @@ extern "C" {
 #include "http.h"
 
 /**
+ * Opsick current version number.
+ */
+#define OPSICK_SERVER_VERSION 100
+
+/**
+ * Opsick current version number string.
+ */
+#define OPSICK_SERVER_VERSION_STR "1.0.0"
+
+/**
  * The user config file path (must be a <c>.toml</c> file!).
  */
 #define OPSICK_CONFIG_FILE_PATH "config.toml"
 
 /**
- * The minimum acceptable keylength for endpoint communication encryption.
+ * The opsick sqlite db filename.
  */
-#define OPSICK_MIN_KEYLENGTH 2048
-
-/**
- * The maximum acceptable keylength for endpoint communication encryption.
- */
-#define OPSICK_MAX_KEYLENGTH 8192
+#define OPSICK_SQLITE_DB_FILENAME "opsick.db"
 
 /**
  * The current version of the opsick DB schema. <p>
@@ -73,39 +78,9 @@ extern "C" {
 #define OPSICK_PUBKEY_PATH_HASH 3855421118
 
 /**
- * The maximum postgres host name length.
- */
-#define OPSICK_MAX_PG_HOST_LENGTH 256
-
-/**
- * The maximum postgres database name length.
- */
-#define OPSICK_MAX_PG_DBNAME_LENGTH 128
-
-/**
- * The maximum postgres username length.
- */
-#define OPSICK_MAX_PG_USER_LENGTH 128
-
-/**
- * The maximum postgres user password length.
- */
-#define OPSICK_MAX_PG_PASSWORD_LENGTH 1024
-
-/**
  * The maximum length of the instance's user creation endpoint password.
  */
 #define OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH 1024
-
-/**
- * Opsick RSA key size (values under 4096 are not recommended).
- */
-#define OPSICK_KEY_SIZE 4096
-
-/**
- * Exponent value to use for generating the opsick RSA keypair.
- */
-#define OPSICK_KEY_EXPONENT 65537
 
 #ifdef __cplusplus
 } // extern "C"

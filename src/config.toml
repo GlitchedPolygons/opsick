@@ -11,10 +11,8 @@ max_body_size = 16777216
 
 [admin]
 max_users = 0
-max_record_size = 524288
-max_records_per_user = 1024
+max_user_quota = 16777216
 use_index_html = true
-key_length = 4096
 key_refresh_interval_hours = 72
 user_registration_password = "opsick_registration_password"
 api_key_public = '''
@@ -44,11 +42,3 @@ NLWNs6hjJFi3BDIT64iMJu24gkS5obQ2b3+8E9KFNJu+0z1tWxsSmmRT9vmWJ6go
 zwIDAQAB
 -----END PUBLIC KEY-----
 '''
-
-[postgres]
-host = "localhost"
-port = 5432
-dbname = "opsick_pg_db"
-user = "opsick_pg_user"
-password = "opsick_pg_db_password"
-connect_timeout = 60

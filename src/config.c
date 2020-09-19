@@ -22,7 +22,6 @@
 
 static struct opsick_config_hostsettings hostsettings;
 static struct opsick_config_adminsettings adminsettings;
-static struct opsick_config_pgsettings pgsettings;
 
 static inline void parse_toml_int(toml_table_t* toml_table, const char* setting, int64_t* out)
 {
@@ -47,27 +46,10 @@ static inline void tablerr(const char* tablename)
     fprintf(stderr, "ERROR: The loaded opsick config file \"%s\" does not contain the mandatory \"[%s]\" section!", OPSICK_CONFIG_FILE_PATH, tablename);
 }
 
-static inline bool is_valid_keylength(const uint64_t kl)
-{
-    switch (kl)
-    {
-        case 2048:
-        case 3072:
-        case 4096:
-        case 6144:
-        case 8192:
-        case 16384:
-            return true;
-        default:
-            return false;
-    }
-}
-
 static inline void init()
 {
     memset(&hostsettings, '\0', sizeof(hostsettings));
     memset(&adminsettings, '\0', sizeof(adminsettings));
-    memset(&pgsettings, '\0', sizeof(pgsettings));
 
     hostsettings.log = false;
     hostsettings.port = 6677;
@@ -77,16 +59,10 @@ static inline void init()
     hostsettings.max_body_size = 1024 * 1024 * 16;
 
     adminsettings.max_users = 0;
+    adminsettings.max_user_quota = 16 * 1024 * 1024;
     adminsettings.use_index_html = true;
     adminsettings.key_refresh_interval_hours = 72;
     strcpy(adminsettings.user_registration_password, "opsick_registration_password");
-
-    pgsettings.port = 5432;
-    pgsettings.connect_timeout = 60;
-    strcpy(pgsettings.host, "localhost");
-    strcpy(pgsettings.dbname, "opsick_pg_db");
-    strcpy(pgsettings.user, "opsick_pg_user");
-    strcpy(pgsettings.password, "opsick_pg_db_password");
 }
 
 static bool load_hostsettings(toml_table_t* conf)
@@ -111,7 +87,7 @@ static bool load_hostsettings(toml_table_t* conf)
     }
     else
     {
-        fprintf(stderr, "ERROR: The parsed port number \"%ld\" is not within the range of valid port numbers [0; 65535] - using default value of \"%d\" instead...", port, hostsettings.port);
+        fprintf(stderr, "ERROR: The parsed port number \"%llu\" is not within the range of valid port numbers [0; 65535] - using default value of \"%d\" instead...", port, hostsettings.port);
     }
 
     uint64_t threads = -1;
@@ -122,7 +98,7 @@ static bool load_hostsettings(toml_table_t* conf)
     }
     else
     {
-        fprintf(stderr, "ERROR: The parsed maximum thread count setting \"%lu\" is not within the range of recommended thread count limits [1; 64] - using default thread count of \"%d\" instead...", threads, hostsettings.threads);
+        fprintf(stderr, "ERROR: The parsed maximum thread count setting \"%llu\" is not within the range of recommended thread count limits [1; 64] - using default thread count of \"%d\" instead...", threads, hostsettings.threads);
     }
 
     parse_toml_uint(table, "max_clients", &hostsettings.max_clients);
@@ -144,8 +120,7 @@ static bool load_adminsettings(toml_table_t* conf)
     }
 
     parse_toml_uint(table, "max_users", &adminsettings.max_users);
-    parse_toml_uint(table, "max_record_size", &adminsettings.max_record_size);
-    parse_toml_uint(table, "max_records_per_user", &adminsettings.max_records_per_user);
+    parse_toml_uint(table, "max_user_quota", &adminsettings.max_user_quota);
     parse_toml_uint(table, "key_refresh_interval_hours", &adminsettings.key_refresh_interval_hours);
     adminsettings.use_index_html = opsick_strncmpic(toml_raw_in(table, "use_index_html"), "true", 4) == 0;
 
@@ -171,107 +146,6 @@ static bool load_adminsettings(toml_table_t* conf)
     }
     free(api_key_public);
 
-    uint64_t key_length = 0;
-    parse_toml_uint(table, "key_length", &key_length);
-    if (!is_valid_keylength(key_length))
-    {
-        fprintf(stderr, "ERROR: Opsick \"key_length\" invalid. Please use something common, such as 4096");
-        exit(-4);
-    }
-    else if (key_length < OPSICK_MIN_KEYLENGTH)
-    {
-        fprintf(stderr, "ERROR: Opsick \"key_length\" too small! Please define a \"key_length\" greater than %d inside your config.toml", OPSICK_MIN_KEYLENGTH);
-        exit(-4);
-    }
-    else if (key_length > OPSICK_MAX_KEYLENGTH)
-    {
-        fprintf(stderr, "ERROR: Opsick \"key_length\" too big! Please define a \"key_length\" smaller than %d inside your config.toml", OPSICK_MAX_KEYLENGTH);
-        exit(-4);
-    }
-    adminsettings.key_length = (uint16_t)key_length;
-
-    return true;
-}
-
-static bool load_pgsettings(toml_table_t* conf)
-{
-    const char tablename[] = "postgres";
-
-    toml_table_t* table = toml_table_in(conf, tablename);
-    if (table == NULL)
-    {
-        tablerr(tablename);
-        return false;
-    }
-
-    uint64_t port = 5432;
-    parse_toml_uint(table, "port", &port);
-    if (port > 0 && port <= 65535)
-    {
-        pgsettings.port = (uint16_t)port;
-    }
-    else
-    {
-        pgsettings.port = 5432;
-        fprintf(stderr, "ERROR: The parsed postgres port setting \"%lu\" is not within the range of valid port numbers [0; 65535] - using postgres' default value of 5432 ", port);
-    }
-
-    uint64_t connect_timeout = 60;
-    parse_toml_uint(table, "connect_timeout", &connect_timeout);
-    if (connect_timeout > 300)
-    {
-        fprintf(stderr, "WARNING: Using a postgres \"connect_timeout\" value of >300 is not recommended! Please set this to a reasonable value inside opsick's config TOML file!");
-    }
-    if (connect_timeout > UINT16_MAX)
-    {
-        connect_timeout = UINT16_MAX;
-    }
-    pgsettings.connect_timeout = (uint16_t)connect_timeout;
-
-    char* host = NULL;
-    if (toml_rtos(toml_raw_in(table, "host"), &host))
-    {
-        fprintf(stderr, "ERROR: Failed to parse postgres \"host\" setting string from the opsick user config file \"%s\". Using default value of \"%s\" instead...", OPSICK_CONFIG_FILE_PATH, pgsettings.host);
-    }
-    else
-    {
-        strncpy(pgsettings.host, host, sizeof(pgsettings.host));
-    }
-
-    char* dbname = NULL;
-    if (toml_rtos(toml_raw_in(table, "dbname"), &dbname))
-    {
-        fprintf(stderr, "ERROR: Failed to parse postgres \"dbname\" setting string from the opsick user config file \"%s\". Using default value of \"%s\" instead...", OPSICK_CONFIG_FILE_PATH, pgsettings.dbname);
-    }
-    else
-    {
-        strncpy(pgsettings.dbname, dbname, sizeof(pgsettings.dbname));
-    }
-
-    char* user = NULL;
-    if (toml_rtos(toml_raw_in(table, "user"), &user))
-    {
-        fprintf(stderr, "ERROR: Failed to parse postgres \"user\" setting string from the opsick user config file \"%s\". Using default value of \"%s\" instead...", OPSICK_CONFIG_FILE_PATH, pgsettings.user);
-    }
-    else
-    {
-        strncpy(pgsettings.user, user, sizeof(pgsettings.user));
-    }
-
-    char* password = NULL;
-    if (toml_rtos(toml_raw_in(table, "password"), &password))
-    {
-        fprintf(stderr, "ERROR: Failed to parse postgres \"password\" setting string from the opsick user config file \"%s\". Using default value of \"%s\" instead...", OPSICK_CONFIG_FILE_PATH, pgsettings.password);
-    }
-    else
-    {
-        strncpy(pgsettings.password, password, sizeof(pgsettings.password));
-    }
-
-    free(host);
-    free(dbname);
-    free(user);
-    free(password);
     return true;
 }
 
@@ -313,11 +187,6 @@ bool opsick_config_load()
         goto exit;
     }
 
-    if (!load_pgsettings(conf))
-    {
-        goto exit;
-    }
-
     r = true;
 
 exit:
@@ -343,17 +212,6 @@ bool opsick_config_get_adminsettings(struct opsick_config_adminsettings* out)
         return false;
     }
     struct opsick_config_adminsettings t = adminsettings;
-    *out = t;
-    return true;
-}
-
-bool opsick_config_get_pgsettings(struct opsick_config_pgsettings* out)
-{
-    if (out == NULL)
-    {
-        return false;
-    }
-    struct opsick_config_pgsettings t = pgsettings;
     *out = t;
     return true;
 }

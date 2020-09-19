@@ -89,7 +89,7 @@ if (NOT SQLite3_FOUND)
     - Linux:
       - Arch:                sudo pacman -S sqlite uuid-devel
       - Debian/*buntu:       sudo apt-get install sqlite3 libsqlite3-dev uuid-dev
-      - CentOS/Fedora/RHEL:  sudo dnf install sqlite-devel sqlite-tcl sqlite-jdbc uuid-devel
+      - CentOS/Fedora/RHEL:  sudo dnf install sqlite-devel sqlite-tcl uuid-devel
     - macOS:
       - brew install sqlite
     ")

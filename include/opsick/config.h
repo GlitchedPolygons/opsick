@@ -97,16 +97,10 @@ struct opsick_config_adminsettings
     uint64_t max_users;
 
     /**
-     * Maximum size in bytes of a user's record (use this to protect your db from growing too big!). <p>
-     * [DEFAULT] <c>512KB</c>
+     * Maximum size (in bytes) of a user's data record (use this to protect your db from growing too big!). <p>
+     * [DEFAULT] <c>64MB</c>
      */
-    uint64_t max_record_size;
-
-    /**
-     * Maximum number of total records each user can have (use this to protect your db from growing too big!). <p>
-     * [DEFAULT] <c>1024</c>
-     */
-    uint64_t max_records_per_user;
+    uint64_t max_user_quota;
 
     /**
      * Set this to <c>true</c> if you want to let the home endpoint (reachable under "/")
@@ -118,12 +112,6 @@ struct opsick_config_adminsettings
      * [DEFAULT] <c>true</c>
      */
     bool use_index_html;
-
-    /**
-     * The key length (in bits) that the server keys should have. <p>
-     * [DEFAULT] <c>4096</c>
-     */
-    uint16_t key_length;
 
     /**
      * Define the interval (in hours) at which the opsick server keys are auto-replaced with freshly generated ones. <p>
@@ -143,7 +131,7 @@ struct opsick_config_adminsettings
      * The public key to use for verifying requests that come from the API master,
      * who signs the requests using this key's private counterpart.
      */
-    char api_key_public[4096];
+    char api_key_public[64];
 };
 
 /**
@@ -152,57 +140,6 @@ struct opsick_config_adminsettings
  * @return <c>true</c> if retrieval succeeded; <c>false</c> if retrieval failed due to invalid arguments (e.g. <c>NULL</c>).
  */
 bool opsick_config_get_adminsettings(struct opsick_config_adminsettings* out);
-
-// ---------------------------------------------------------------------------------------------------
-
-/**
- * The postgres section of the config file.
- */
-struct opsick_config_pgsettings
-{
-    /**
-     * Postgres host to connect to (e.g. a raw IP address or a domain such as <c>postgres.example.com</c>). <p>
-     * [DEFAULT] <c>localhost</c>
-     */
-    char host[OPSICK_MAX_PG_HOST_LENGTH];
-
-    /**
-     * The port number to connect to on the specified pg host. <p>
-     * [DEFAULT] <c>5432</c>
-     */
-    uint16_t port;
-
-    /**
-     * The name of the postgres database to connect to. <p>
-     * [DEFAULT] <c>opsick_pg_db</c>
-     */
-    char dbname[OPSICK_MAX_PG_DBNAME_LENGTH];
-
-    /**
-     * The name of the postgres user. <p>
-     * [DEFAULT] <c>opsick_pg_user</c>
-     */
-    char user[OPSICK_MAX_PG_USER_LENGTH];
-
-    /**
-     * The opsick postgres user's password. PLEASE REPLACE THIS VALUE AS SOON AS POSSIBLE AFTER INSTALLATION! <p>
-     * [DEFAULT] <c>opsick_pg_db_password</c>.
-     */
-    char password[OPSICK_MAX_PG_PASSWORD_LENGTH];
-
-    /**
-     * Postgres maximum connection timeout to wait for in seconds. <p>
-     * [DEFAULT] <c>60</c>
-     */
-    uint16_t connect_timeout;
-};
-
-/**
- * Gets the current postgres connection settings from the <c>[postgres]</c> section inside the opsick config file (as a copy, so it's read-only).
- * @param out An opsick_config_pgsettings instance into which to write the parsed config values. If retrieval fails in any way, this is left untouched!
- * @return <c>true</c> if retrieval succeeded; <c>false</c> if retrieval failed due to invalid arguments (e.g. <c>NULL</c>).
- */
-bool opsick_config_get_pgsettings(struct opsick_config_pgsettings* out);
 
 // ---------------------------------------------------------------------------------------------------
 
