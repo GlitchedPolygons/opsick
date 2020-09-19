@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.10)
 project(opsick C)
 
 set(CMAKE_C_STANDARD 11)
@@ -44,6 +44,7 @@ set(${PROJECT_NAME}_HEADERS
 
 set(${PROJECT_NAME}_SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/src/config.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/strncmpic.c
         ${CMAKE_CURRENT_LIST_DIR}/src/guid.c
         ${CMAKE_CURRENT_LIST_DIR}/src/murmur3.c
         ${CMAKE_CURRENT_LIST_DIR}/src/keys.c
@@ -57,38 +58,40 @@ set(${PROJECT_NAME}_ENTRYPOINT
         ${CMAKE_CURRENT_LIST_DIR}/src/main.c
         )
 
-if (NOT TARGET mbedtls)
-    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/mbedtls mbedtls)
-endif ()
-
 if (NOT TARGET facil.io)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/facil.io facil.io)
-endif ()
-
-if (NOT TARGET l8w8jwt)
-    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt l8w8jwt)
 endif ()
 
 if (NOT TARGET tomlc99)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/tomlc99 tomlc99)
 endif ()
 
-if (NOT TARGET oqs)
-    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/liboqs liboqs)
+if (NOT TARGET cecies)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/cecies cecies)
 endif ()
 
-find_package(PostgreSQL)
+if (NOT TARGET qryptext)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/qryptext qryptext)
+endif ()
 
-if (NOT PostgreSQL_FOUND)
+if (NOT TARGET l8w8jwt)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt l8w8jwt)
+endif ()
+
+find_package(SQLite3)
+
+if (NOT SQLite3_FOUND)
     message(FATAL_ERROR "
-    CMake failed to find PostgreSQL on your system!
-    Please make sure to install postgres and libpq (into default paths) and try again...
+    CMake failed to find SQLite3 on your system!
+    Please make sure to install sqlite3 (into default paths) and try again...
+    - FreeBSD:
+      - sudo pkg install sqlite3
     - Linux:
-      - Arch:                sudo pacman -S postgresql postgresql-libs uuid-devel
-      - Debian/*buntu:       sudo apt-get install postgresql libpq-dev uuid-dev
-      - CentOS/Fedora/RHEL:  sudo dnf install libpq-devel uuid-devel
+      - Arch:                sudo pacman -S sqlite uuid-devel
+      - Debian/*buntu:       sudo apt-get install sqlite3 libsqlite3-dev uuid-dev
+      - CentOS/Fedora/RHEL:  sudo dnf install sqlite-devel sqlite-tcl sqlite-jdbc uuid-devel
     - macOS:
-      - brew install postgresql libpq
+      - brew install sqlite
     ")
 endif ()
 
@@ -104,45 +107,42 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
         PUBLIC facil.io
-        PUBLIC mbedtls
-        PUBLIC mbedx509
-        PUBLIC mbedcrypto
+        PUBLIC cecies
+        PUBLIC qryptext
         PUBLIC l8w8jwt
         PUBLIC tomlc99
-        PUBLIC oqs
-        PUBLIC PostgreSQL::PostgreSQL
+        PUBLIC SQLite::SQLite3
         )
 
 if (UNIX AND NOT APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE -luuid -lm)
 endif ()
 
+if (UNIX AND NOT ANDROID)
+    target_link_libraries(${PROJECT_NAME} PRIVATE -lpthread)
+endif ()
+
 target_include_directories(${PROJECT_NAME}
         PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
-        PUBLIC ${CMAKE_CURRENT_LIST_DIR}/lib/mbedtls/include
-        PUBLIC ${PostgreSQL_INCLUDE_DIRS}
         )
 
 get_target_property(${PROJECT_NAME}_DEPS_TARGETS ${PROJECT_NAME} LINK_LIBRARIES)
 
 if (OPSICK_ENABLE_TESTS)
 
-    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/cmocka cmocka)
-
     add_executable(run_tests
-            ${CMAKE_CURRENT_LIST_DIR}/tests/tests.c
             ${${PROJECT_NAME}_HEADERS}
             ${${PROJECT_NAME}_SOURCES}
-            )
-
-    target_include_directories(run_tests
-            PUBLIC ${cmocka_INCLUDE_DIR}
-            PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
+            ${CMAKE_CURRENT_LIST_DIR}/tests/tests.c
             )
 
     target_link_libraries(run_tests
             PUBLIC ${${PROJECT_NAME}_DEPS_TARGETS}
-            PUBLIC cmocka
+            )
+
+    target_include_directories(run_tests
+            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include
+            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/lib/acutest/include
             )
 
     if (ENABLE_COVERAGE)

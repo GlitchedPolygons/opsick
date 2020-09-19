@@ -32,29 +32,7 @@ extern "C" {
  * @param n How many characters of the string should be compared (starting from index 0)?
  * @return If the strings are equal, <code>0</code> is returned. Otherwise, something else.
  */
-int opsick_strncmpic(const char* str1, const char* str2, size_t n)
-{
-    size_t cmp = 0;
-    int ret = INT_MIN;
-
-    if (str1 == NULL || str2 == NULL)
-    {
-        return ret;
-    }
-
-    while ((*str1 || *str2) && cmp < n)
-    {
-        if ((ret = tolower((int)(*str1)) - tolower((int)(*str2))) != 0)
-        {
-            break;
-        }
-        cmp++;
-        str1++;
-        str2++;
-    }
-
-    return ret;
-}
+int opsick_strncmpic(const char* str1, const char* str2, size_t n);
 
 #ifdef __cplusplus
 } // extern "C"
