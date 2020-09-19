@@ -11,34 +11,21 @@ This right here is as lightweight and as performant as it can possibly get, and 
 
 ### Dependencies
 * LibUUID
-* PostgreSQL
-* * LibPQ
+* SQLite 3
 
 These you can install using the following commands;
 
 #### Linux:
-      - Arch:                sudo pacman -S postgresql postgresql-libs uuid-devel
-      - Debian/*buntu:       sudo apt-get install postgresql libpq-dev uuid-dev
-      - - Note that on *buntu it's possible that you need to pass `-DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/` to CMake for correct detection of PostgreSQL on your system!
-      - CentOS/Fedora/RHEL:  sudo dnf install libpq-devel uuid-devel
+      - Arch:                sudo pacman -S sqlite uuid-devel
+      - Debian/*buntu:       sudo apt-get install sqlite3 libsqlite3-dev uuid-dev
+      - CentOS/Fedora/RHEL:  sudo dnf install sqlite-devel sqlite-tcl uuid-devel
 #### macOS:
-      - brew install postgresql libpq
+      - brew install sqlite
 #### Windows:
       - Uninstall Windows
       - Proceed with one of the variants above...
       
 The rest of the dependencies should be installed automatically with the below `git clone` command (git submodules) and the subsequent cmake command (third party libs were added to this project as CMake `add_subdirectory()` wherever possible).
-
-If you want to host the postgres database on the same server alongside opsick (thus reachable over `localhost`), check out the **awesome** postgres setup guide provided by DigitalOcean:
-
-- CentOS 8: 
-https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-centos-8
-
-- Ubuntu 20:   
-https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-20-04
-
-Then you only need to run the SQL script(s) inside the `setup/postgres` folder! 
-(Execute these as the `postgres` user, and ensure that the opsick db user and database were created correctly with all tables, privileges, etc...)
 
 ### How to build
 
