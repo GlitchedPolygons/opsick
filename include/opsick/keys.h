@@ -21,6 +21,7 @@
 extern "C" {
 #endif
 
+#include <ed25519.h>
 #include <cecies/keygen.h>
 
 /**
@@ -45,19 +46,17 @@ struct opsick_ed25519_keypair
     uint8_t private_key[64];
 };
 
-typedef struct opsick_ed25519_keypair opsick_ed25519_keypair;
-
 /**
  * Gets the currently used opsick signing keypair (used for signing/verifying opsick HTTP responses).
  * @param out Where to write the keypair into.
  */
-void opsick_keys_get_ed25519_keypair(opsick_ed25519_keypair* out);
+void opsick_keys_get_ed25519_keypair(struct opsick_ed25519_keypair* out);
 
 /**
  * Gets the currently used opsick encryption keypair (used for communicating with the server over non-secure protocols (e.g. plain HTTP)).
  * @param out Where to write the keypair into.
  */
-void opsick_keys_get_curve448_keypair(cecies_curve448_keypair* out);
+void opsick_keys_get_curve448_keypair(struct cecies_curve448_keypair* out);
 
 #ifdef __cplusplus
 } // extern "C"

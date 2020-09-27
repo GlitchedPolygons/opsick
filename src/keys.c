@@ -17,18 +17,19 @@
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
-#include "opsick/constants.h"
-#include "opsick/config.h"
+#include <sha512.h>
+#include "opsick/db.h"
+#include "opsick/util.h"
 #include "opsick/guid.h"
 #include "opsick/keys.h"
+#include "opsick/config.h"
 #include <mbedtls/platform_util.h>
-#include <opsick/db.h>
 
 static char firstgen = 1;
 static time_t last_key_refresh = 0;
 
-static opsick_ed25519_keypair ed25519_keypair;
-static cecies_curve448_keypair curve448_keypair;
+static struct opsick_ed25519_keypair ed25519_keypair;
+static struct cecies_curve448_keypair curve448_keypair;
 
 static struct opsick_config_hostsettings hostsettings;
 static struct opsick_config_adminsettings adminsettings;
@@ -44,21 +45,29 @@ static void keyregen()
     if (hostsettings.log)
         printf("Regenerating opsick keypair - time for a pair of fresh keys!\n");
 
-    // TODO: regen here ed25519
-
-    char additional_entropy[256];
     uint8_t sick_randomness[128];
     opsick_db_last_128_bytes_of_ciphertext(sick_randomness);
 
-    sprintf(additional_entropy, "%ld", last_key_refresh);
-    sprintf(additional_entropy, "%ld", time(0) + 420 + 1337);
+    unsigned char additional_entropy[256];
+    sprintf((char*)additional_entropy, "%ld", last_key_refresh);
+    sprintf((char*)additional_entropy, "%ld", time(0) + 420 + 1337);
+    snprintf((char*)additional_entropy, 128, "%llu-%ld-%ld-%ld-%s", opsick_db_get_last_used_userid(), last_key_refresh, opsick_db_get_last_db_schema_version_nr_lookup(), time(0) + 420 + 1337, opsick_new_guid(true, true).string);
     memcpy(additional_entropy + 128, sick_randomness, 128);
-    snprintf(additional_entropy, 128, "%llu-%ld-%ld-%ld-%s", opsick_db_get_last_used_userid(), last_key_refresh, opsick_db_get_last_db_schema_version_nr_lookup(), time(0) + 420 + 1337, opsick_new_guid(true, true).string);
+
+    sha512(additional_entropy, sizeof(additional_entropy), additional_entropy);
+
+    unsigned char seed[32];
+    ed25519_create_seed(seed);
+    ed25519_create_keypair((unsigned char*)ed25519_keypair.public_key, (unsigned char*)ed25519_keypair.private_key, seed);
+    ed25519_add_scalar((unsigned char*)ed25519_keypair.public_key, (unsigned char*)ed25519_keypair.private_key, additional_entropy);
 
     cecies_generate_curve448_keypair(&curve448_keypair, (unsigned char*)additional_entropy, sizeof(additional_entropy));
 
     firstgen = 0;
     last_key_refresh = time(0);
+
+    opsick_bin2hexstr(ed25519_keypair.public_key, sizeof(ed25519_keypair.public_key), ed25519_keypair.public_key_hexstr, sizeof(ed25519_keypair.public_key_hexstr), NULL, 0);
+    opsick_bin2hexstr(ed25519_keypair.private_key, sizeof(ed25519_keypair.private_key), ed25519_keypair.private_key_hexstr, sizeof(ed25519_keypair.private_key_hexstr), NULL, 0);
 
     mbedtls_platform_zeroize(additional_entropy, sizeof(additional_entropy));
     mbedtls_platform_zeroize(sick_randomness, sizeof(sick_randomness));
@@ -85,7 +94,7 @@ void opsick_keys_free()
     mbedtls_platform_zeroize(&curve448_keypair, sizeof(curve448_keypair));
 }
 
-void opsick_keys_get_ed25519_keypair(opsick_ed25519_keypair* out)
+void opsick_keys_get_ed25519_keypair(struct opsick_ed25519_keypair* out)
 {
     check_freshness();
 
@@ -97,7 +106,7 @@ void opsick_keys_get_ed25519_keypair(opsick_ed25519_keypair* out)
     memcpy(out, &ed25519_keypair, sizeof(ed25519_keypair));
 }
 
-void opsick_keys_get_curve448_keypair(cecies_curve448_keypair* out)
+void opsick_keys_get_curve448_keypair(struct cecies_curve448_keypair* out)
 {
     check_freshness();
 

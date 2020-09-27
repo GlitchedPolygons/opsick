@@ -31,8 +31,8 @@ void opsick_init_endpoint_pubkey()
 
 void opsick_get_pubkey(http_s* request)
 {
-    opsick_ed25519_keypair ed25519;
-    cecies_curve448_keypair curve448;
+    struct opsick_ed25519_keypair ed25519;
+    struct cecies_curve448_keypair curve448;
 
     opsick_keys_get_ed25519_keypair(&ed25519);
     opsick_keys_get_curve448_keypair(&curve448);
