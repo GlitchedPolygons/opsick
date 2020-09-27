@@ -69,7 +69,7 @@ void opsick_db_free()
         return;
 
     initialized = false;
-    
+
     mbedtls_platform_zeroize(last128B, sizeof(last128B));
     mbedtls_platform_zeroize(&last_used_userid, sizeof(last_used_userid));
 }

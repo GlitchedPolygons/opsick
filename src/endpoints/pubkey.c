@@ -22,10 +22,10 @@ static FIOBJ curve448_header;
 
 void opsick_init_endpoint_pubkey()
 {
-    ed25519_header = fiobj_str_new("ed25519_public_key", 18);
+    ed25519_header = fiobj_str_new("ed25519-public-key", 18);
     fiobj_str_freeze(ed25519_header);
 
-    curve448_header = fiobj_str_new("curve448_public_key", 19);
+    curve448_header = fiobj_str_new("curve448-public-key", 19);
     fiobj_str_freeze(curve448_header);
 }
 

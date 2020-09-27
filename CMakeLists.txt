@@ -118,30 +118,3 @@ target_include_directories(${PROJECT_NAME}
         PRIVATE ${CMAKE_CURRENT_LIST_DIR}/lib/sqlite3
         PRIVATE ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src
         )
-
-get_target_property(${PROJECT_NAME}_DEPS_TARGETS ${PROJECT_NAME} LINK_LIBRARIES)
-
-if (OPSICK_ENABLE_TESTS)
-
-    add_executable(run_tests
-            ${${PROJECT_NAME}_HEADERS}
-            ${${PROJECT_NAME}_SOURCES}
-            ${CMAKE_CURRENT_LIST_DIR}/tests/tests.c
-            )
-
-    target_link_libraries(run_tests
-            PUBLIC ${${PROJECT_NAME}_DEPS_TARGETS}
-            )
-
-    target_include_directories(run_tests
-            PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
-            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/lib/acutest/include
-            )
-
-    if (ENABLE_COVERAGE)
-        find_package(codecov)
-        add_coverage(${PROJECT_NAME})
-        add_coverage(run_tests)
-        coverage_evaluate()
-    endif ()
-endif ()
