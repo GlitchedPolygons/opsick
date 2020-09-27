@@ -22,8 +22,6 @@ extern "C" {
 #endif
 
 #include <ctype.h>
-#include <string.h>
-#include <limits.h>
 
 /**
  * Compares two strings ignoring UPPER vs. lowercase.

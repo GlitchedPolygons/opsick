@@ -15,10 +15,13 @@
 */
 
 #include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
 #include <tomlc99/toml.h>
 #include "opsick/config.h"
 #include "opsick/constants.h"
 #include "opsick/strncmpic.h"
+#include "opsick/util.h"
 
 static struct opsick_config_hostsettings hostsettings;
 static struct opsick_config_adminsettings adminsettings;
@@ -62,6 +65,8 @@ static inline void init()
     adminsettings.max_user_quota = 16 * 1024 * 1024;
     adminsettings.use_index_html = true;
     adminsettings.key_refresh_interval_hours = 72;
+    adminsettings.api_key_algo = 0;
+    strcpy(adminsettings.api_key_public_hexstr, "9a074e6abb4d7cca97842d6e43704bafcc71c39f7394d65a7d6eba95909b4ec6");
     strcpy(adminsettings.user_registration_password, "opsick_registration_password");
 }
 
@@ -135,16 +140,27 @@ static bool load_adminsettings(toml_table_t* conf)
     }
     free(user_registration_password);
 
-    char* api_key_public = NULL;
-    if (toml_rtos(toml_raw_in(table, "api_key_public"), &api_key_public))
+    uint64_t algo = 0;
+    parse_toml_uint(table, "api_key_algo", &algo);
+    if (algo >= 0 && algo <= UINT8_MAX)
+    {
+        adminsettings.api_key_algo = (uint8_t)algo;
+    }
+    else
+    {
+        fprintf(stderr, "ERROR: The parsed algo id setting \"%llu\" is not within the range of valid algo IDs [0;255]", algo);
+    }
+
+    char* api_key_public_hexstr = NULL;
+    if (toml_rtos(toml_raw_in(table, "api_key_public_hexstr"), &api_key_public_hexstr))
     {
         fprintf(stderr, "ERROR: Failed to parse \"api_key_public\" setting string from the opsick user config file \"%s\".", OPSICK_CONFIG_FILE_PATH);
     }
     else
     {
-        strncpy(adminsettings.api_key_public, api_key_public, sizeof(adminsettings.api_key_public));
+        strncpy(adminsettings.api_key_public_hexstr, api_key_public_hexstr, sizeof(adminsettings.api_key_public_hexstr));
     }
-    free(api_key_public);
+    free(api_key_public_hexstr);
 
     return true;
 }

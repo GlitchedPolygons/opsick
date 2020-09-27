@@ -15,160 +15,96 @@
 */
 
 #include <time.h>
+#include <stdio.h>
+#include <string.h>
 #include "opsick/constants.h"
 #include "opsick/config.h"
-#include "opsick/keys.h"
 #include "opsick/guid.h"
+#include "opsick/keys.h"
+#include <mbedtls/platform_util.h>
+#include <opsick/db.h>
 
 static char firstgen = 1;
-static char prvkey[8192];
-static char pubkey[8192];
 static time_t last_key_refresh = 0;
+
+static opsick_ed25519_keypair ed25519_keypair;
+static cecies_curve448_keypair curve448_keypair;
+
 static struct opsick_config_hostsettings hostsettings;
 static struct opsick_config_adminsettings adminsettings;
 
 static void keyregen()
 {
-    int r;
-    mbedtls_entropy_context entropy;
-    mbedtls_ctr_drbg_context ctr_drbg;
-    mbedtls_mpi N, P, Q, D, E, DP, DQ, QP;
-
     if (firstgen)
     {
         opsick_config_get_hostsettings(&hostsettings);
         opsick_config_get_adminsettings(&adminsettings);
     }
-    else
-    {
-        mbedtls_pk_free(&pk);
-    }
 
     if (hostsettings.log)
-        printf("Regenerating opsick keypair - time for a pair of fresh RSA keys!\n");
+        printf("Regenerating opsick keypair - time for a pair of fresh keys!\n");
 
-    const opsick_guid guid = opsick_new_guid(time(0) % 2, time(0) % 3);
-    const char* pe = guid.string;
+    // TODO: regen here ed25519
 
-    mbedtls_pk_init(&pk);
-    mbedtls_entropy_init(&entropy);
-    mbedtls_ctr_drbg_init(&ctr_drbg);
-    mbedtls_mpi_init(&N);
-    mbedtls_mpi_init(&P);
-    mbedtls_mpi_init(&Q);
-    mbedtls_mpi_init(&D);
-    mbedtls_mpi_init(&E);
-    mbedtls_mpi_init(&DP);
-    mbedtls_mpi_init(&DQ);
-    mbedtls_mpi_init(&QP);
+    char additional_entropy[256];
+    uint8_t sick_randomness[128];
+    opsick_db_last_128_bytes_of_ciphertext(sick_randomness);
 
-    if (hostsettings.log)
-        printf("Seeding...");
+    sprintf(additional_entropy, "%ld", last_key_refresh);
+    sprintf(additional_entropy, "%ld", time(0) + 420 + 1337);
+    memcpy(additional_entropy + 128, sick_randomness, 128);
+    snprintf(additional_entropy, 128, "%llu-%ld-%ld-%ld-%s", opsick_db_get_last_used_userid(), last_key_refresh, opsick_db_get_last_db_schema_version_nr_lookup(), time(0) + 420 + 1337, opsick_new_guid(true, true).string);
 
-    if ((r = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char*)pe, strlen(pe))) != 0)
-    {
-        fprintf(stderr, " Seeding failed! mbedtls_ctr_drbg_seed returned %d\n", r);
-        goto exit;
-    }
-
-    if (hostsettings.log)
-        printf(" OK\nSetting up key context...");
-
-    if ((r = mbedtls_pk_setup(&pk, mbedtls_pk_info_from_type(MBEDTLS_PK_RSA))) != 0)
-    {
-        fprintf(stderr, " Key context setup failed! mbedtls_pk_setup returned %i\n", r);
-        goto exit;
-    }
-
-    if (hostsettings.log)
-        printf(" OK\nGenerating the RSA key [ %d-bit ]...", OPSICK_KEY_SIZE);
-
-    if ((r = mbedtls_rsa_gen_key(mbedtls_pk_rsa(pk), mbedtls_ctr_drbg_random, &ctr_drbg, OPSICK_KEY_SIZE, OPSICK_KEY_EXPONENT)) != 0)
-    {
-        fprintf(stderr, " Key (re)generation failed! mbedtls_rsa_gen_key returned %d\n", r);
-        goto exit;
-    }
-
-    if (hostsettings.log)
-        printf(" OK\nChecking public/private key validity...");
-
-    if ((r = mbedtls_rsa_check_pubkey(mbedtls_pk_rsa(pk))) != 0)
-    {
-        fprintf(stderr, " RSA context does not contain an rsa public key; mbedtls_rsa_check_pubkey returned %d \n", r);
-        goto exit;
-    }
-
-    if (hostsettings.log)
-        printf("\nPublic key: OK\n");
-
-    if ((r = mbedtls_rsa_check_privkey(mbedtls_pk_rsa(pk))) != 0)
-    {
-        fprintf(stderr, " RSA context does not contain an rsa private key; mbedtls_rsa_check_privkey returned %d \n", r);
-        goto exit;
-    }
-
-    if (hostsettings.log)
-        printf("\nPrivate key: OK\n");
-
-    memset(pubkey, '\0', sizeof(pubkey));
-    if ((r = mbedtls_pk_write_pubkey_pem(&pk, (unsigned char*)pubkey, sizeof(pubkey))) != 0)
-    {
-        fprintf(stderr, "\nRSA write public key to string failed; mbedtls_pk_write_pubkey_pem returned %d \n", r);
-        goto exit;
-    }
-
-    memset(prvkey, '\0', sizeof(prvkey));
-    if ((r = mbedtls_pk_write_key_pem(&pk, (unsigned char*)prvkey, sizeof(prvkey))) != 0)
-    {
-        fprintf(stderr, "\nRSA write private key to string failed; mbedtls_pk_write_key_pem returned %d \n", r);
-        goto exit;
-    }
+    cecies_generate_curve448_keypair(&curve448_keypair, (unsigned char*)additional_entropy, sizeof(additional_entropy));
 
     firstgen = 0;
     last_key_refresh = time(0);
 
-exit:
-
-    mbedtls_entropy_free(&entropy);
-    mbedtls_ctr_drbg_free(&ctr_drbg);
-    mbedtls_mpi_free(&N);
-    mbedtls_mpi_free(&P);
-    mbedtls_mpi_free(&Q);
-    mbedtls_mpi_free(&D);
-    mbedtls_mpi_free(&E);
-    mbedtls_mpi_free(&DP);
-    mbedtls_mpi_free(&DQ);
-    mbedtls_mpi_free(&QP);
+    mbedtls_platform_zeroize(additional_entropy, sizeof(additional_entropy));
+    mbedtls_platform_zeroize(sick_randomness, sizeof(sick_randomness));
 }
 
-int opsick_keys_get_ed25519_pubkey_hex(char out[64])
+static inline void check_freshness()
 {
-    if (out == NULL)
-    {
-        return 1;
-    }
-
     if (time(0) > last_key_refresh + (adminsettings.key_refresh_interval_hours * 3600))
     {
         keyregen();
     }
-
-    snprintf(out, 64, "%s", pubkey);
-    return 0;
 }
 
-int opsick_keys_get_ed25519_prvkey_hex(char out[128])
+void opsick_keys_init()
 {
+    keyregen();
+}
+
+void opsick_keys_free()
+{
+    mbedtls_platform_zeroize(&hostsettings, sizeof(hostsettings));
+    mbedtls_platform_zeroize(&adminsettings, sizeof(adminsettings));
+    mbedtls_platform_zeroize(&ed25519_keypair, sizeof(ed25519_keypair));
+    mbedtls_platform_zeroize(&curve448_keypair, sizeof(curve448_keypair));
+}
+
+void opsick_keys_get_ed25519_keypair(opsick_ed25519_keypair* out)
+{
+    check_freshness();
+
     if (out == NULL)
     {
-        return 1;
+        return;
     }
 
-    if (time(0) > last_key_refresh + (adminsettings.key_refresh_interval_hours * 3600))
+    memcpy(out, &ed25519_keypair, sizeof(ed25519_keypair));
+}
+
+void opsick_keys_get_curve448_keypair(cecies_curve448_keypair* out)
+{
+    check_freshness();
+
+    if (out == NULL)
     {
-        keyregen();
+        return;
     }
 
-    snprintf(out, 128, "%s", prvkey);
-    return 0;
+    memcpy(out, &curve448_keypair, sizeof(curve448_keypair));
 }

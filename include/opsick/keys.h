@@ -21,22 +21,43 @@
 extern "C" {
 #endif
 
-#include <stddef.h>
-#include <mbedtls/pk.h>
+#include <cecies/keygen.h>
 
 /**
- * Gets the hex-encoded(-formatted) public key string from the currently used opsick keypair (use this to verify opsick HTTP response signatures).
- * @param out The <c>char[]</c> array into which to write the hex-encoded key string.
- * @return <c>0</c> if retrieval succeeds, <c>1</c> if the output array pointer was <c>NULL</c>, <c>2</c> if the output array is not big enough (please allocate ideally exactly 64B).
+ * Initialize opsick keygen.
  */
-int opsick_keys_get_ed25519_pubkey_hex(char out[64]);
+void opsick_keys_init();
 
 /**
- * Gets the hex-formatted private key string from the currently used opsick keypair (use this to sign opsick HTTP responses).
- * @param out The <c>char[]</c> array into which to write the hex-encoded private key string (please allocate exactly 128B if possible!).
- * @return <c>0</c> if retrieval succeeds, <c>1</c> if the output array pointer was <c>NULL</c>, <c>2</c> if the output array is not big enough (please allocate at least 128B).
+ * Free opsick keys and turn off keygen.
  */
-int opsick_keys_get_ed25519_prvkey_hex(char out[128]);
+void opsick_keys_free();
+
+/**
+ * An Ed25519 keypair containing both hex-encoded string representations
+ * as well as raw byte arrays of the opsick signing keys.
+ */
+struct opsick_ed25519_keypair
+{
+    char public_key_hexstr[64 + 1];
+    char private_key_hexstr[128 + 1];
+    uint8_t public_key[32];
+    uint8_t private_key[64];
+};
+
+typedef struct opsick_ed25519_keypair opsick_ed25519_keypair;
+
+/**
+ * Gets the currently used opsick signing keypair (used for signing/verifying opsick HTTP responses).
+ * @param out Where to write the keypair into.
+ */
+void opsick_keys_get_ed25519_keypair(opsick_ed25519_keypair* out);
+
+/**
+ * Gets the currently used opsick encryption keypair (used for communicating with the server over non-secure protocols (e.g. plain HTTP)).
+ * @param out Where to write the keypair into.
+ */
+void opsick_keys_get_curve448_keypair(cecies_curve448_keypair* out);
 
 #ifdef __cplusplus
 } // extern "C"

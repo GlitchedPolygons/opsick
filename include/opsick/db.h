@@ -21,6 +21,7 @@
 extern "C" {
 #endif
 
+#include <time.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -37,6 +38,24 @@ bool opsick_db_init();
  * @return The current db schema version number.
  */
 uint64_t opsick_db_get_schema_version_number();
+
+/**
+ * Gets the id of the last active user.
+ * @return User ID of the last user who interacted with the server.
+ */
+uint64_t opsick_db_get_last_used_userid();
+
+/**
+ * Gets the last 128B of trafficked ciphertext.
+ * @return
+ */
+void opsick_db_last_128_bytes_of_ciphertext(uint8_t out[128]);
+
+/**
+ * When was the last time somebody checked the db schema version number?
+ * @return time_t
+ */
+time_t opsick_db_get_last_db_schema_version_nr_lookup();
 
 /**
  * Disconnects from the db and frees all the related resources.

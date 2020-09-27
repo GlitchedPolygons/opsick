@@ -21,8 +21,6 @@
 extern "C" {
 #endif
 
-#include "http.h"
-
 /**
  * Opsick current version number.
  */

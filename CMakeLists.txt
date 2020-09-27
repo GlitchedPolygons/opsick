@@ -22,14 +22,20 @@ option(OPSICK_ENABLE_TESTS "Build OPSICK tests." OFF)
 
 option(ENABLE_TESTING "Build MbedTLS tests." OFF)
 option(ENABLE_PROGRAMS "Build MbedTLS example programs." OFF)
-option(OQS_USE_OPENSSL "Build liboqs OpenSSL support." OFF)
-option(OQS_BUILD_ONLY_LIB "Don't build liboqs tests and example programs." ON)
 
 set(${PROJECT_NAME}_INCLUDE_DIR
         ${CMAKE_CURRENT_LIST_DIR}/include
         )
 
 set(${PROJECT_NAME}_HEADERS
+        ${CMAKE_CURRENT_LIST_DIR}/lib/sqlite3/sqlite3.h
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/ed25519.h
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/fe.h
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/fixedint.h
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/ge.h
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/precomp_data.h
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/sc.h
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/sha512.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/constants.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/strncmpic.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/config.h
@@ -38,11 +44,23 @@ set(${PROJECT_NAME}_HEADERS
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/keys.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/router.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/db.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/util.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/home.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/pubkey.h
         )
 
 set(${PROJECT_NAME}_SOURCES
+        ${CMAKE_CURRENT_LIST_DIR}/lib/sqlite3/sqlite3.c
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/add_scalar.c
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/fe.c
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/ge.c
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/key_exchange.c
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/keypair.c
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/sc.c
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/seed.c
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/sha512.c
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/sign.c
+        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/verify.c
         ${CMAKE_CURRENT_LIST_DIR}/src/config.c
         ${CMAKE_CURRENT_LIST_DIR}/src/strncmpic.c
         ${CMAKE_CURRENT_LIST_DIR}/src/guid.c
@@ -50,6 +68,7 @@ set(${PROJECT_NAME}_SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/src/keys.c
         ${CMAKE_CURRENT_LIST_DIR}/src/router.c
         ${CMAKE_CURRENT_LIST_DIR}/src/db.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/util.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/home.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/pubkey.c
         )
@@ -70,31 +89,6 @@ if (NOT TARGET cecies)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/cecies cecies)
 endif ()
 
-if (NOT TARGET qryptext)
-    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/qryptext qryptext)
-endif ()
-
-if (NOT TARGET l8w8jwt)
-    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt l8w8jwt)
-endif ()
-
-find_package(SQLite3)
-
-if (NOT SQLite3_FOUND)
-    message(FATAL_ERROR "
-    CMake failed to find SQLite3 on your system!
-    Please make sure to install sqlite3 (into default paths) and try again...
-    - FreeBSD:
-      - sudo pkg install sqlite3
-    - Linux:
-      - Arch:                sudo pacman -S sqlite uuid-devel
-      - Debian/*buntu:       sudo apt-get install sqlite3 libsqlite3-dev uuid-dev
-      - CentOS/Fedora/RHEL:  sudo dnf install sqlite-devel sqlite-tcl uuid-devel
-    - macOS:
-      - brew install sqlite
-    ")
-endif ()
-
 configure_file(${CMAKE_CURRENT_LIST_DIR}/src/index.html ${CMAKE_CURRENT_BINARY_DIR}/index.html COPYONLY)
 configure_file(${CMAKE_CURRENT_LIST_DIR}/src/favicon.ico ${CMAKE_CURRENT_BINARY_DIR}/favicon.ico COPYONLY)
 configure_file(${CMAKE_CURRENT_LIST_DIR}/src/config.toml ${CMAKE_CURRENT_BINARY_DIR}/config.toml COPYONLY)
@@ -108,10 +102,7 @@ add_executable(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
         PUBLIC facil.io
         PUBLIC cecies
-        PUBLIC qryptext
-        PUBLIC l8w8jwt
         PUBLIC tomlc99
-        PUBLIC SQLite::SQLite3
         )
 
 if (UNIX AND NOT APPLE)
@@ -124,6 +115,8 @@ endif ()
 
 target_include_directories(${PROJECT_NAME}
         PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
+        PRIVATE ${CMAKE_CURRENT_LIST_DIR}/lib/sqlite3
+        PRIVATE ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src
         )
 
 get_target_property(${PROJECT_NAME}_DEPS_TARGETS ${PROJECT_NAME} LINK_LIBRARIES)
@@ -141,7 +134,7 @@ if (OPSICK_ENABLE_TESTS)
             )
 
     target_include_directories(run_tests
-            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include
+            PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
             PUBLIC ${CMAKE_CURRENT_LIST_DIR}/lib/acutest/include
             )
 

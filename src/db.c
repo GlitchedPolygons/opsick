@@ -15,11 +15,15 @@
 */
 
 #include "opsick/db.h"
-#include "opsick/config.h"
+#include <string.h>
+#include <stdbool.h>
+#include <mbedtls/platform_util.h>
 
 static bool initialized = false;
+static uint64_t last_used_userid = 0;
 static uint64_t cached_db_schema_version_nr = 0;
 static time_t last_db_schema_version_nr_lookup = 0;
+static uint8_t last128B[128];
 
 bool opsick_db_init()
 {
@@ -40,10 +44,32 @@ uint64_t opsick_db_get_schema_version_number()
     return 0;
 }
 
+uint64_t opsick_db_get_last_used_userid()
+{
+    return last_used_userid;
+}
+
+void opsick_db_last_128_bytes_of_ciphertext(uint8_t out[128])
+{
+    if (out == NULL)
+    {
+        return;
+    }
+    memcpy(out, last128B, 128);
+}
+
+time_t opsick_db_get_last_db_schema_version_nr_lookup()
+{
+    return last_db_schema_version_nr_lookup;
+}
+
 void opsick_db_free()
 {
     if (!initialized)
         return;
 
     initialized = false;
+    
+    mbedtls_platform_zeroize(last128B, sizeof(last128B));
+    mbedtls_platform_zeroize(&last_used_userid, sizeof(last_used_userid));
 }

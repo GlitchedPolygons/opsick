@@ -16,3 +16,6 @@
 [submodule "lib/qryptext"]
 	path = lib/qryptext
 	url = https://github.com/GlitchedPolygons/qryptext
+[submodule "lib/ed25519"]
+	path = lib/ed25519
+	url = https://github.com/orlp/ed25519

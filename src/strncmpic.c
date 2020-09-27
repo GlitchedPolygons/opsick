@@ -15,6 +15,8 @@
 */
 
 #include "opsick/strncmpic.h"
+#include <string.h>
+#include <limits.h>
 
 int opsick_strncmpic(const char* str1, const char* str2, size_t n)
 {

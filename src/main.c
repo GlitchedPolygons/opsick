@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include "opsick/config.h"
 #include "opsick/router.h"
+#include "opsick/keys.h"
 #include "opsick/db.h"
 
 int main(void)
@@ -28,9 +29,11 @@ int main(void)
     }
 
     opsick_router_init();
+    opsick_keys_init();
     opsick_db_init();
 
     opsick_db_free();
+    opsick_keys_free();
     opsick_router_free();
     
     return 0;

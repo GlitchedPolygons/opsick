@@ -72,7 +72,7 @@ struct opsick_config_hostsettings
      * The maximum request body size. <p>
      * [DEFAULT] <c>16MB</c> (<c>1024 * 1024 * 16B</c>).
      */
-    size_t max_body_size;
+    uint64_t max_body_size;
 };
 
 /**
@@ -128,11 +128,16 @@ struct opsick_config_adminsettings
     char user_registration_password[OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH];
 
     /**
+     * The algorithm ID for the API key.
+     */
+    uint8_t api_key_algo;
+
+    /**
      * The public key to use for verifying requests that come from the API master,
      * who signs the requests using this key's private counterpart. <p>
      * The API master is the "admin" user who is allowed to create and modify opsick users, extend them, etc...
      */
-    char api_key_public[64];
+    char api_key_public_hexstr[64 + 1];
 };
 
 /**

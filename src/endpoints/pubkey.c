@@ -14,25 +14,36 @@
    limitations under the License.
 */
 
-#include <mbedtls/rsa.h>
-#include <mbedtls/aes.h>
-#include <mbedtls/entropy.h>
-#include <mbedtls/ctr_drbg.h>
-#include <mbedtls/pk.h>
-#include "opsick/constants.h"
+#include "opsick/keys.h"
 #include "opsick/endpoints/pubkey.h"
+
+static FIOBJ ed25519_header;
+static FIOBJ curve448_header;
 
 void opsick_init_endpoint_pubkey()
 {
-    //nop
+    ed25519_header = fiobj_str_new("ed25519_public_key", 18);
+    fiobj_str_freeze(ed25519_header);
+
+    curve448_header = fiobj_str_new("curve448_public_key", 19);
+    fiobj_str_freeze(curve448_header);
 }
 
 void opsick_get_pubkey(http_s* request)
 {
-    // TODO: read from file here
+    opsick_ed25519_keypair ed25519;
+    cecies_curve448_keypair curve448;
+
+    opsick_keys_get_ed25519_keypair(&ed25519);
+    opsick_keys_get_curve448_keypair(&curve448);
+
+    http_set_header(request, ed25519_header, fiobj_str_new(ed25519.public_key_hexstr, 64));
+    http_set_header(request, curve448_header, fiobj_str_new(curve448.public_key.hexstring, 112));
+    http_finish(request);
 }
 
 void opsick_free_endpoint_pubkey()
 {
-    // nop
+    fiobj_free(ed25519_header);
+    fiobj_free(curve448_header);
 }
