@@ -1,21 +1,12 @@
 [submodule "lib/facil.io"]
 	path = lib/facil.io
 	url = https://github.com/boazsegev/facil.io
-[submodule "lib/l8w8jwt"]
-	path = lib/l8w8jwt
-	url = https://github.com/GlitchedPolygons/l8w8jwt
 [submodule "lib/tomlc99"]
 	path = lib/tomlc99
 	url = https://github.com/GlitchedPolygons/tomlc99
-[submodule "lib/acutest"]
-	path = lib/acutest
-	url = https://github.com/mity/acutest
 [submodule "lib/cecies"]
 	path = lib/cecies
 	url = https://github.com/GlitchedPolygons/cecies
-[submodule "lib/qryptext"]
-	path = lib/qryptext
-	url = https://github.com/GlitchedPolygons/qryptext
 [submodule "lib/ed25519"]
 	path = lib/ed25519
 	url = https://github.com/orlp/ed25519
