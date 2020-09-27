@@ -1,5 +1,5 @@
-#!/bin/sh
-
+#!/bin/bash
+#
 #  Copyright 2020 Raphael Beck
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,18 +14,34 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-if [ "$EUID" -e 0 ]
-  then echo "  Please don't run as root/using sudo..."
+if [ "$(whoami)" = "root" ]; then
+  echo "  Please don't run as root/using sudo..."
   exit
+fi
+
+PREVCC="$CC"
+PREVCXX="$CXX"
+
+if command -v clang &> /dev/null
+then
+    echo "-- Clang found on system, great! Long live LLVM! :D"
+    export CC=clang
+    export CXX=clang++
 fi
 
 REPO=$(dirname "$0")
 rm -rf "$REPO"/out
 rm -rf "$REPO"/build
 mkdir -p "$REPO"/build && cd "$REPO"/build || exit
-cmake -DBUILD_SHARED_LIBS=Off -DUSE_SHARED_MBEDTLS_LIBRARY=Off -DCMAKE_BUILD_TYPE=Release ..
-make
+
+cmake -DBUILD_SHARED_LIBS=Off -DUSE_SHARED_MBEDTLS_LIBRARY=Off -DCMAKE_BUILD_TYPE=Release .. || exit
+cmake --build . --config Release || exit
+
 tar -czvf opsick.tar.gz opsick config.toml
+
+export CC="$PREVCC"
+export CXX="$PREVCXX"
+
 cd "$REPO" || exit
 echo "  Done. Exported build into $REPO/build"
 echo "  Check out the opsick.tar.gz file in there! "
