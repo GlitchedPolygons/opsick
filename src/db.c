@@ -59,7 +59,7 @@ void opsick_db_init()
         cached_db_schema_version_nr = 0;
     }
 
-    for (uint64_t i = cached_db_schema_version_nr; i < opsick_get_schema_version_count() - (cached_db_schema_version_nr != 0); i++)
+    for (uint64_t i = cached_db_schema_version_nr + (cached_db_schema_version_nr != 0); i < opsick_get_schema_version_count(); i++)
     {
         rc = sqlite3_exec(db, SQL_MIGRATIONS[i], &callback_select_schema_version_nr, 0, &err_msg);
         if (rc != SQLITE_OK)
@@ -72,10 +72,6 @@ void opsick_db_init()
     initialized = true;
     return;
 
-    /*
-     * fprintf(stderr, "Couldn't initialize SQLite database file: %s\nEventually a bad migration?", sqlite3_errmsg(db));
-     * goto error;
-     * */
 error:
 
     sqlite3_free(err_msg);

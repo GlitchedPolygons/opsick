@@ -25,7 +25,7 @@ int main(void)
     if (!opsick_config_load())
     {
         fprintf(stderr, "ERROR: Opsick failed to open, read or parse the config file.");
-        exit(10);
+        return EXIT_FAILURE;
     }
 
     opsick_db_init();
