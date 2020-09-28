@@ -44,6 +44,8 @@ set(${PROJECT_NAME}_HEADERS
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/keys.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/router.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/db.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/sql/db_migrations.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/sql/users.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/util.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/home.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/pubkey.h
@@ -69,6 +71,7 @@ set(${PROJECT_NAME}_SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/src/router.c
         ${CMAKE_CURRENT_LIST_DIR}/src/db.c
         ${CMAKE_CURRENT_LIST_DIR}/src/util.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/sql/users.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/home.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/pubkey.c
         )

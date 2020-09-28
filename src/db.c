@@ -17,9 +17,9 @@
 #include "opsick/db.h"
 #include "opsick/constants.h"
 #include <string.h>
-#include <unistd.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sqlite3.h>
 #include <mbedtls/platform_util.h>
 
@@ -29,6 +29,10 @@ static uint64_t cached_db_schema_version_nr = 0;
 static time_t last_db_schema_version_nr_lookup = 0;
 static uint8_t last128B[128];
 static sqlite3* db;
+
+static int callback_select_schema_version_nr(void*, int, char**, char**);
+
+#pragma region INIT& FREE
 
 bool opsick_db_init()
 {
@@ -44,16 +48,9 @@ bool opsick_db_init()
         goto error;
     }
 
-    static const char* init_sql = "CREATE TABLE IF NOT EXISTS schema_version(id tinyint PRIMARY KEY DEFAULT TRUE, version bigint NOT NULL, last_mod timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);"
-                                  "INSERT INTO schema_version (version) VALUES (1);"
-                                  "CREATE TRIGGER single_row_guardian_schema_version "
-                                  "BEFORE INSERT ON schema_version "
-                                  "WHEN (SELECT COUNT(*) FROM config) >= 1 "
-                                  "BEGIN "
-                                  "SELECT RAISE(FAIL, 'Only one row allowed inside the schema_version table!'); "
-                                  "END;";
+    static const char* init_sql = "SELECT version FROM schema_version WHERE id = true;";
 
-    rc = sqlite3_exec(db, init_sql, 0, 0, &err_msg);
+    rc = sqlite3_exec(db, init_sql, callback_select_schema_version_nr, 0, &err_msg);
     if (rc != SQLITE_OK)
     {
         fprintf(stderr, "Couldn't initialize SQLite database file: %s\nEventually a bad migration?", sqlite3_errmsg(db));
@@ -69,15 +66,44 @@ error:
     return false;
 }
 
-uint64_t opsick_db_get_schema_version_number()
+void opsick_db_free()
 {
-    if (last_db_schema_version_nr_lookup + 3600 > time(NULL))
+    if (!initialized)
+        return;
+
+    initialized = false;
+
+    sqlite3_close(db);
+    mbedtls_platform_zeroize(last128B, sizeof(last128B));
+    mbedtls_platform_zeroize(&last_used_userid, sizeof(last_used_userid));
+}
+
+#pragma endregion
+
+#pragma region CALLBACKS
+
+static int callback_select_schema_version_nr(void* nop, int argc, char* argv[], char* colname[])
+{
+    if (argc != 1)
     {
-        last_db_schema_version_nr_lookup = time(NULL);
-        return cached_db_schema_version_nr;
+        return -1;
     }
 
+    if (strcmp("version", colname[0]) != 0)
+    {
+        return -2;
+    }
+
+    cached_db_schema_version_nr = (uint64_t)strtoull(argv[0], NULL, 10);
     return 0;
+}
+
+#pragma endregion
+
+uint64_t opsick_db_get_schema_version_number()
+{
+    last_db_schema_version_nr_lookup = time(NULL);
+    return cached_db_schema_version_nr;
 }
 
 uint64_t opsick_db_get_last_used_userid()
@@ -97,16 +123,4 @@ void opsick_db_last_128_bytes_of_ciphertext(uint8_t out[128])
 time_t opsick_db_get_last_db_schema_version_nr_lookup()
 {
     return last_db_schema_version_nr_lookup;
-}
-
-void opsick_db_free()
-{
-    if (!initialized)
-        return;
-
-    initialized = false;
-
-    sqlite3_close(db);
-    mbedtls_platform_zeroize(last128B, sizeof(last128B));
-    mbedtls_platform_zeroize(&last_used_userid, sizeof(last_used_userid));
 }
