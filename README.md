@@ -11,16 +11,13 @@ This right here is as lightweight and as performant as it can possibly get, and 
 
 ### Dependencies
 * LibUUID
-* SQLite 3
 
 These you can install using the following commands;
 
 #### Linux:
-      - Arch:                sudo pacman -S sqlite uuid-devel
-      - Debian/*buntu:       sudo apt-get install sqlite3 libsqlite3-dev uuid-dev
-      - CentOS/Fedora/RHEL:  sudo dnf install sqlite-devel sqlite-tcl uuid-devel
-#### macOS:
-      - brew install sqlite
+      - Arch:                sudo pacman -S uuid-devel
+      - Debian/*buntu:       sudo apt-get install uuid-dev
+      - CentOS/Fedora/RHEL:  sudo dnf install uuid-devel
 #### Windows:
       - Uninstall Windows
       - Proceed with one of the variants above...
