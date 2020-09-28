@@ -28,13 +28,13 @@ int main(void)
         exit(10);
     }
 
-    opsick_router_init();
-    opsick_keys_init();
     opsick_db_init();
+    opsick_keys_init();
+    opsick_router_init();
 
-    opsick_db_free();
-    opsick_keys_free();
     opsick_router_free();
-    
+    opsick_keys_free();
+    opsick_db_free();
+
     return 0;
 }

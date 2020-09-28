@@ -25,7 +25,7 @@ extern "C" {
 
 /** @private */
 static const char SQL_MIGRATION_0000000[] = "CREATE TABLE "
-                                            "schema_version(id boolean PRIMARY KEY DEFAULT TRUE, version bigint NOT NULL, last_mod timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP); "
+                                            "schema_version(id boolean PRIMARY KEY DEFAULT TRUE, version INTEGER NOT NULL, last_mod_utc INTEGER NOT NULL DEFAULT (strftime('%s','now')));\n"
                                             "-- Create single row constraint (via a trigger) for the schema_version table -----------------------\n"
                                             "INSERT INTO schema_version (version) VALUES (0);\n"
                                             "CREATE TRIGGER single_row_guardian_schema_version "
@@ -37,11 +37,11 @@ static const char SQL_MIGRATION_0000000[] = "CREATE TABLE "
 
 /** @private */
 static const char SQL_MIGRATION_0000001[] = "CREATE TABLE "
-                                            "users(id bigint PRIMARY KEY AUTOINCREMENT, pw TEXT NOT NULL, iat bigint NOT NULL DEFAULT CURRENT_TIMESTAMP, exp bigint, body TEXT NOT NULL, body_sha512 TEXT NOT NULL, public_key_ed25519 TEXT NOT NULL, public_key_curve448 TEXT NOT NULL);\n"
+                                            "users(id INTEGER PRIMARY KEY, pw TEXT NOT NULL, iat_utc INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, exp_utc INTEGER, body TEXT NOT NULL, body_sha512 TEXT NOT NULL, public_key_ed25519 TEXT NOT NULL, public_key_curve448 TEXT NOT NULL);\n"
                                             "-- ------------------------------------------------------------------------ \n"
                                             "-- INCREMENT SCHEMA VERSION NUMBER - ALWAYS DO THIS FOR ALL SQL MIGRATIONS! \n"
                                             "-- ------------------------------------------------------------------------ \n"
-                                            "UPDATE schema_version SET version = version + 1 WHERE id = true;";
+                                            "UPDATE schema_version SET version = version + 1, last_mod_utc = strftime('%s','now') WHERE id = true;";
 
 /**
  * All SQL migrations.
@@ -52,12 +52,12 @@ static const char* SQL_MIGRATIONS[] = {
 };
 
 /**
- * Gets the currently up-to-date schema version number, which also happens to be the correct index for the #SQL_MIGRATIONS array.
- * @return
+ * Gets the currently available amount of SQL migrations (schemas).
+ * @return The amount of schemas: subtract 1 from this and you get the index of the latest schema sql migration.
  */
-static inline size_t get_current_schema_version()
+static inline size_t opsick_get_schema_version_count()
 {
-    return (sizeof(SQL_MIGRATIONS) / sizeof(char*)) - 1;
+    return (sizeof(SQL_MIGRATIONS) / sizeof(char*));
 }
 
 #ifdef __cplusplus

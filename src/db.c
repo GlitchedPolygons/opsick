@@ -16,6 +16,8 @@
 
 #include "opsick/db.h"
 #include "opsick/constants.h"
+#include "opsick/sql/db_migrations.h"
+
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -34,10 +36,10 @@ static int callback_select_schema_version_nr(void*, int, char**, char**);
 
 #pragma region INIT& FREE
 
-bool opsick_db_init()
+void opsick_db_init()
 {
     if (initialized)
-        return true;
+        return;
 
     char* err_msg = NULL;
     int rc = sqlite3_open(OPSICK_SQLITE_DB_FILENAME, &db);
@@ -48,22 +50,37 @@ bool opsick_db_init()
         goto error;
     }
 
-    static const char* init_sql = "SELECT version FROM schema_version WHERE id = true;";
+    static const char init_sql[] = "SELECT version FROM schema_version WHERE id = true;";
 
+    // The callback also updates the cached_db_schema_version_nr!
     rc = sqlite3_exec(db, init_sql, callback_select_schema_version_nr, 0, &err_msg);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Couldn't initialize SQLite database file: %s\nEventually a bad migration?", sqlite3_errmsg(db));
-        goto error;
+        cached_db_schema_version_nr = 0;
     }
 
-    return initialized = true;
+    for (uint64_t i = cached_db_schema_version_nr; i < opsick_get_schema_version_count() - (cached_db_schema_version_nr != 0); i++)
+    {
+        rc = sqlite3_exec(db, SQL_MIGRATIONS[i], 0, 0, &err_msg);
+        if (rc != SQLITE_OK)
+        {
+            fprintf(stderr, "Couldn't initialize SQLite database file: %s\nEventually a bad SQL migration? Please double check!", sqlite3_errmsg(db));
+            goto error;
+        }
+    }
 
+    initialized = true;
+    return;
+
+    /*
+     * fprintf(stderr, "Couldn't initialize SQLite database file: %s\nEventually a bad migration?", sqlite3_errmsg(db));
+     * goto error;
+     * */
 error:
 
     sqlite3_free(err_msg);
     sqlite3_close(db);
-    return false;
+    exit(-1);
 }
 
 void opsick_db_free()

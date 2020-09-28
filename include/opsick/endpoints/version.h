@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-#ifndef OPSICK_PUBKEY_H
-#define OPSICK_PUBKEY_H
+#ifndef OPSICK_VERSION_H
+#define OPSICK_VERSION_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,22 +26,22 @@ extern "C" {
 /**
  * Initializes the "/pubkey" endpoint.
  */
-void opsick_init_endpoint_pubkey();
+void opsick_init_endpoint_version();
 
 /**
- * GET request to "/pubkey". <p>
- * Gets the server's public key and returns it in the HTTP response headers "ed25519-public-key" and "curve448-public-key".
+ * GET request to "/version". <p>
+ * Gets the server's version number and schema version number and returns it in the HTTP response headers "server-version" and "server-schema-version".
  * @param request The HTTP request.
  */
-void opsick_get_pubkey(http_s* request);
+void opsick_get_version(http_s* request);
 
 /**
- * Frees the "/pubkey" endpoint resources.
+ * Frees the "/version" endpoint resources.
  */
-void opsick_free_endpoint_pubkey();
+void opsick_free_endpoint_version();
 
 #ifdef __cplusplus
 } // extern "C"
 #endif
 
-#endif // OPSICK_PUBKEY_H
+#endif // OPSICK_VERSION_H

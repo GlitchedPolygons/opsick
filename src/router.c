@@ -22,8 +22,14 @@
 #include "opsick/constants.h"
 #include "opsick/endpoints/home.h"
 #include "opsick/endpoints/pubkey.h"
+#include "opsick/endpoints/version.h"
 
 static int initialized = 0;
+static void init_all_endpoints();
+static void free_all_endpoints();
+static void route_request(http_s*, uint32_t);
+
+#pragma region INIT, ON_REQUEST AND FREE
 
 // Read user config, start listening to HTTP requests
 // on the user-defined port and start facil.io
@@ -36,26 +42,17 @@ void opsick_router_init()
     initialized = 1;
 
     // Initialize endpoints.
-    opsick_init_endpoint_home();
-    opsick_init_endpoint_pubkey();
+    init_all_endpoints();
 
     // Start facil.io using the settings provided inside the user config.
     struct opsick_config_hostsettings hostsettings;
     opsick_config_get_hostsettings(&hostsettings);
 
     char port[64];
-    memset(port,'\0', sizeof(port));
+    memset(port, '\0', sizeof(port));
     sprintf(port, "%d", hostsettings.port);
 
-    http_listen(
-            port,
-            NULL,
-            .on_request = opsick_on_request,
-            .max_header_size = hostsettings.max_header_size,
-            .max_body_size = hostsettings.max_body_size,
-            .max_clients = hostsettings.max_clients,
-            .log = hostsettings.log
-    );
+    http_listen(port, NULL, .on_request = opsick_on_request, .max_header_size = hostsettings.max_header_size, .max_body_size = hostsettings.max_body_size, .max_clients = hostsettings.max_clients, .log = hostsettings.log);
 
     fio_start(.threads = hostsettings.threads);
 }
@@ -77,6 +74,26 @@ void opsick_on_request(http_s* request)
     const fio_str_info_s pathstr = fiobj_obj2cstr(path);
     const uint32_t pathstr_hash = murmur3(pathstr.data, (uint32_t)pathstr.len, OPSICK_MURMUR3_SEED);
 
+    route_request(request, pathstr_hash);
+}
+
+void opsick_router_free()
+{
+    if (!initialized)
+    {
+        return;
+    }
+    initialized = 0;
+
+    fio_stop();
+
+    free_all_endpoints();
+}
+
+#pragma endregion
+
+static void route_request(http_s* request, const uint32_t pathstr_hash)
+{
     switch (pathstr_hash)
     {
         default: {
@@ -93,28 +110,31 @@ void opsick_on_request(http_s* request)
         }
         case OPSICK_HOME_PATH_HASH: {
             opsick_get_home(request);
-            const uint64_t v = opsick_db_get_schema_version_number();
             break;
         }
         case OPSICK_PUBKEY_PATH_HASH: {
             opsick_get_pubkey(request);
             break;
         }
+        case OPSICK_VERSION_PATH_HASH: {
+            opsick_get_version(request);
+            break;
+        }
     }
 }
 
-void opsick_router_free()
+static void init_all_endpoints()
 {
-    if (!initialized)
-    {
-        return;
-    }
-    initialized = 0;
+    opsick_init_endpoint_home();
+    opsick_init_endpoint_pubkey();
+    opsick_init_endpoint_version();
+}
 
-    fio_stop();
-
+static void free_all_endpoints()
+{
     opsick_free_endpoint_home();
     opsick_free_endpoint_pubkey();
+    opsick_free_endpoint_version();
 }
 
 /*

@@ -42,11 +42,11 @@ extern "C" {
 #define OPSICK_SQLITE_DB_FILENAME "opsick.db"
 
 /**
- * The current version of the opsick DB schema. <p>
- * TODO: INCREASE THIS DB SCHEMA VERSION NUMBER WITH EVERY RELEASE THAT APPLIES CHANGES TO THE DB! Check naming convention inside the folder with the <c>.sql</c> scripts!
+ * The maximum length of the instance's user creation endpoint password.
  */
-#define OPSICK_DB_SCHEMA_VERSION 1
+#define OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH 1024
 
+#pragma region HASHES
 /**
  * The seed value to use for the MurmurHash v3 algo.
  * Since all of the hash lookups are only correlated
@@ -76,9 +76,13 @@ extern "C" {
 #define OPSICK_PUBKEY_PATH_HASH 3855421118
 
 /**
- * The maximum length of the instance's user creation endpoint password.
+ * <c>
+ * murmur3("/version")
+ * </c>
  */
-#define OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH 1024
+#define OPSICK_VERSION_PATH_HASH 692047655
+
+#pragma endregion
 
 #ifdef __cplusplus
 } // extern "C"

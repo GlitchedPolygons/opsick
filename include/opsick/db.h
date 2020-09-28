@@ -26,15 +26,13 @@ extern "C" {
 #include <stdbool.h>
 
 /**
- * Initializes the db client, connecting to sqlite and setting up everything that's needed to query the database.
- * @return Whether connection with the db could be established successfully or not.
+ * Initializes the db client, connecting to sqlite and setting up everything that's needed to query the database. This terminates opsick with a status code of <c>-1</c> in case of a failure!
  */
-bool opsick_db_init();
+void opsick_db_init();
 
 /**
  * Gets the current DB schema version number (via a SELECT statement). <p>
- * This number is increased with every DB schema migration, and aligned with the
- * number you find in the file name prefix
+ * This number is increased with every DB schema migration.
  * @return The current db schema version number.
  */
 uint64_t opsick_db_get_schema_version_number();
