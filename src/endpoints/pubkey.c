@@ -39,6 +39,7 @@ void opsick_get_pubkey(http_s* request)
 
     http_set_header(request, ed25519_header, fiobj_str_new(ed25519.public_key_hexstr, 64));
     http_set_header(request, curve448_header, fiobj_str_new(curve448.public_key.hexstring, 112));
+
     http_finish(request);
 }
 
