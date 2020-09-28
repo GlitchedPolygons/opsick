@@ -24,7 +24,6 @@
 #include "opsick/endpoints/pubkey.h"
 #include "opsick/endpoints/version.h"
 
-static int initialized = 0;
 static void init_all_endpoints();
 static void free_all_endpoints();
 static void route_request(http_s*, uint32_t);
@@ -35,12 +34,6 @@ static void route_request(http_s*, uint32_t);
 // on the user-defined port and start facil.io
 void opsick_router_init()
 {
-    if (initialized)
-    {
-        return;
-    }
-    initialized = 1;
-
     // Initialize endpoints.
     init_all_endpoints();
 
@@ -52,18 +45,17 @@ void opsick_router_init()
     memset(port, '\0', sizeof(port));
     sprintf(port, "%d", hostsettings.port);
 
-    http_listen(port, NULL, .on_request = opsick_on_request, .max_header_size = hostsettings.max_header_size, .max_body_size = hostsettings.max_body_size, .max_clients = hostsettings.max_clients, .log = hostsettings.log);
+    if (-1 == http_listen(port, NULL, .on_request = opsick_on_request, .max_header_size = hostsettings.max_header_size, .max_body_size = hostsettings.max_body_size, .max_clients = hostsettings.max_clients, .log = hostsettings.log))
+    {
+        fprintf(stderr, "Failure to start opsick on the given port '%s': perhaps the port is already in use?", port);
+        exit(EXIT_FAILURE);
+    }
 
     fio_start(.threads = hostsettings.threads);
 }
 
 void opsick_on_request(http_s* request)
 {
-    if (!initialized)
-    {
-        return;
-    }
-
     const FIOBJ path = request->path;
     if (!fiobj_type_is(path, FIOBJ_T_STRING))
     {
@@ -79,14 +71,7 @@ void opsick_on_request(http_s* request)
 
 void opsick_router_free()
 {
-    if (!initialized)
-    {
-        return;
-    }
-    initialized = 0;
-
     fio_stop();
-
     free_all_endpoints();
 }
 

@@ -2,7 +2,7 @@
 # to find out what each of these settings do.
 
 [host]
-log = true
+log = false
 port = 6677
 threads = 2
 max_clients = 0

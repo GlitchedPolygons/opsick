@@ -53,7 +53,7 @@ void opsick_db_init()
     static const char init_sql[] = "SELECT version FROM schema_version WHERE id = true;";
 
     // The callback also updates the cached_db_schema_version_nr!
-    rc = sqlite3_exec(db, init_sql, callback_select_schema_version_nr, 0, &err_msg);
+    rc = sqlite3_exec(db, init_sql, &callback_select_schema_version_nr, 0, &err_msg);
     if (rc != SQLITE_OK)
     {
         cached_db_schema_version_nr = 0;
@@ -61,7 +61,7 @@ void opsick_db_init()
 
     for (uint64_t i = cached_db_schema_version_nr; i < opsick_get_schema_version_count() - (cached_db_schema_version_nr != 0); i++)
     {
-        rc = sqlite3_exec(db, SQL_MIGRATIONS[i], 0, 0, &err_msg);
+        rc = sqlite3_exec(db, SQL_MIGRATIONS[i], &callback_select_schema_version_nr, 0, &err_msg);
         if (rc != SQLITE_OK)
         {
             fprintf(stderr, "Couldn't initialize SQLite database file: %s\nEventually a bad SQL migration? Please double check!", sqlite3_errmsg(db));
@@ -80,7 +80,7 @@ error:
 
     sqlite3_free(err_msg);
     sqlite3_close(db);
-    exit(-1);
+    exit(EXIT_FAILURE);
 }
 
 void opsick_db_free()
