@@ -24,6 +24,14 @@ extern "C" {
 #include <stddef.h>
 
 /** @private */
+#define SQL_INCR_SCHEMA_NR \
+    "\n" \
+    "-- ------------------------------------------------------------------------ \n" \
+    "-- INCREMENT SCHEMA VERSION NUMBER - ALWAYS DO THIS FOR ALL SQL MIGRATIONS! \n" \
+    "-- ------------------------------------------------------------------------ \n" \
+    "UPDATE schema_version SET version = version + 1, last_mod_utc = strftime('%s','now') WHERE id = true;\n";
+
+/** @private */
 static const char SQL_MIGRATION_0000000[] = "CREATE TABLE "
                                             "schema_version(id boolean PRIMARY KEY DEFAULT TRUE, version INTEGER NOT NULL, last_mod_utc INTEGER NOT NULL DEFAULT (strftime('%s','now')));\n"
                                             "-- Create single row constraint (via a trigger) for the schema_version table -----------------------\n"
@@ -37,11 +45,7 @@ static const char SQL_MIGRATION_0000000[] = "CREATE TABLE "
 
 /** @private */
 static const char SQL_MIGRATION_0000001[] = "CREATE TABLE "
-                                            "users(id INTEGER PRIMARY KEY, pw TEXT NOT NULL, iat_utc INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, exp_utc INTEGER, body TEXT NOT NULL, body_sha512 TEXT NOT NULL, public_key_ed25519 TEXT NOT NULL, public_key_curve448 TEXT NOT NULL);\n"
-                                            "-- ------------------------------------------------------------------------ \n"
-                                            "-- INCREMENT SCHEMA VERSION NUMBER - ALWAYS DO THIS FOR ALL SQL MIGRATIONS! \n"
-                                            "-- ------------------------------------------------------------------------ \n"
-                                            "UPDATE schema_version SET version = version + 1, last_mod_utc = strftime('%s','now') WHERE id = true;";
+                                            "users(id INTEGER PRIMARY KEY, pw TEXT NOT NULL, iat_utc INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, exp_utc INTEGER, body TEXT NOT NULL, body_sha512 TEXT NOT NULL, public_key_ed25519 TEXT NOT NULL, public_key_curve448 TEXT NOT NULL);\n" SQL_INCR_SCHEMA_NR
 
 /**
  * All SQL migrations.
