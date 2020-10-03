@@ -46,7 +46,13 @@ extern "C" {
  */
 #define OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH 1024
 
+/**
+ * The name of the ed25519 signature field in Opsick HTTP responses.
+ */
+#define OPSICK_SIGNATURE_RESPONSE_HEADER_NAME "ed25519-signature"
+
 #pragma region HASHES
+
 /**
  * The seed value to use for the MurmurHash v3 algo.
  * Since all of the hash lookups are only correlated
