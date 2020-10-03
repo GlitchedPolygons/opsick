@@ -94,6 +94,10 @@ if (NOT TARGET cecies)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/cecies cecies)
 endif ()
 
+if (NOT TARGET TFAC)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/tfac tfac)
+endif ()
+
 configure_file(${CMAKE_CURRENT_LIST_DIR}/src/index.html ${CMAKE_CURRENT_BINARY_DIR}/index.html COPYONLY)
 configure_file(${CMAKE_CURRENT_LIST_DIR}/src/favicon.ico ${CMAKE_CURRENT_BINARY_DIR}/favicon.ico COPYONLY)
 configure_file(${CMAKE_CURRENT_LIST_DIR}/src/config.toml ${CMAKE_CURRENT_BINARY_DIR}/config.toml COPYONLY)
@@ -108,6 +112,7 @@ target_link_libraries(${PROJECT_NAME}
         PUBLIC facil.io
         PUBLIC cecies
         PUBLIC tomlc99
+        PUBLIC TFAC
         )
 
 if (UNIX AND NOT APPLE)
