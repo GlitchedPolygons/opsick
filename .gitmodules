@@ -10,3 +10,6 @@
 [submodule "lib/ed25519"]
 	path = lib/ed25519
 	url = https://github.com/orlp/ed25519
+[submodule "lib/tfac"]
+	path = lib/tfac
+	url = https://github.com/GlitchedPolygons/TFAC.git
