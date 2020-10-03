@@ -14,41 +14,27 @@
    limitations under the License.
 */
 
+#include <mbedtls/platform_util.h>
+
 #include "opsick/db.h"
 #include "opsick/constants.h"
 #include "opsick/endpoints/version.h"
 
-static FIOBJ server_v_header;
-static FIOBJ server_schema_v_header;
-
-static FIOBJ server_v;
-static FIOBJ server_schema_v;
+static char json[128];
+size_t json_length = 0;
 
 void opsick_init_endpoint_version()
 {
-    server_v_header = fiobj_str_new("server-version", 14);
-    server_schema_v_header = fiobj_str_new("server-schema-version", 21);
-
-    char schema[32];
-    snprintf(schema, sizeof(schema), "%lu", opsick_db_get_schema_version_number());
-
-    server_v = fiobj_str_new(OPSICK_SERVER_VERSION_STR, strlen(OPSICK_SERVER_VERSION_STR));
-    server_schema_v = fiobj_str_new(schema, strlen(schema));
+    snprintf(json, sizeof(json), "\n{\"serverVersion\":\"%s\",\"serverSchemaVersion\":%lu}", OPSICK_SERVER_VERSION_STR, opsick_db_get_schema_version_number());
+    json_length = strlen(json);
 }
 
 void opsick_get_version(http_s* request)
 {
-    http_set_header(request, server_v_header, fiobj_str_copy(server_v));
-    http_set_header(request, server_schema_v_header, fiobj_str_copy(server_schema_v));
-
-    http_finish(request);
+    http_send_body(request, json, json_length);
 }
 
 void opsick_free_endpoint_version()
 {
-    fiobj_free(server_v_header);
-    fiobj_free(server_schema_v_header);
-
-    fiobj_free(server_v);
-    fiobj_free(server_schema_v);
+    mbedtls_platform_zeroize(json, sizeof(json));
 }
