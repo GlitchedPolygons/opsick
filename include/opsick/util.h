@@ -23,6 +23,24 @@ extern "C" {
 
 #include <stdint.h>
 #include <stddef.h>
+#include <http.h>
+
+/**
+ * Gets a pre-allocated string (e.g. for response header names).
+ * @param id The string id to use for retrieval.
+ * @return The pre-allocated string.
+ */
+FIOBJ opsick_get_preallocated_string(uint32_t id);
+
+/**
+ * Initialize the Opsick utility functions.
+ */
+void opsick_util_init();
+
+/**
+ * Deallocate the Opsick utility functions (freeing their used memory).
+ */
+void opsick_util_free();
 
 /**
  * Converts a hex string to binary array. <p>
@@ -48,6 +66,13 @@ int opsick_hexstr2bin(const char* hexstr, size_t hexstr_length, uint8_t* output,
  * @return <c>0</c> if conversion succeeded. <c>1</c> if one or more required arguments were <c>NULL</c> or invalid. <c>2</c> if the output buffer size is insufficient: please allocate at least <c>(bin_length * 2) + 1</c> bytes!
  */
 int opsick_bin2hexstr(const uint8_t* bin, size_t bin_length, char* output, size_t output_size, size_t* output_length, uint8_t uppercase);
+
+/**
+ * Signs a string using the Opsick server's private signing key.
+ * @param string The NUL-terminated string to sign.
+ * @param out A writable output buffer of at least 129B size (128 characters + 1 NUL-terminator).
+ */
+void opsick_sign(const char* string, char* out);
 
 #ifdef __cplusplus
 } // extern "C"

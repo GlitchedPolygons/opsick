@@ -58,6 +58,13 @@ void opsick_keys_get_ed25519_keypair(struct opsick_ed25519_keypair* out);
  */
 void opsick_keys_get_curve448_keypair(struct cecies_curve448_keypair* out);
 
+/**
+ * Get readily formatted JSON containing Opsick server public keys.
+ * @param out A writable output char buffer that is at least 256B big!
+ * @param outlen Where to write the written output json string's length into.
+ */
+void opsick_keys_get_public_keys_json(char* out, size_t* outlen);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

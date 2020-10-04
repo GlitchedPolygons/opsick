@@ -34,6 +34,16 @@ static struct cecies_curve448_keypair curve448_keypair;
 static struct opsick_config_hostsettings hostsettings;
 static struct opsick_config_adminsettings adminsettings;
 
+static char pubkey_outjson[256];
+static size_t pubkey_outjson_len = 0;
+
+void opsick_keys_get_public_keys_json(char* out, size_t* outlen)
+{
+    memcpy(out, pubkey_outjson, pubkey_outjson_len);
+    out[pubkey_outjson_len] = 0x00;
+    *outlen = pubkey_outjson_len;
+}
+
 static void keyregen()
 {
     if (firstgen)
@@ -69,6 +79,9 @@ static void keyregen()
     opsick_bin2hexstr(ed25519_keypair.public_key, sizeof(ed25519_keypair.public_key), ed25519_keypair.public_key_hexstr, sizeof(ed25519_keypair.public_key_hexstr), NULL, 0);
     opsick_bin2hexstr(ed25519_keypair.private_key, sizeof(ed25519_keypair.private_key), ed25519_keypair.private_key_hexstr, sizeof(ed25519_keypair.private_key_hexstr), NULL, 0);
 
+    snprintf(pubkey_outjson, sizeof(pubkey_outjson), "{\"publicKeyEd25519\":\"%s\",\"publicKeyCurve448\":\"%s\"}", ed25519_keypair.public_key_hexstr, curve448_keypair.public_key.hexstring);
+    pubkey_outjson_len = strlen(pubkey_outjson);
+
     mbedtls_platform_zeroize(additional_entropy, sizeof(additional_entropy));
     mbedtls_platform_zeroize(sick_randomness, sizeof(sick_randomness));
 }
@@ -92,6 +105,8 @@ void opsick_keys_free()
     mbedtls_platform_zeroize(&adminsettings, sizeof(adminsettings));
     mbedtls_platform_zeroize(&ed25519_keypair, sizeof(ed25519_keypair));
     mbedtls_platform_zeroize(&curve448_keypair, sizeof(curve448_keypair));
+    mbedtls_platform_zeroize(&last_key_refresh, sizeof(last_key_refresh));
+    mbedtls_platform_zeroize(pubkey_outjson, sizeof(pubkey_outjson));
 }
 
 void opsick_keys_get_ed25519_keypair(struct opsick_ed25519_keypair* out)

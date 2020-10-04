@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-#include <mbedtls/platform_util.h>
 #include <ed25519.h>
+#include <mbedtls/platform_util.h>
 
 #include "opsick/db.h"
 #include "opsick/keys.h"
@@ -26,36 +26,24 @@
 static char json[128];
 size_t json_length = 0;
 
-static FIOBJ sigheader;
-
 void opsick_init_endpoint_version()
 {
-    sigheader = fiobj_str_new(OPSICK_SIGNATURE_RESPONSE_HEADER_NAME, 17);
-    snprintf(json, sizeof(json), "{\"serverVersion\":\"%s\",\"serverSchemaVersion\":%lu}", OPSICK_SERVER_VERSION_STR, opsick_db_get_schema_version_number());
+    snprintf(json, sizeof(json), "{\"serverVersion\":\"%s\",\"serverSchemaVersion\":%lu}\r\n", OPSICK_SERVER_VERSION_STR, opsick_db_get_schema_version_number());
     json_length = strlen(json);
 }
 
 void opsick_get_version(http_s* request)
 {
-    struct opsick_ed25519_keypair keypair;
-    opsick_keys_get_ed25519_keypair(&keypair);
+    char sig[128 + 1];
+    opsick_sign(json, sig);
 
-    uint8_t sig[64];
-    ed25519_sign(sig, (unsigned char*)json, json_length, keypair.public_key, keypair.private_key);
-
-    char sighexstr[128 + 1];
-    opsick_bin2hexstr(sig, sizeof(sig), sighexstr, sizeof(sighexstr), NULL, 0);
-
-    http_set_header(request, sigheader, fiobj_str_new(sighexstr, 128));
+    http_set_header(request, opsick_get_preallocated_string(0), fiobj_str_new(sig, 128));
     http_send_body(request, json, json_length);
 
     mbedtls_platform_zeroize(sig, sizeof(sig));
-    mbedtls_platform_zeroize(sighexstr, sizeof(sighexstr));
-    mbedtls_platform_zeroize(&keypair, sizeof(keypair));
 }
 
 void opsick_free_endpoint_version()
 {
     mbedtls_platform_zeroize(json, sizeof(json));
-    fiobj_free(sigheader);
 }

@@ -15,36 +15,31 @@
 */
 
 #include "opsick/keys.h"
+#include "opsick/util.h"
 #include "opsick/endpoints/pubkey.h"
-
-static FIOBJ ed25519_header;
-static FIOBJ curve448_header;
 
 void opsick_init_endpoint_pubkey()
 {
-    ed25519_header = fiobj_str_new("ed25519-public-key", 18);
-    fiobj_str_freeze(ed25519_header);
-
-    curve448_header = fiobj_str_new("curve448-public-key", 19);
-    fiobj_str_freeze(curve448_header);
+    // nop
 }
 
 void opsick_get_pubkey(http_s* request)
 {
-    struct opsick_ed25519_keypair ed25519;
-    struct cecies_curve448_keypair curve448;
+    char out[256];
+    size_t outlen;
+    opsick_keys_get_public_keys_json(out, &outlen);
+    out[outlen++] = '\r';
+    out[outlen++] = '\n';
+    out[outlen] = '\0';
 
-    opsick_keys_get_ed25519_keypair(&ed25519);
-    opsick_keys_get_curve448_keypair(&curve448);
+    char sig[128 + 1];
+    opsick_sign(out, sig);
 
-    http_set_header(request, ed25519_header, fiobj_str_new(ed25519.public_key_hexstr, 64));
-    http_set_header(request, curve448_header, fiobj_str_new(curve448.public_key.hexstring, 112));
-
-    http_finish(request);
+    http_set_header(request, opsick_get_preallocated_string(0), fiobj_str_new(sig, 128));
+    http_send_body(request, out, outlen);
 }
 
 void opsick_free_endpoint_pubkey()
 {
-    fiobj_free(ed25519_header);
-    fiobj_free(curve448_header);
+    // nop
 }

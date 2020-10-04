@@ -17,6 +17,7 @@
 #include "opsick/router.h"
 
 #include "opsick/db.h"
+#include "opsick/util.h"
 #include "opsick/config.h"
 #include "opsick/murmur3.h"
 #include "opsick/constants.h"
@@ -34,6 +35,9 @@ static void route_request(http_s*, uint32_t);
 // on the user-defined port and start facil.io
 void opsick_router_init()
 {
+    // Init utility functions and preallocate some strings.
+    opsick_util_init();
+
     // Initialize endpoints.
     init_all_endpoints();
 
@@ -73,6 +77,7 @@ void opsick_router_free()
 {
     fio_stop();
     free_all_endpoints();
+    opsick_util_free();
     printf("Goodbye :)");
 }
 

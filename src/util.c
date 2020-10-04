@@ -15,7 +15,34 @@
 */
 
 #include "opsick/util.h"
+#include "opsick/keys.h"
 #include <stdio.h>
+#include <ed25519.h>
+#include <mbedtls/platform_util.h>
+
+static FIOBJ preallocated_string_table[128] = { 0x00 };
+
+void opsick_util_init()
+{
+    preallocated_string_table[0] = fiobj_str_new("ed25519-signature", 17);
+}
+
+void opsick_util_free()
+{
+    for (unsigned int i = 0; i < sizeof(preallocated_string_table) / sizeof(FIOBJ); i++)
+    {
+        FIOBJ ie = preallocated_string_table[i];
+        if (!fiobj_type_is(ie, FIOBJ_T_NULL))
+        {
+            fiobj_free(ie);
+        }
+    }
+}
+
+FIOBJ opsick_get_preallocated_string(uint32_t id)
+{
+    return preallocated_string_table[id];
+}
 
 int opsick_hexstr2bin(const char* hexstr, const size_t hexstr_length, uint8_t* output, const size_t output_size, size_t* output_length)
 {
@@ -82,4 +109,18 @@ int opsick_bin2hexstr(const uint8_t* bin, const size_t bin_length, char* output,
     }
 
     return 0;
+}
+
+void opsick_sign(const char* string, char* out)
+{
+    struct opsick_ed25519_keypair keypair;
+    opsick_keys_get_ed25519_keypair(&keypair);
+
+    uint8_t signature[64];
+    ed25519_sign(signature, (unsigned char*)string, strlen(string), keypair.public_key, keypair.private_key);
+
+    opsick_bin2hexstr(signature, sizeof(signature), out, 128 + 1, NULL, 0);
+
+    mbedtls_platform_zeroize(signature, sizeof(signature));
+    mbedtls_platform_zeroize(&keypair, sizeof(keypair));
 }
