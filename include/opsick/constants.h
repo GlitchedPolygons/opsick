@@ -85,6 +85,48 @@ extern "C" {
 
 /**
  * <c>
+ * murmur3("/users/passwd")
+ * </c>
+ */
+#define OPSICK_PASSWD_PATH_HASH 2697305887
+
+/**
+ * <c>
+ * murmur3("/users/create")
+ * </c>
+ */
+#define OPSICK_USERADD_PATH_HASH 4242582731
+
+/**
+ * <c>
+ * murmur3("/users/delete")
+ * </c>
+ */
+#define OPSICK_USERDEL_PATH_HASH 1184612068
+
+/**
+ * <c>
+ * murmur3("/users/extend")
+ * </c>
+ */
+#define OPSICK_USEREXT_PATH_HASH 628309221
+
+/**
+ * <c>
+ * murmur3("/users/body")
+ * </c>
+ */
+#define OPSICK_USERBODY_PATH_HASH 413204006
+
+/**
+ * <c>
+ * murmur3("/users/2fa")
+ * </c>
+ */
+#define OPSICK_USER2FA_PATH_HASH 2196777087
+
+/**
+ * <c>
  * murmur3("/version")
  * </c>
  */
