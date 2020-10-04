@@ -15,21 +15,23 @@
 */
 
 #include <mbedtls/platform_util.h>
+
+#include "opsick/db.h"
 #include "opsick/keys.h"
 #include "opsick/util.h"
-#include "opsick/endpoints/passwd.h"
+#include "opsick/endpoints/useradd.h"
 
-void opsick_init_endpoint_passwd()
+void opsick_init_endpoint_useradd()
 {
     // nop
 }
 
-void opsick_post_passwd(http_s* request)
+void opsick_post_useradd(http_s* request)
 {
-    // TODO: decrypt request, check pw, eventually check TOTP, perform action
+    // TODO: impl!
 }
 
-void opsick_free_endpoint_passwd()
+void opsick_free_endpoint_useradd()
 {
     // nop
 }

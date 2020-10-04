@@ -19,7 +19,7 @@
 #include "opsick/db.h"
 #include "opsick/keys.h"
 #include "opsick/util.h"
-#include "opsick/endpoints/pubkey.h"
+#include "opsick/endpoints/prvkey.h"
 
 void opsick_init_endpoint_prvkey()
 {
