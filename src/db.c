@@ -73,6 +73,8 @@ void opsick_db_init()
         }
     }
 
+    sqlite3_exec(db, init_sql, &callback_select_schema_version_nr, 0, &err_msg);
+    sqlite3_free(err_msg);
     initialized = true;
     return;
 

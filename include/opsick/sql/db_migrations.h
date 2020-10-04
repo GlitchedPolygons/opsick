@@ -23,6 +23,12 @@ extern "C" {
 
 #include <stddef.h>
 
+/*
+ * To modify the opsick db schema, just add the SQL migration script as a static const char[] string down here
+ * (like the other ones already there) and don't forget to append SQL_INCR_SCHEMA_NR at the end to increase the version number.
+ * Then just add the string to the SQL_MIGRATIONS array and you're done! On the next start, opsick will migrate up to the most recent schema!
+ */
+
 /** @private */
 #define SQL_INCR_SCHEMA_NR \
     "\n" \
@@ -45,7 +51,7 @@ static const char SQL_MIGRATION_0000000[] = "CREATE TABLE "
 
 /** @private */
 static const char SQL_MIGRATION_0000001[] = "CREATE TABLE "
-                                            "users(id INTEGER PRIMARY KEY, pw TEXT NOT NULL, totps TEXT, iat_utc INTEGER NOT NULL DEFAULT (strftime('%s','now')), exp_utc INTEGER, body TEXT NOT NULL, body_sha512 TEXT NOT NULL, public_key_ed25519 TEXT NOT NULL, encrypted_private_key_ed25519 TEXT NOT NULL, public_key_curve448 TEXT NOT NULL, encrypted_private_key_curve448 TEXT NOT NULL);\n"
+                                            "users(id INTEGER PRIMARY KEY, pw TEXT NOT NULL, totps TEXT, iat_utc INTEGER NOT NULL DEFAULT (strftime('%s','now')), exp_utc INTEGER, lastmod_utc INTEGER, body TEXT NOT NULL, public_key_ed25519 TEXT NOT NULL, encrypted_private_key_ed25519 TEXT NOT NULL, public_key_curve448 TEXT NOT NULL, encrypted_private_key_curve448 TEXT NOT NULL);\n"
                                             SQL_INCR_SCHEMA_NR
 
 /**
