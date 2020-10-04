@@ -23,6 +23,7 @@
 #include "opsick/constants.h"
 #include "opsick/endpoints/home.h"
 #include "opsick/endpoints/pubkey.h"
+#include "opsick/endpoints/prvkey.h"
 #include "opsick/endpoints/version.h"
 
 static void init_all_endpoints();
@@ -107,6 +108,10 @@ static void route_request(http_s* request, const uint32_t pathstr_hash)
             opsick_get_pubkey(request);
             break;
         }
+        case OPSICK_PRVKEY_PATH_HASH: {
+            opsick_get_prvkey(request);
+            break;
+        }
         case OPSICK_VERSION_PATH_HASH: {
             opsick_get_version(request);
             break;
@@ -118,6 +123,7 @@ static void init_all_endpoints()
 {
     opsick_init_endpoint_home();
     opsick_init_endpoint_pubkey();
+    opsick_init_endpoint_prvkey();
     opsick_init_endpoint_version();
 }
 
@@ -125,19 +131,6 @@ static void free_all_endpoints()
 {
     opsick_free_endpoint_home();
     opsick_free_endpoint_pubkey();
+    opsick_free_endpoint_prvkey();
     opsick_free_endpoint_version();
 }
-
-/*
-
-OPSICK_HTTP_HEADER_X_DATA = fiobj_str_new("X-Data", 6);
-OPSICK_HTTP_HEADER_SIGNATURE = fiobj_str_new("Signature", 9);
-
-http_set_header(request, OPSICK_HTTP_HEADER_CONTENT_TYPE, http_mimetype_find("txt", 3));
-http_set_header(request, OPSICK_HTTP_HEADER_X_DATA, fiobj_str_new("my data", 7));
-http_send_body(request, "Hello World!\r\n", 14);
-
-fiobj_free(OPSICK_HTTP_HEADER_X_DATA);
-fiobj_free(OPSICK_HTTP_HEADER_SIGNATURE);
-
-*/

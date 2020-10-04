@@ -49,6 +49,7 @@ set(${PROJECT_NAME}_HEADERS
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/util.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/home.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/pubkey.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/prvkey.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/version.h
         )
 
@@ -75,6 +76,7 @@ set(${PROJECT_NAME}_SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/src/sql/users.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/home.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/pubkey.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/prvkey.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/version.c
         )
 

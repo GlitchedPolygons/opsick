@@ -14,34 +14,24 @@
    limitations under the License.
 */
 
-#ifndef OPSICK_PUBKEY_H
-#define OPSICK_PUBKEY_H
+#include <mbedtls/platform_util.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "opsick/db.h"
+#include "opsick/keys.h"
+#include "opsick/util.h"
+#include "opsick/endpoints/pubkey.h"
 
-#include "http.h"
+void opsick_init_endpoint_prvkey()
+{
+    // nop
+}
 
-/**
- * Initializes the "/pubkey" endpoint.
- */
-void opsick_init_endpoint_pubkey();
+void opsick_get_prvkey(http_s* request)
+{
+    // TODO: check user ID and retrieve accordingly.
+}
 
-/**
- * GET request to "/pubkey". <p>
- * Gets the server's public key and returns it in the HTTP response body.
- * @param request The HTTP request.
- */
-void opsick_get_pubkey(http_s* request);
-
-/**
- * Frees the "/pubkey" endpoint resources.
- */
-void opsick_free_endpoint_pubkey();
-
-#ifdef __cplusplus
-} // extern "C"
-#endif
-
-#endif // OPSICK_PUBKEY_H
+void opsick_free_endpoint_prvkey()
+{
+    // nop
+}

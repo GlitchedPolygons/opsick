@@ -30,7 +30,7 @@ void opsick_init_endpoint_version();
 
 /**
  * GET request to "/version". <p>
- * Gets the server's version number and schema version number and returns it in the HTTP response headers "server-version" and "server-schema-version".
+ * Gets the server's version number and schema version number and returns it in the HTTP response body.
  * @param request The HTTP request.
  */
 void opsick_get_version(http_s* request);

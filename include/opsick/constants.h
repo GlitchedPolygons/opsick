@@ -78,6 +78,13 @@ extern "C" {
 
 /**
  * <c>
+ * murmur3("/users/prvkey")
+ * </c>
+ */
+#define OPSICK_PRVKEY_PATH_HASH 944329335
+
+/**
+ * <c>
  * murmur3("/version")
  * </c>
  */

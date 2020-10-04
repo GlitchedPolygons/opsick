@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-#ifndef OPSICK_PUBKEY_H
-#define OPSICK_PUBKEY_H
+#ifndef OPSICK_PRVKEY_H
+#define OPSICK_PRVKEY_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,24 +24,25 @@ extern "C" {
 #include "http.h"
 
 /**
- * Initializes the "/pubkey" endpoint.
+ * Initializes the "/users/prvkey" endpoint.
  */
-void opsick_init_endpoint_pubkey();
+void opsick_init_endpoint_prvkey();
 
 /**
- * GET request to "/pubkey". <p>
- * Gets the server's public key and returns it in the HTTP response body.
+ * GET request to "/users/prvkey". <p>
+ * Gets a user's encrypted private key(s) and returns it in the HTTP response body.
+ * The user ID should be passed in the request body.
  * @param request The HTTP request.
  */
-void opsick_get_pubkey(http_s* request);
+void opsick_get_prvkey(http_s* request);
 
 /**
- * Frees the "/pubkey" endpoint resources.
+ * Frees the "/users/prvkey" endpoint resources.
  */
-void opsick_free_endpoint_pubkey();
+void opsick_free_endpoint_prvkey();
 
 #ifdef __cplusplus
 } // extern "C"
 #endif
 
-#endif // OPSICK_PUBKEY_H
+#endif // OPSICK_PRVKEY_H

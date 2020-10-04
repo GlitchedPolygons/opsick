@@ -45,12 +45,13 @@ static const char SQL_MIGRATION_0000000[] = "CREATE TABLE "
 
 /** @private */
 static const char SQL_MIGRATION_0000001[] = "CREATE TABLE "
-                                            "users(id INTEGER PRIMARY KEY, pw TEXT NOT NULL, totps TEXT, iat_utc INTEGER NOT NULL DEFAULT (strftime('%s','now')), exp_utc INTEGER, body TEXT NOT NULL, body_sha512 TEXT NOT NULL, public_key_ed25519 TEXT NOT NULL, public_key_curve448 TEXT NOT NULL);\n" SQL_INCR_SCHEMA_NR
+                                            "users(id INTEGER PRIMARY KEY, pw TEXT NOT NULL, totps TEXT, iat_utc INTEGER NOT NULL DEFAULT (strftime('%s','now')), exp_utc INTEGER, body TEXT NOT NULL, body_sha512 TEXT NOT NULL, public_key_ed25519 TEXT NOT NULL, encrypted_private_key_ed25519 TEXT NOT NULL, public_key_curve448 TEXT NOT NULL, encrypted_private_key_curve448 TEXT NOT NULL);\n"
+                                            SQL_INCR_SCHEMA_NR
 
 /**
  * All SQL migrations.
  */
-static const char* SQL_MIGRATIONS[] = {
+static const char* SQL_MIGRATIONS[] = { //
     SQL_MIGRATION_0000000, //
     SQL_MIGRATION_0000001, //
 };
