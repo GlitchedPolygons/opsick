@@ -24,6 +24,12 @@ extern "C" {
 #include "http.h"
 
 /**
+ * @file useradd.h
+ * @author Raphael Beck
+ * @brief User account creation endpoint.
+ */
+
+/**
  * Initializes the "/users/create" endpoint.
  */
 void opsick_init_endpoint_useradd();

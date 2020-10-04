@@ -24,6 +24,12 @@ extern "C" {
 #include "http.h"
 
 /**
+ * @file passwd.h
+ * @author Raphael Beck
+ * @brief User account password change endpoint.
+ */
+
+/**
  * Initializes the "/users/passwd" endpoint.
  */
 void opsick_init_endpoint_passwd();

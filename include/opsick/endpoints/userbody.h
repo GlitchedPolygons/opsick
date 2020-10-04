@@ -24,6 +24,12 @@ extern "C" {
 #include "http.h"
 
 /**
+ * @file userbody.h
+ * @author Raphael Beck
+ * @brief User account main body interaction endpoint.
+ */
+
+/**
  * Initializes the "/users/body" endpoint.
  */
 void opsick_init_endpoint_userbody();

@@ -26,6 +26,12 @@ extern "C" {
 #include <stdbool.h>
 
 /**
+ * @file db.h
+ * @author Raphael Beck
+ * @brief Opsick DB interaction functions.
+ */
+
+/**
  * Initializes the db client, connecting to sqlite and setting up everything that's needed to query the database. This terminates opsick with a status code of <c>-1</c> in case of a failure!
  */
 void opsick_db_init();

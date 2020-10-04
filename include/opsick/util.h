@@ -21,6 +21,12 @@
 extern "C" {
 #endif
 
+/**
+ * @file util.h
+ * @author Raphael Beck
+ * @brief Opsick utility functions and pre-allocated content.
+ */
+
 #include <stdint.h>
 #include <stddef.h>
 #include <http.h>

@@ -24,6 +24,12 @@ extern "C" {
 #include "http.h"
 
 /**
+ * @file pubkey.h
+ * @author Raphael Beck
+ * @brief Opsick server public key retrieval endpoint.
+ */
+
+/**
  * Initializes the "/pubkey" endpoint.
  */
 void opsick_init_endpoint_pubkey();

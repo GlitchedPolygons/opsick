@@ -24,6 +24,12 @@ extern "C" {
 #include "http.h"
 
 /**
+ * @file userdel.h
+ * @author Raphael Beck
+ * @brief User account deletion endpoint.
+ */
+
+/**
  * Initializes the "/users/delete" endpoint.
  */
 void opsick_init_endpoint_userdel();

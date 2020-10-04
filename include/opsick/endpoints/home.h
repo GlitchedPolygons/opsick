@@ -24,6 +24,12 @@ extern "C" {
 #include "http.h"
 
 /**
+ * @file home.h
+ * @author Raphael Beck
+ * @brief Opsick home endpoint ("/").
+ */
+
+/**
 * Initializes the "/" endpoint.
 */
 void opsick_init_endpoint_home();

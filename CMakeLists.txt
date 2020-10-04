@@ -79,7 +79,6 @@ set(${PROJECT_NAME}_SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/src/router.c
         ${CMAKE_CURRENT_LIST_DIR}/src/db.c
         ${CMAKE_CURRENT_LIST_DIR}/src/util.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/sql/users.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/home.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/pubkey.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/prvkey.c

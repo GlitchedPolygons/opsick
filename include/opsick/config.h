@@ -26,6 +26,12 @@ extern "C" {
 #include "opsick/constants.h"
 
 /**
+ * @file config.h
+ * @author Raphael Beck
+ * @brief Opsick configuration tools/functions/structures.
+ */
+
+/**
  * Opens the opsick config file,
  * reads the user-defined preferences/settings in it
  * and loads them into memory.

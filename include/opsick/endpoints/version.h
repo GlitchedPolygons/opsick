@@ -24,6 +24,12 @@ extern "C" {
 #include "http.h"
 
 /**
+ * @file version.h
+ * @author Raphael Beck
+ * @brief Opsick version checker endpoint.
+ */
+
+/**
  * Initializes the "/pubkey" endpoint.
  */
 void opsick_init_endpoint_version();

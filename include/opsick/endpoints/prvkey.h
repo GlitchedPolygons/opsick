@@ -24,6 +24,12 @@ extern "C" {
 #include "http.h"
 
 /**
+ * @file prvkey.h
+ * @author Raphael Beck
+ * @brief User account private key retrieval endpoint (in encrypted form).
+ */
+
+/**
  * Initializes the "/users/prvkey" endpoint.
  */
 void opsick_init_endpoint_prvkey();

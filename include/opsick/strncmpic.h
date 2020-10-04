@@ -24,6 +24,12 @@ extern "C" {
 #include <ctype.h>
 
 /**
+ * @file strncmpic.h
+ * @author Raphael Beck
+ * @brief String comparison ignoring case.
+ */
+
+/**
  * Compares two strings ignoring UPPER vs. lowercase.
  * @param str1 String to compare.
  * @param str2 String to compare to.

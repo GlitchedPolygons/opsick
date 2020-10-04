@@ -25,6 +25,12 @@ extern "C" {
 #include <cecies/keygen.h>
 
 /**
+ * @file keys.h
+ * @author Raphael Beck
+ * @brief Opsick key handling.
+ */
+
+/**
  * Initialize opsick keygen.
  */
 void opsick_keys_init();

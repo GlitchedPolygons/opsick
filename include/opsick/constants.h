@@ -22,6 +22,12 @@ extern "C" {
 #endif
 
 /**
+ * @file constants.h
+ * @author Raphael Beck
+ * @brief Opsick constants (pre-processor #defines).
+ */
+
+/**
  * Opsick current version number.
  */
 #define OPSICK_SERVER_VERSION 100

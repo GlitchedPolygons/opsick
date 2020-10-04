@@ -24,6 +24,12 @@ extern "C" {
 #include "http.h"
 
 /**
+ * @file userext.h
+ * @author Raphael Beck
+ * @brief User account extension endpoint.
+ */
+
+/**
  * Initializes the "/users/extend" endpoint.
  */
 void opsick_init_endpoint_userext();

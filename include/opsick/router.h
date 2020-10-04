@@ -24,6 +24,12 @@ extern "C" {
 #include "http.h"
 
 /**
+ * @file router.h
+ * @author Raphael Beck
+ * @brief Web API router that takes care of incoming HTTP requests.
+ */
+
+/**
  * Pre-allocates values that are used often, reads user config,
  * initializes the HTTP request router, starts listening to HTTP requests
  * on the user-defined port and starts facil.io.

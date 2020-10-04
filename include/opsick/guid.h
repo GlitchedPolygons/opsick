@@ -23,6 +23,12 @@ extern "C" {
 
 #include <stdbool.h>
 
+/**
+ * @file guid.h
+ * @author Raphael Beck
+ * @brief GUID generation functionality.
+ */
+
 #ifdef _WIN32
 #include <objbase.h>
 #else

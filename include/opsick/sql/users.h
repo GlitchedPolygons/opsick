@@ -21,7 +21,21 @@
 extern "C" {
 #endif
 
-//
+/**
+ * @file users.h
+ * @author Raphael Beck
+ * @brief SQL statements for interacting with the Opsick DB's users table (parametrized).
+ */
+
+static const char opsick_sql_get_user_body[] = "SELECT body FROM users WHERE id = ?";
+static const char opsick_sql_set_user_body[] = "UPDATE users SET body = ?, lastmod_utc = (strftime('%s','now')) WHERE id = ?";
+
+static const char opsick_sql_get_user_pw_and_totps[] = "SELECT pw, totps FROM users WHERE id = ?";
+static const char opsick_sql_set_user_pw[] = "UPDATE users SET pw = ?, lastmod_utc = (strftime('%s','now')) WHERE id = ?";
+static const char opsick_sql_set_user_totps[] = "UPDATE users SET totps = ?, lastmod_utc = (strftime('%s','now')) WHERE id = ?";
+
+static const char opsick_sql_get_user_exp[] = "SELECT exp_utc FROM users WHERE id = ?";
+static const char opsick_sql_set_user_exp[] = "UPDATE users SET exp_utc = ?, lastmod_utc = (strftime('%s','now')) WHERE id = ?";
 
 #ifdef __cplusplus
 } // extern "C"

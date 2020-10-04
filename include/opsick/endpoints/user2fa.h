@@ -24,6 +24,12 @@ extern "C" {
 #include "http.h"
 
 /**
+ * @file user2fa.h
+ * @author Raphael Beck
+ * @brief User account two-factor authentication handling endpoint.
+ */
+
+/**
  * Initializes the "/users/2fa" endpoint.
  */
 void opsick_init_endpoint_user2fa();
