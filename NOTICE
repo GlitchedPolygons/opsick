@@ -25,6 +25,14 @@ freely available under their respective licenses:
 * * * License: ISC
 * * * Copyright: Frank Denis
 
+* [TFAC](https://github.com/GlitchedPolygons/TFAC)
+* * License: Apache-2.0
+* * Copyright: Raphael Beck
+* * [Base32 implementation](https://github.com/google/google-authenticator-libpam/blob/master/src/base32.c)
+* * * License: Apache-2.0
+* * * Author: Markus Gutschke
+* * * Copyright: Google Inc.
+
 * [Sqlite3](https://github.com/sqlite/sqlite)
 * * License: Public domain
 * * Copyright: (none)
@@ -69,7 +77,7 @@ SOFTWARE.
 
 ---
 
-MbedTLS, CECIES and Opsick (this project itself):
+MbedTLS, CECIES, TFAC and Opsick (this project itself):
 
 ---
 
