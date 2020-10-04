@@ -60,6 +60,7 @@ static inline void init()
     hostsettings.max_clients = 0;
     hostsettings.max_header_size = 1024 * 16;
     hostsettings.max_body_size = 1024 * 1024 * 16;
+    strcpy(hostsettings.db_file, "opsick.db");
 
     adminsettings.max_users = 0;
     adminsettings.max_user_quota = 16 * 1024 * 1024;
@@ -109,6 +110,17 @@ static bool load_hostsettings(toml_table_t* conf)
     parse_toml_uint(table, "max_clients", &hostsettings.max_clients);
     parse_toml_uint(table, "max_header_size", &hostsettings.max_header_size);
     parse_toml_uint(table, "max_body_size", &hostsettings.max_body_size);
+
+    char* db_file = NULL;
+    if (toml_rtos(toml_raw_in(table, "db_file"), &db_file))
+    {
+        fprintf(stderr, "ERROR: Failed to parse \"db_file\" setting string from the opsick user config file \"%s\".", OPSICK_CONFIG_FILE_PATH);
+    }
+    else
+    {
+        strncpy(hostsettings.db_file, db_file, sizeof(hostsettings.db_file));
+    }
+    free(db_file);
 
     return true;
 }

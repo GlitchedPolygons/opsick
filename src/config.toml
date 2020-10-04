@@ -8,6 +8,7 @@ threads = 2
 max_clients = 0
 max_header_size = 16384
 max_body_size = 16777216
+db_file = "opsick.db"
 
 [admin]
 max_users = 0

@@ -16,6 +16,7 @@
 
 #include "opsick/db.h"
 #include "opsick/constants.h"
+#include "opsick/config.h"
 #include "opsick/sql/db_migrations.h"
 
 #include <string.h>
@@ -31,6 +32,7 @@ static uint64_t cached_db_schema_version_nr = 0;
 static time_t last_db_schema_version_nr_lookup = 0;
 static uint8_t last128B[128];
 static sqlite3* db;
+static struct opsick_config_hostsettings hostsettings;
 
 static int callback_select_schema_version_nr(void*, int, char**, char**);
 
@@ -41,8 +43,10 @@ void opsick_db_init()
     if (initialized)
         return;
 
+    opsick_config_get_hostsettings(&hostsettings);
+
     char* err_msg = NULL;
-    int rc = sqlite3_open(OPSICK_SQLITE_DB_FILENAME, &db);
+    int rc = sqlite3_open(hostsettings.db_file, &db);
 
     if (rc != SQLITE_OK)
     {
@@ -88,6 +92,7 @@ void opsick_db_free()
 
     sqlite3_close(db);
     mbedtls_platform_zeroize(last128B, sizeof(last128B));
+    mbedtls_platform_zeroize(&hostsettings, sizeof(hostsettings));
     mbedtls_platform_zeroize(&last_used_userid, sizeof(last_used_userid));
 }
 

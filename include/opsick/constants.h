@@ -37,11 +37,6 @@ extern "C" {
 #define OPSICK_CONFIG_FILE_PATH "config.toml"
 
 /**
- * The opsick sqlite db filename.
- */
-#define OPSICK_SQLITE_DB_FILENAME "opsick.db"
-
-/**
  * The maximum length of the instance's user creation endpoint password.
  */
 #define OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH 1024

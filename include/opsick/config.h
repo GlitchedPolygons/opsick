@@ -73,6 +73,12 @@ struct opsick_config_hostsettings
      * [DEFAULT] <c>16MB</c> (<c>1024 * 1024 * 16B</c>).
      */
     uint64_t max_body_size;
+
+    /**
+     * The file path to the Opsick SQL db. <p>
+     * [DEFAULT] <c>opsick.db</c> (local to where the opsick executable resides).
+     */
+    char db_file[4096];
 };
 
 /**
