@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['log_1',['log',['../structopsick__config__hostsettings.html#a4375508c3fa5d689ad80be4993eb0550',1,'opsick_config_hostsettings']]]
+  ['config_2eh_2',['config.h',['../config_8h.html',1,'']]],
+  ['constants_2eh_3',['constants.h',['../constants_8h.html',1,'']]]
 ];
