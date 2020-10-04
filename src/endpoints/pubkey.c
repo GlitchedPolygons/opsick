@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+#include <mbedtls/platform_util.h>
 #include "opsick/keys.h"
 #include "opsick/util.h"
 #include "opsick/endpoints/pubkey.h"
@@ -25,18 +26,18 @@ void opsick_init_endpoint_pubkey()
 
 void opsick_get_pubkey(http_s* request)
 {
-    char out[256];
-    size_t outlen;
-    opsick_keys_get_public_keys_json(out, &outlen);
-    out[outlen++] = '\r';
-    out[outlen++] = '\n';
-    out[outlen] = '\0';
+    char json[256];
+    size_t json_length;
+    opsick_keys_get_public_keys_json(json, &json_length);
 
-    char sig[128 + 1];
-    opsick_sign(out, sig);
+    char signature[128 + 1];
+    opsick_sign(json, signature);
 
-    http_set_header(request, opsick_get_preallocated_string(0), fiobj_str_new(sig, 128));
-    http_send_body(request, out, outlen);
+    http_set_header(request, opsick_get_preallocated_string(0), fiobj_str_new(signature, 128));
+    http_send_body(request, json, json_length);
+
+    mbedtls_platform_zeroize(json, sizeof(json));
+    mbedtls_platform_zeroize(signature, sizeof(signature));
 }
 
 void opsick_free_endpoint_pubkey()

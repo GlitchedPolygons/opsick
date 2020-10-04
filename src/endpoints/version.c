@@ -28,7 +28,7 @@ size_t json_length = 0;
 
 void opsick_init_endpoint_version()
 {
-    snprintf(json, sizeof(json), "{\"serverVersion\":\"%s\",\"serverSchemaVersion\":%lu}\r\n", OPSICK_SERVER_VERSION_STR, opsick_db_get_schema_version_number());
+    snprintf(json, sizeof(json), "{\"serverVersion\":\"%s\",\"serverSchemaVersion\":%lu}", OPSICK_SERVER_VERSION_STR, opsick_db_get_schema_version_number());
     json_length = strlen(json);
 }
 
