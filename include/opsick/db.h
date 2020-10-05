@@ -23,7 +23,6 @@ extern "C" {
 
 #include <time.h>
 #include <stdint.h>
-#include <stdbool.h>
 
 /**
  * @file db.h
@@ -60,6 +59,19 @@ void opsick_db_last_128_bytes_of_ciphertext(uint8_t out[128]);
  * @return time_t
  */
 time_t opsick_db_get_last_db_schema_version_nr_lookup();
+
+/**
+ * Adds a new user to the DB.
+ * @param pw The user's password SHA2-512
+ * @param exp_utc When the user expires (UTC).
+ * @param body The user's encrypted data body.
+ * @param public_key_ed25519 The user's public Ed25519 key.
+ * @param encrypted_private_key_ed25519 The user's encrypted private Ed25519 key.
+ * @param public_key_curve448 The user's public Curve448 key.
+ * @param encrypted_private_key_curve448 The user's encrypted private Curve448 key.
+ * @return <c>0</c> on success; error code in case of a failure.
+ */
+int opsick_db_create_user(const char* pw, const time_t exp_utc, const char* body, const char* public_key_ed25519, const char* encrypted_private_key_ed25519, const char* public_key_curve448, const char* encrypted_private_key_curve448);
 
 /**
  * Disconnects from the db and frees all the related resources.

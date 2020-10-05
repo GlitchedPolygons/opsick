@@ -87,6 +87,14 @@ void opsick_post_useradd(http_s* request)
         goto exit;
     }
 
+    const int r = opsick_db_create_user(fiobj_obj2cstr(pw_obj).data, (time_t)fiobj_obj2num(exp_utc_obj), fiobj_obj2cstr(body_obj).data, fiobj_obj2cstr(public_key_ed25519_obj).data, fiobj_obj2cstr(encrypted_private_key_ed25519_obj).data, fiobj_obj2cstr(public_key_curve448_obj).data, fiobj_obj2cstr(encrypted_private_key_curve448_obj).data);
+    if (r != 0)
+    {
+        fprintf(stderr, "Failure to create new user server-side using \"opsick_db_create_user()\". Returned error code: %d", r);
+        http_send_error(request, 403);
+        goto exit;
+    }
+
 exit:
     if (json != NULL)
     {
