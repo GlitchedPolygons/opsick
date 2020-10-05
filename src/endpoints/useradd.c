@@ -14,20 +14,41 @@
    limitations under the License.
 */
 
+#include <cecies/encrypt.h>
+#include <cecies/decrypt.h>
 #include <mbedtls/platform_util.h>
 
 #include "opsick/db.h"
 #include "opsick/keys.h"
 #include "opsick/util.h"
+#include "opsick/config.h"
+#include "opsick/constants.h"
 #include "opsick/endpoints/useradd.h"
+
+static uint8_t api_key_public[32];
 
 void opsick_init_endpoint_useradd()
 {
-    // nop
+    struct opsick_config_adminsettings adminsettings;
+    opsick_config_get_adminsettings(&adminsettings);
+    memcpy(api_key_public, adminsettings.api_key_public, sizeof(api_key_public));
 }
 
 void opsick_post_useradd(http_s* request)
 {
+    if (!opsick_verify(request, api_key_public))
+    {
+        http_send_error(request, 403);
+        return;
+    }
+
+    const struct fio_str_info_s body = fiobj_obj2cstr(request->body);
+    if (body.data == NULL || body.len == 0)
+    {
+        http_send_error(request, 403);
+        return;
+    }
+
     // TODO: impl!
 }
 

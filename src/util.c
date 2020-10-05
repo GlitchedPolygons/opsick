@@ -16,6 +16,7 @@
 
 #include "opsick/util.h"
 #include "opsick/keys.h"
+#include "opsick/constants.h"
 #include <stdio.h>
 #include <ed25519.h>
 #include <mbedtls/platform_util.h>
@@ -123,4 +124,30 @@ void opsick_sign(const char* string, char* out)
 
     mbedtls_platform_zeroize(signature, sizeof(signature));
     mbedtls_platform_zeroize(&keypair, sizeof(keypair));
+}
+
+int opsick_verify(http_s* request, const uint8_t* public_key)
+{
+    const struct fio_str_info_s body = fiobj_obj2cstr(request->body);
+    if (body.data == NULL || body.len == 0)
+    {
+        return 0;
+    }
+
+    FIOBJ signature_header = fiobj_hash_get(request->headers, opsick_get_preallocated_string(OPSICK_PREALLOCATED_STRING_ID_ED25519_SIGNATURE));
+    if (!fiobj_type_is(signature_header, FIOBJ_T_STRING))
+    {
+        return 0;
+    }
+
+    char signature[128 + 1];
+    snprintf(signature, sizeof(signature), "%s", fiobj_obj2cstr(signature_header).data);
+
+    uint8_t signature_bytes[64];
+    if (opsick_hexstr2bin(signature, 128, signature_bytes, sizeof(signature_bytes), NULL) != 0)
+    {
+        return 0;
+    }
+
+    return ed25519_verify(signature_bytes, (unsigned char*)body.data, body.len, public_key);
 }

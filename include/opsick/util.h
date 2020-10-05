@@ -29,6 +29,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 #include <http.h>
 
 /**
@@ -79,6 +80,14 @@ int opsick_bin2hexstr(const uint8_t* bin, size_t bin_length, char* output, size_
  * @param out A writable output buffer of at least 129B size (128 characters + 1 NUL-terminator).
  */
 void opsick_sign(const char* string, char* out);
+
+/**
+ * Verifies an HTTP request signature.
+ * @param request The HTTP request whose body signature you want to verify.
+ * @param public_key The public key to use for verifying the signature.
+ * @return <c>1</c> if the signature is valid; <c>0</c> if otherwise.
+ */
+int opsick_verify(http_s* request, const uint8_t* public_key);
 
 #ifdef __cplusplus
 } // extern "C"

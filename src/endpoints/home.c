@@ -14,6 +14,8 @@
    limitations under the License.
 */
 
+#include "opsick/util.h"
+#include "opsick/config.h"
 #include "opsick/endpoints/home.h"
 
 static char* html = NULL;
@@ -27,6 +29,14 @@ void opsick_init_endpoint_home()
         return;
     }
     initialized = 1;
+
+    struct opsick_config_adminsettings adminsettings;
+    opsick_config_get_adminsettings(&adminsettings);
+
+    if (!adminsettings.use_index_html)
+    {
+        return;
+    }
 
     FILE* fptr = fopen("index.html", "r");
     if (fptr == NULL)
@@ -55,7 +65,17 @@ void opsick_init_endpoint_home()
 
 void opsick_get_home(http_s* request)
 {
-    // TODO: sign response body (set signature header)
+    if (html == NULL || html_len == 0)
+    {
+        http_finish(request);
+        return;
+    }
+
+    char signature[128 + 1];
+    opsick_sign(html, signature);
+
+    http_set_header(request, opsick_get_preallocated_string(OPSICK_PREALLOCATED_STRING_ID_ED25519_SIGNATURE), fiobj_str_new(signature, 128));
+
     http_send_body(request, html, html_len);
 }
 

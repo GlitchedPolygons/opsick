@@ -149,6 +149,11 @@ struct opsick_config_adminsettings
      * who signs the requests using this key's private counterpart. <p>
      * The API master is the "admin" user who is allowed to create and modify opsick users, extend them, etc...
      */
+    uint8_t api_key_public[32];
+
+    /**
+     * The hex-encoded #api_key_public string (NUL-terminated).
+     */
     char api_key_public_hexstr[64 + 1];
 };
 

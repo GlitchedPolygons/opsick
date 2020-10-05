@@ -19,15 +19,26 @@
 #include "opsick/db.h"
 #include "opsick/keys.h"
 #include "opsick/util.h"
+#include "opsick/config.h"
 #include "opsick/endpoints/userext.h"
+
+static uint8_t api_key_public[32];
 
 void opsick_init_endpoint_userext()
 {
-    // nop
+    struct opsick_config_adminsettings adminsettings;
+    opsick_config_get_adminsettings(&adminsettings);
+    memcpy(api_key_public, adminsettings.api_key_public, sizeof(api_key_public));
 }
 
 void opsick_post_userext(http_s* request)
 {
+    if (!opsick_verify(request, api_key_public))
+    {
+        http_send_error(request, 403);
+        return;
+    }
+
     // TODO: impl!
 }
 

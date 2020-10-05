@@ -17,6 +17,7 @@
 #include <mbedtls/platform_util.h>
 #include "opsick/keys.h"
 #include "opsick/util.h"
+#include "opsick/constants.h"
 #include "opsick/endpoints/pubkey.h"
 
 void opsick_init_endpoint_pubkey()
@@ -33,7 +34,7 @@ void opsick_get_pubkey(http_s* request)
     char signature[128 + 1];
     opsick_sign(json, signature);
 
-    http_set_header(request, opsick_get_preallocated_string(0), fiobj_str_new(signature, 128));
+    http_set_header(request, opsick_get_preallocated_string(OPSICK_PREALLOCATED_STRING_ID_ED25519_SIGNATURE), fiobj_str_new(signature, 128));
     http_send_body(request, json, json_length);
 
     mbedtls_platform_zeroize(json, sizeof(json));

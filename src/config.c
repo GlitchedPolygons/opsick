@@ -171,6 +171,7 @@ static bool load_adminsettings(toml_table_t* conf)
     else
     {
         strncpy(adminsettings.api_key_public_hexstr, api_key_public_hexstr, sizeof(adminsettings.api_key_public_hexstr));
+        opsick_hexstr2bin(api_key_public_hexstr, strlen(api_key_public_hexstr), adminsettings.api_key_public, sizeof(adminsettings.api_key_public), NULL);
     }
     free(api_key_public_hexstr);
 
