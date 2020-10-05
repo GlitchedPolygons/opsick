@@ -41,6 +41,10 @@ freely available under their respective licenses:
 * * License: Zlib
 * * Copyright: Orson Peters
 
+* [Argon2](https://github.com/P-H-C/phc-winner-argon2)
+* * License: Apache-2.0
+* * Copyright: Daniel Dinu, Dmitry Khovratovich, Jean-Philippe Aumasson and Samuel Neves
+
 * [tomlc99](https://github.com/cktan/tomlc99)
 * * License: MIT
 * * Copyright: CK Tan
@@ -77,7 +81,7 @@ SOFTWARE.
 
 ---
 
-MbedTLS, CECIES, TFAC and Opsick (this project itself):
+MbedTLS, CECIES, TFAC, Argon2 and Opsick (this project itself):
 
 ---
 
