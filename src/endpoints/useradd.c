@@ -42,17 +42,48 @@ void opsick_post_useradd(http_s* request)
         return;
     }
 
-    const struct fio_str_info_s body = fiobj_obj2cstr(request->body);
-    if (body.data == NULL || body.len == 0)
+    char* json = NULL;
+    size_t json_length = 0;
+
+    FIOBJ body = FIOBJ_INVALID;
+
+    if (opsick_decrypt(request, &json) != 0)
     {
         http_send_error(request, 403);
-        return;
+        goto exit;
+    }
+
+    json_length = strlen(json);
+    if (json_length == 0)
+    {
+        http_send_error(request, 403);
+        goto exit;
+    }
+
+    if (fiobj_json2obj(&body, json, json_length) == 0)
+    {
+        http_send_error(request, 403);
+        goto exit;
     }
 
     // TODO: impl!
+
+exit:
+    if (json != NULL)
+    {
+        if (json_length > 0)
+        {
+            mbedtls_platform_zeroize(json, json_length);
+        }
+        free(json);
+    }
+    if (!fiobj_type_is(body, FIOBJ_INVALID))
+    {
+        fiobj_free(body);
+    }
 }
 
 void opsick_free_endpoint_useradd()
 {
-    // nop
+    mbedtls_platform_zeroize(api_key_public, sizeof(api_key_public));
 }

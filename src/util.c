@@ -19,6 +19,7 @@
 #include "opsick/constants.h"
 #include <stdio.h>
 #include <ed25519.h>
+#include <cecies/decrypt.h>
 #include <mbedtls/platform_util.h>
 
 static FIOBJ preallocated_string_table[128] = { 0x00 };
@@ -150,4 +151,48 @@ int opsick_verify(http_s* request, const uint8_t* public_key)
     }
 
     return ed25519_verify(signature_bytes, (unsigned char*)body.data, body.len, public_key);
+}
+
+int opsick_decrypt(http_s* request, char** out)
+{
+    const struct fio_str_info_s body = fiobj_obj2cstr(request->body);
+    if (body.data == NULL || body.len == 0)
+    {
+        return 1;
+    }
+
+    int r = -1;
+    cecies_curve448_keypair keypair;
+    opsick_keys_get_curve448_keypair(&keypair);
+
+    char* decrypted = malloc(body.len);
+    size_t decrypted_length = 0;
+
+    if (decrypted == NULL)
+    {
+        r = CECIES_DECRYPT_ERROR_CODE_OUT_OF_MEMORY;
+        goto exit;
+    }
+
+    r = cecies_curve448_decrypt((unsigned char*)body.data, body.len, true, keypair.private_key, (unsigned char*)decrypted, body.len, &decrypted_length);
+    if (r != 0)
+    {
+        goto exit;
+    }
+
+    *out = malloc(decrypted_length + 1);
+    if (*out == NULL)
+    {
+        r = CECIES_DECRYPT_ERROR_CODE_OUT_OF_MEMORY;
+        goto exit;
+    }
+
+    memcpy(*out, decrypted, decrypted_length);
+    (*out)[decrypted_length] = '\0';
+
+exit:
+    mbedtls_platform_zeroize(&keypair, sizeof(keypair));
+    mbedtls_platform_zeroize(decrypted, decrypted_length);
+    free(decrypted);
+    return r;
 }

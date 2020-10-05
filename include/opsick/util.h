@@ -89,6 +89,14 @@ void opsick_sign(const char* string, char* out);
  */
 int opsick_verify(http_s* request, const uint8_t* public_key);
 
+/**
+ * Decrypts an HTTP request's body that was encrypted for the Opsick server.
+ * @param request The HTTP request to decrypt.
+ * @param out Where to write the decrypted HTTP request body into (this will be allocated on success, so remember to <c>free()</c> this).
+ * @return <c>0</c> if decryption succeeded. Non-zero error code if decryption failed.
+ */
+int opsick_decrypt(http_s* request, char** out);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
