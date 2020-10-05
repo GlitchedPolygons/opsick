@@ -45,7 +45,14 @@ void opsick_post_useradd(http_s* request)
     char* json = NULL;
     size_t json_length = 0;
 
-    FIOBJ body = FIOBJ_INVALID;
+    FIOBJ jsonobj = FIOBJ_INVALID;
+    FIOBJ pw_jsonkey = fiobj_str_new("pw", 2);
+    FIOBJ exp_utc_jsonkey = fiobj_str_new("exp_utc", 7);
+    FIOBJ body_jsonkey = fiobj_str_new("body", 4);
+    FIOBJ public_key_ed25519_jsonkey = fiobj_str_new("public_key_ed25519", 18);
+    FIOBJ encrypted_private_key_ed25519_jsonkey = fiobj_str_new("encrypted_private_key_ed25519", 29);
+    FIOBJ public_key_curve448_jsonkey = fiobj_str_new("public_key_curve448", 19);
+    FIOBJ encrypted_private_key_curve448_jsonkey = fiobj_str_new("encrypted_private_key_curve448", 30);
 
     if (opsick_decrypt(request, &json) != 0)
     {
@@ -60,13 +67,25 @@ void opsick_post_useradd(http_s* request)
         goto exit;
     }
 
-    if (fiobj_json2obj(&body, json, json_length) == 0)
+    if (fiobj_json2obj(&jsonobj, json, json_length) == 0)
     {
         http_send_error(request, 403);
         goto exit;
     }
 
-    // TODO: impl!
+    const FIOBJ pw_obj = fiobj_hash_get(jsonobj, pw_jsonkey);
+    const FIOBJ exp_utc_obj = fiobj_hash_get(jsonobj, pw_jsonkey);
+    const FIOBJ body_obj = fiobj_hash_get(jsonobj, pw_jsonkey);
+    const FIOBJ public_key_ed25519_obj = fiobj_hash_get(jsonobj, pw_jsonkey);
+    const FIOBJ encrypted_private_key_ed25519_obj = fiobj_hash_get(jsonobj, pw_jsonkey);
+    const FIOBJ public_key_curve448_obj = fiobj_hash_get(jsonobj, pw_jsonkey);
+    const FIOBJ encrypted_private_key_curve448_obj = fiobj_hash_get(jsonobj, pw_jsonkey);
+
+    if (!pw_obj || !exp_utc_obj || !body_obj || !public_key_ed25519_obj || !public_key_curve448_obj || !encrypted_private_key_ed25519_obj || !encrypted_private_key_curve448_obj)
+    {
+        http_send_error(request, 403);
+        goto exit;
+    }
 
 exit:
     if (json != NULL)
@@ -77,10 +96,19 @@ exit:
         }
         free(json);
     }
-    if (!fiobj_type_is(body, FIOBJ_INVALID))
+
+    if (!fiobj_type_is(jsonobj, FIOBJ_INVALID))
     {
-        fiobj_free(body);
+        fiobj_free(jsonobj);
     }
+
+    fiobj_free(pw_jsonkey);
+    fiobj_free(exp_utc_jsonkey);
+    fiobj_free(body_jsonkey);
+    fiobj_free(public_key_ed25519_jsonkey);
+    fiobj_free(encrypted_private_key_ed25519_jsonkey);
+    fiobj_free(public_key_curve448_jsonkey);
+    fiobj_free(encrypted_private_key_curve448_jsonkey);
 }
 
 void opsick_free_endpoint_useradd()
