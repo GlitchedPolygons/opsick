@@ -216,7 +216,7 @@ int opsick_db_create_user(const char* pw, const time_t exp_utc, const char* body
     }
 
     rc = sqlite3_step(useradd_stmt);
-    if (rc != SQLITE_OK)
+    if (rc != SQLITE_OK) // TODO: check if double-call needed (or more calls) or if it returns something weird...
     {
         fprintf(stderr, "Failure during execution of the \"useradd_stmt\" prepared sqlite3 statement.");
         goto exit;
