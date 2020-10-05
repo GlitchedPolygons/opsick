@@ -76,16 +76,18 @@ $(function() {
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;stddef.h&gt;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
 <code>#include &lt;http.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for util.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="util_8h__incl.png" border="0" usemap="#include_2opsick_2util_8h" alt=""/></div>
 <map name="include_2opsick_2util_8h" id="include_2opsick_2util_8h">
-<area shape="rect" title="Opsick utility functions and pre&#45;allocated content." alt="" coords="60,5,197,32"/>
+<area shape="rect" title="Opsick utility functions and pre&#45;allocated content." alt="" coords="108,5,245,32"/>
 <area shape="rect" title=" " alt="" coords="5,80,71,107"/>
 <area shape="rect" title=" " alt="" coords="95,80,163,107"/>
-<area shape="rect" title=" " alt="" coords="187,80,241,107"/>
+<area shape="rect" title=" " alt="" coords="187,80,262,107"/>
+<area shape="rect" title=" " alt="" coords="287,80,341,107"/>
 </map>
 </div>
 </div>
@@ -105,6 +107,10 @@ Functions</h2></td></tr>
 <tr class="separator:aa9c87d8ccff9130e239f0b030c7cbdb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae875462cf8ebe330dc7a5608394c4710"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#ae875462cf8ebe330dc7a5608394c4710">opsick_sign</a> (const char *string, char *out)</td></tr>
 <tr class="separator:ae875462cf8ebe330dc7a5608394c4710"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f12b77443f69e45f6ff64b9ec1a9681"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a5f12b77443f69e45f6ff64b9ec1a9681">opsick_verify</a> (http_s *request, const uint8_t *public_key)</td></tr>
+<tr class="separator:a5f12b77443f69e45f6ff64b9ec1a9681"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18836a741305e3a8e45bfbc055997986"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a18836a741305e3a8e45bfbc055997986">opsick_decrypt</a> (http_s *request, char **out)</td></tr>
+<tr class="separator:a18836a741305e3a8e45bfbc055997986"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Opsick utility functions and pre-allocated content. </p>
@@ -172,6 +178,42 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>0</code> if conversion succeeded. <code>1</code> if one or more required arguments were <code>NULL</code> or invalid. <code>2</code> if the output buffer size is insufficient: please allocate at least <code>(bin_length * 2) + 1</code> bytes! </dd></dl>
+
+</div>
+</div>
+<a id="a18836a741305e3a8e45bfbc055997986"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18836a741305e3a8e45bfbc055997986">&#9670;&nbsp;</a></span>opsick_decrypt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int opsick_decrypt </td>
+          <td>(</td>
+          <td class="paramtype">http_s *&#160;</td>
+          <td class="paramname"><em>request</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char **&#160;</td>
+          <td class="paramname"><em>out</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Decrypts an HTTP request's body that was encrypted for the Opsick server. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">request</td><td>The HTTP request to decrypt. </td></tr>
+    <tr><td class="paramname">out</td><td>Where to write the decrypted HTTP request body into (this will be allocated on success, so remember to <code>free()</code> this). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>0</code> if decryption succeeded. Non-zero error code if decryption failed. </dd></dl>
 
 </div>
 </div>
@@ -326,6 +368,42 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Initialize the Opsick utility functions. </p>
+
+</div>
+</div>
+<a id="a5f12b77443f69e45f6ff64b9ec1a9681"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f12b77443f69e45f6ff64b9ec1a9681">&#9670;&nbsp;</a></span>opsick_verify()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int opsick_verify </td>
+          <td>(</td>
+          <td class="paramtype">http_s *&#160;</td>
+          <td class="paramname"><em>request</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>public_key</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Verifies an HTTP request signature. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">request</td><td>The HTTP request whose body signature you want to verify. </td></tr>
+    <tr><td class="paramname">public_key</td><td>The public key to use for verifying the signature. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>1</code> if the signature is valid; <code>0</code> if otherwise. </dd></dl>
 
 </div>
 </div>

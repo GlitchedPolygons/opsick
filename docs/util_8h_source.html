@@ -94,30 +94,37 @@ $(function() {
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;stddef.h&gt;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;http.h&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;FIOBJ <a class="code" href="util_8h.html#afa5dc6546b5fe42f51265b536b12bcad">opsick_get_preallocated_string</a>(uint32_t <span class="keywordtype">id</span>);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keywordtype">void</span> <a class="code" href="util_8h.html#a3f6e0bed0fc6519acd9bf0c01e722146">opsick_util_init</a>();</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keywordtype">void</span> <a class="code" href="util_8h.html#ad59805ae7b692fa90e238464eafc7628">opsick_util_free</a>();</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keywordtype">int</span> <a class="code" href="util_8h.html#a7c395e89a7e4a2b5125acb64e04bb82b">opsick_hexstr2bin</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* hexstr, <span class="keywordtype">size_t</span> hexstr_length, uint8_t* output, <span class="keywordtype">size_t</span> output_size, <span class="keywordtype">size_t</span>* output_length);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keywordtype">int</span> <a class="code" href="util_8h.html#aa9c87d8ccff9130e239f0b030c7cbdb4">opsick_bin2hexstr</a>(<span class="keyword">const</span> uint8_t* bin, <span class="keywordtype">size_t</span> bin_length, <span class="keywordtype">char</span>* output, <span class="keywordtype">size_t</span> output_size, <span class="keywordtype">size_t</span>* output_length, uint8_t uppercase);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keywordtype">void</span> <a class="code" href="util_8h.html#ae875462cf8ebe330dc7a5608394c4710">opsick_sign</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keywordtype">string</span>, <span class="keywordtype">char</span>* out);</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;} <span class="comment">// extern &quot;C&quot;</span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">#endif // OPSICK_UTIL_H</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;http.h&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;FIOBJ <a class="code" href="util_8h.html#afa5dc6546b5fe42f51265b536b12bcad">opsick_get_preallocated_string</a>(uint32_t <span class="keywordtype">id</span>);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keywordtype">void</span> <a class="code" href="util_8h.html#a3f6e0bed0fc6519acd9bf0c01e722146">opsick_util_init</a>();</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keywordtype">void</span> <a class="code" href="util_8h.html#ad59805ae7b692fa90e238464eafc7628">opsick_util_free</a>();</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keywordtype">int</span> <a class="code" href="util_8h.html#a7c395e89a7e4a2b5125acb64e04bb82b">opsick_hexstr2bin</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* hexstr, <span class="keywordtype">size_t</span> hexstr_length, uint8_t* output, <span class="keywordtype">size_t</span> output_size, <span class="keywordtype">size_t</span>* output_length);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="keywordtype">int</span> <a class="code" href="util_8h.html#aa9c87d8ccff9130e239f0b030c7cbdb4">opsick_bin2hexstr</a>(<span class="keyword">const</span> uint8_t* bin, <span class="keywordtype">size_t</span> bin_length, <span class="keywordtype">char</span>* output, <span class="keywordtype">size_t</span> output_size, <span class="keywordtype">size_t</span>* output_length, uint8_t uppercase);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="keywordtype">void</span> <a class="code" href="util_8h.html#ae875462cf8ebe330dc7a5608394c4710">opsick_sign</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keywordtype">string</span>, <span class="keywordtype">char</span>* out);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="keywordtype">int</span> <a class="code" href="util_8h.html#a5f12b77443f69e45f6ff64b9ec1a9681">opsick_verify</a>(http_s* request, <span class="keyword">const</span> uint8_t* public_key);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="keywordtype">int</span> <a class="code" href="util_8h.html#a18836a741305e3a8e45bfbc055997986">opsick_decrypt</a>(http_s* request, <span class="keywordtype">char</span>** out);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;} <span class="comment">// extern &quot;C&quot;</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="preprocessor">#endif // OPSICK_UTIL_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="autil_8h_html_a18836a741305e3a8e45bfbc055997986"><div class="ttname"><a href="util_8h.html#a18836a741305e3a8e45bfbc055997986">opsick_decrypt</a></div><div class="ttdeci">int opsick_decrypt(http_s *request, char **out)</div></div>
 <div class="ttc" id="autil_8h_html_afa5dc6546b5fe42f51265b536b12bcad"><div class="ttname"><a href="util_8h.html#afa5dc6546b5fe42f51265b536b12bcad">opsick_get_preallocated_string</a></div><div class="ttdeci">FIOBJ opsick_get_preallocated_string(uint32_t id)</div></div>
 <div class="ttc" id="autil_8h_html_ad59805ae7b692fa90e238464eafc7628"><div class="ttname"><a href="util_8h.html#ad59805ae7b692fa90e238464eafc7628">opsick_util_free</a></div><div class="ttdeci">void opsick_util_free()</div></div>
 <div class="ttc" id="autil_8h_html_a3f6e0bed0fc6519acd9bf0c01e722146"><div class="ttname"><a href="util_8h.html#a3f6e0bed0fc6519acd9bf0c01e722146">opsick_util_init</a></div><div class="ttdeci">void opsick_util_init()</div></div>
 <div class="ttc" id="autil_8h_html_aa9c87d8ccff9130e239f0b030c7cbdb4"><div class="ttname"><a href="util_8h.html#aa9c87d8ccff9130e239f0b030c7cbdb4">opsick_bin2hexstr</a></div><div class="ttdeci">int opsick_bin2hexstr(const uint8_t *bin, size_t bin_length, char *output, size_t output_size, size_t *output_length, uint8_t uppercase)</div></div>
+<div class="ttc" id="autil_8h_html_a5f12b77443f69e45f6ff64b9ec1a9681"><div class="ttname"><a href="util_8h.html#a5f12b77443f69e45f6ff64b9ec1a9681">opsick_verify</a></div><div class="ttdeci">int opsick_verify(http_s *request, const uint8_t *public_key)</div></div>
 <div class="ttc" id="autil_8h_html_ae875462cf8ebe330dc7a5608394c4710"><div class="ttname"><a href="util_8h.html#ae875462cf8ebe330dc7a5608394c4710">opsick_sign</a></div><div class="ttdeci">void opsick_sign(const char *string, char *out)</div></div>
 <div class="ttc" id="autil_8h_html_a7c395e89a7e4a2b5125acb64e04bb82b"><div class="ttname"><a href="util_8h.html#a7c395e89a7e4a2b5125acb64e04bb82b">opsick_hexstr2bin</a></div><div class="ttdeci">int opsick_hexstr2bin(const char *hexstr, size_t hexstr_length, uint8_t *output, size_t output_size, size_t *output_length)</div></div>
 <!-- start footer part -->

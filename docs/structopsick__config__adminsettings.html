@@ -85,6 +85,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a1783f73efebb68636cdbc3693657c219"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c6a102ad5127040719f801242d29e59"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#a1c6a102ad5127040719f801242d29e59">api_key_algo</a></td></tr>
 <tr class="separator:a1c6a102ad5127040719f801242d29e59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f032e52b322c0b3f9c12db788ab13d9"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#a5f032e52b322c0b3f9c12db788ab13d9">api_key_public</a> [32]</td></tr>
+<tr class="separator:a5f032e52b322c0b3f9c12db788ab13d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abcf168f74040f170ca89260688966279"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#abcf168f74040f170ca89260688966279">api_key_public_hexstr</a> [64+1]</td></tr>
 <tr class="separator:abcf168f74040f170ca89260688966279"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -106,6 +108,22 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a5f032e52b322c0b3f9c12db788ab13d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f032e52b322c0b3f9c12db788ab13d9">&#9670;&nbsp;</a></span>api_key_public</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t opsick_config_adminsettings::api_key_public[32]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The public key to use for verifying requests that come from the API master, who signs the requests using this key's private counterpart. </p>
+<p>The API master is the "admin" user who is allowed to create and modify opsick users, extend them, etc... </p>
+
+</div>
+</div>
 <a id="abcf168f74040f170ca89260688966279"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abcf168f74040f170ca89260688966279">&#9670;&nbsp;</a></span>api_key_public_hexstr</h2>
 
@@ -117,8 +135,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The public key to use for verifying requests that come from the API master, who signs the requests using this key's private counterpart. </p>
-<p>The API master is the "admin" user who is allowed to create and modify opsick users, extend them, etc... </p>
+<p>The hex-encoded <a class="el" href="structopsick__config__adminsettings.html#a5f032e52b322c0b3f9c12db788ab13d9">api_key_public</a> string (NUL-terminated). </p>
 
 </div>
 </div>

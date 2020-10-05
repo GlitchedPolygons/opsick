@@ -94,30 +94,32 @@ $(function() {
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &lt;time.h&gt;</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keywordtype">void</span> <a class="code" href="db_8h.html#ab30f1d3ab716a3bef55b0e920cfc219b">opsick_db_init</a>();</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;uint64_t <a class="code" href="db_8h.html#a50c127ac5529eeb1c52b6e9d3d46685f">opsick_db_get_schema_version_number</a>();</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;uint64_t <a class="code" href="db_8h.html#a3f5d3b4462ea61dff9dcc8b441386a54">opsick_db_get_last_used_userid</a>();</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keywordtype">void</span> <a class="code" href="db_8h.html#a0c9a3cf6b4f6bcd72fcb25d91c2a2013">opsick_db_last_128_bytes_of_ciphertext</a>(uint8_t out[128]);</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;time_t <a class="code" href="db_8h.html#a81bfa684c42b87dd6fe65509b3b1745b">opsick_db_get_last_db_schema_version_nr_lookup</a>();</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keywordtype">void</span> <a class="code" href="db_8h.html#a73c969a1ce317bc9e287f33b1c3974dd">opsick_db_free</a>();</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;} <span class="comment">// extern &quot;C&quot;</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">#endif // OPSICK_DB_H</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keywordtype">void</span> <a class="code" href="db_8h.html#ab30f1d3ab716a3bef55b0e920cfc219b">opsick_db_init</a>();</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;uint64_t <a class="code" href="db_8h.html#a50c127ac5529eeb1c52b6e9d3d46685f">opsick_db_get_schema_version_number</a>();</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;uint64_t <a class="code" href="db_8h.html#a3f5d3b4462ea61dff9dcc8b441386a54">opsick_db_get_last_used_userid</a>();</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keywordtype">void</span> <a class="code" href="db_8h.html#a0c9a3cf6b4f6bcd72fcb25d91c2a2013">opsick_db_last_128_bytes_of_ciphertext</a>(uint8_t out[128]);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;time_t <a class="code" href="db_8h.html#a81bfa684c42b87dd6fe65509b3b1745b">opsick_db_get_last_db_schema_version_nr_lookup</a>();</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keywordtype">int</span> <a class="code" href="db_8h.html#a8ddb8b4d2b301cdd903cdf67736ae334">opsick_db_create_user</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* pw, <span class="keyword">const</span> time_t exp_utc, <span class="keyword">const</span> <span class="keywordtype">char</span>* body, <span class="keyword">const</span> <span class="keywordtype">char</span>* public_key_ed25519, <span class="keyword">const</span> <span class="keywordtype">char</span>* encrypted_private_key_ed25519, <span class="keyword">const</span> <span class="keywordtype">char</span>* public_key_curve448, <span class="keyword">const</span> <span class="keywordtype">char</span>* encrypted_private_key_curve448);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keywordtype">void</span> <a class="code" href="db_8h.html#a73c969a1ce317bc9e287f33b1c3974dd">opsick_db_free</a>();</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;} <span class="comment">// extern &quot;C&quot;</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">#endif // OPSICK_DB_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="adb_8h_html_a50c127ac5529eeb1c52b6e9d3d46685f"><div class="ttname"><a href="db_8h.html#a50c127ac5529eeb1c52b6e9d3d46685f">opsick_db_get_schema_version_number</a></div><div class="ttdeci">uint64_t opsick_db_get_schema_version_number()</div></div>
 <div class="ttc" id="adb_8h_html_a0c9a3cf6b4f6bcd72fcb25d91c2a2013"><div class="ttname"><a href="db_8h.html#a0c9a3cf6b4f6bcd72fcb25d91c2a2013">opsick_db_last_128_bytes_of_ciphertext</a></div><div class="ttdeci">void opsick_db_last_128_bytes_of_ciphertext(uint8_t out[128])</div></div>
 <div class="ttc" id="adb_8h_html_a3f5d3b4462ea61dff9dcc8b441386a54"><div class="ttname"><a href="db_8h.html#a3f5d3b4462ea61dff9dcc8b441386a54">opsick_db_get_last_used_userid</a></div><div class="ttdeci">uint64_t opsick_db_get_last_used_userid()</div></div>
 <div class="ttc" id="adb_8h_html_a73c969a1ce317bc9e287f33b1c3974dd"><div class="ttname"><a href="db_8h.html#a73c969a1ce317bc9e287f33b1c3974dd">opsick_db_free</a></div><div class="ttdeci">void opsick_db_free()</div></div>
+<div class="ttc" id="adb_8h_html_a8ddb8b4d2b301cdd903cdf67736ae334"><div class="ttname"><a href="db_8h.html#a8ddb8b4d2b301cdd903cdf67736ae334">opsick_db_create_user</a></div><div class="ttdeci">int opsick_db_create_user(const char *pw, const time_t exp_utc, const char *body, const char *public_key_ed25519, const char *encrypted_private_key_ed25519, const char *public_key_curve448, const char *encrypted_private_key_curve448)</div></div>
 <div class="ttc" id="adb_8h_html_a81bfa684c42b87dd6fe65509b3b1745b"><div class="ttname"><a href="db_8h.html#a81bfa684c42b87dd6fe65509b3b1745b">opsick_db_get_last_db_schema_version_nr_lookup</a></div><div class="ttdeci">time_t opsick_db_get_last_db_schema_version_nr_lookup()</div></div>
 <div class="ttc" id="adb_8h_html_ab30f1d3ab716a3bef55b0e920cfc219b"><div class="ttname"><a href="db_8h.html#ab30f1d3ab716a3bef55b0e920cfc219b">opsick_db_init</a></div><div class="ttdeci">void opsick_db_init()</div></div>
 <!-- start footer part -->
