@@ -27,6 +27,12 @@ set(${PROJECT_NAME}_INCLUDE_DIR
         ${CMAKE_CURRENT_LIST_DIR}/include
         )
 
+set(${PROJECT_NAME}_ARGON2_IMPL ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/ref.c)
+
+if (CMAKE_SYSTEM_PROCESSOR MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
+    set(${PROJECT_NAME}_ARGON2_IMPL ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/opt.c)
+endif ()
+
 set(${PROJECT_NAME}_HEADERS
         ${CMAKE_CURRENT_LIST_DIR}/lib/sqlite3/sqlite3.h
         ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/ed25519.h
@@ -36,6 +42,12 @@ set(${PROJECT_NAME}_HEADERS
         ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/precomp_data.h
         ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/sc.h
         ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/sha512.h
+        ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/blake2/blake2b.c
+        ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/argon2.c
+        ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/core.c
+        ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/encoding.c
+        ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/thread.c
+        ${${PROJECT_NAME}_ARGON2_IMPL}
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/constants.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/strncmpic.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/config.h
@@ -140,4 +152,5 @@ target_include_directories(${PROJECT_NAME}
         PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
         PRIVATE ${CMAKE_CURRENT_LIST_DIR}/lib/sqlite3
         PRIVATE ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src
+        PRIVATE ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/include
         )
