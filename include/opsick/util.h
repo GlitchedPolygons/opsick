@@ -33,6 +33,16 @@ extern "C" {
 #include <http.h>
 
 /**
+ * <c>x < y ? x : y</c>
+ */
+#define OPSICK_MIN(x, y) (((x) < (y)) ? (x) : (y))
+
+/**
+ * <c>x > y ? x : y</c>
+ */
+#define OPSICK_MAX(x, y) (((x) > (y)) ? (x) : (y))
+
+/**
  * Gets a pre-allocated string (e.g. for response header names).
  * @param id The string id to use for retrieval.
  * @return The pre-allocated string.

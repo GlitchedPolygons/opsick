@@ -15,6 +15,7 @@
 */
 
 #include "opsick/db.h"
+#include "opsick/util.h"
 #include "opsick/config.h"
 #include "opsick/constants.h"
 #include "opsick/sql/users.h"
@@ -147,7 +148,7 @@ uint64_t opsick_db_get_schema_version_number()
 
 uint64_t opsick_db_get_last_used_userid()
 {
-    return last_used_userid;
+    return last_used_userid; // TODO: set this in all functions where possible!
 }
 
 void opsick_db_last_128_bytes_of_ciphertext(uint8_t out[128])
@@ -216,13 +217,15 @@ int opsick_db_create_user(const char* pw, const time_t exp_utc, const char* body
     }
 
     rc = sqlite3_step(useradd_stmt);
-    if (rc != SQLITE_DONE) // TODO: check if double-call needed (or more calls) or if it returns something weird...
+    if (rc != SQLITE_DONE)
     {
         fprintf(stderr, "Failure during execution of the \"useradd_stmt\" prepared sqlite3 statement.");
         goto exit;
     }
 
     rc = 0;
+    memcpy(last128B, public_key_curve448, OPSICK_MIN(64, strlen(public_key_curve448)));
+    memcpy(last128B + 64, body, OPSICK_MIN(64, strlen(body)));
 
 exit:
     sqlite3_reset(useradd_stmt);
