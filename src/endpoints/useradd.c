@@ -74,12 +74,12 @@ void opsick_post_useradd(http_s* request)
     }
 
     const FIOBJ pw_obj = fiobj_hash_get(jsonobj, pw_jsonkey);
-    const FIOBJ exp_utc_obj = fiobj_hash_get(jsonobj, pw_jsonkey);
-    const FIOBJ body_obj = fiobj_hash_get(jsonobj, pw_jsonkey);
-    const FIOBJ public_key_ed25519_obj = fiobj_hash_get(jsonobj, pw_jsonkey);
-    const FIOBJ encrypted_private_key_ed25519_obj = fiobj_hash_get(jsonobj, pw_jsonkey);
-    const FIOBJ public_key_curve448_obj = fiobj_hash_get(jsonobj, pw_jsonkey);
-    const FIOBJ encrypted_private_key_curve448_obj = fiobj_hash_get(jsonobj, pw_jsonkey);
+    const FIOBJ exp_utc_obj = fiobj_hash_get(jsonobj, exp_utc_jsonkey);
+    const FIOBJ body_obj = fiobj_hash_get(jsonobj, body_jsonkey);
+    const FIOBJ public_key_ed25519_obj = fiobj_hash_get(jsonobj, public_key_ed25519_jsonkey);
+    const FIOBJ encrypted_private_key_ed25519_obj = fiobj_hash_get(jsonobj, encrypted_private_key_ed25519_jsonkey);
+    const FIOBJ public_key_curve448_obj = fiobj_hash_get(jsonobj, public_key_curve448_jsonkey);
+    const FIOBJ encrypted_private_key_curve448_obj = fiobj_hash_get(jsonobj, encrypted_private_key_curve448_jsonkey);
 
     if (!pw_obj || !exp_utc_obj || !body_obj || !public_key_ed25519_obj || !public_key_curve448_obj || !encrypted_private_key_ed25519_obj || !encrypted_private_key_curve448_obj)
     {

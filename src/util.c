@@ -144,7 +144,7 @@ int opsick_verify(http_s* request, const uint8_t* public_key)
     char signature[128 + 1];
     snprintf(signature, sizeof(signature), "%s", fiobj_obj2cstr(signature_header).data);
 
-    uint8_t signature_bytes[64];
+    uint8_t signature_bytes[64 + 1];
     if (opsick_hexstr2bin(signature, 128, signature_bytes, sizeof(signature_bytes), NULL) != 0)
     {
         return 0;
