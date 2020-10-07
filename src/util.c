@@ -197,7 +197,7 @@ exit:
     return r;
 }
 
-int opsick_verify_totp(const uint64_t user_id, const char* totp)
+int opsick_verify_user_totp(uint64_t user_id, const char* totp)
 {
     if (totp == NULL)
     {
@@ -205,7 +205,7 @@ int opsick_verify_totp(const uint64_t user_id, const char* totp)
     }
 }
 
-int opsick_verify_pw(const uint64_t user_id, const char* pw)
+int opsick_verify_user_pw(uint64_t user_id, const char* pw)
 {
     if (pw == NULL)
     {

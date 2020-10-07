@@ -90,7 +90,7 @@ int opsick_bin2hexstr(const uint8_t* bin, size_t bin_length, char* output, size_
  * @param totp The 2FA token to verify.
  * @return <c>0</c> if the token is valid; <c>1</c> if the token is not valid; <c>2</c> if the user wasn't found; <c>3</c> if the user was found but doesn't have 2FA activated.
  */
-int opsick_verify_totp(uint64_t user_id, const char* totp);
+int opsick_verify_user_totp(uint64_t user_id, const char* totp);
 
 /**
  * Verifies a password SHA2-512 against a \p user_id
@@ -98,7 +98,7 @@ int opsick_verify_totp(uint64_t user_id, const char* totp);
  * @param pw The password to verify.
  * @return <c>0</c> if the password is valid; <c>1</c> if the password is not valid; <c>2</c> if the user wasn't found.
  */
-int opsick_verify_pw(uint64_t user_id, const char* pw);
+int opsick_verify_user_pw(uint64_t user_id, const char* pw);
 
 /**
  * Signs a string using the Opsick server's private signing key.

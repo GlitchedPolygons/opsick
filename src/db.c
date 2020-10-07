@@ -244,6 +244,7 @@ int opsick_db_delete_user(uint64_t user_id)
 {
     // TODO: impl. asap!
 
+    last_used_userid = user_id;
     return 0;
 }
 
@@ -251,5 +252,6 @@ int opsick_db_get_user_pw_and_totps(uint64_t user_id, char* out_pw, char* out_to
 {
     // TODO: impl. asap!
 
+    last_used_userid = user_id;
     return 0;
 }
