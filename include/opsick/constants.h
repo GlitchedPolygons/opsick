@@ -52,6 +52,16 @@ extern "C" {
  */
 #define OPSICK_MAX_ARGON2_PARALLELISM 16
 
+/**
+ * Standard 2FA token stepcount of 30 seconds.
+ */
+#define OPSICK_2FA_STEPS 30
+
+/**
+ * Standard 2FA token HMAC hash algo SHA-1.
+ */
+#define OPSICK_2FA_HASH_ALGO 0
+
 #pragma region HASHES
 
 /**

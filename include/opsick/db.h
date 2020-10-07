@@ -90,7 +90,7 @@ int opsick_db_delete_user(uint64_t user_id);
 /**
  * Retrieves a user's password (Argon2 hash) and TOTP secret (Base32-encoded string) from the db.
  * @param user_id The user ID.
- * @param out_pw Where to write the retrieved password into (this needs to be at least 128 bytes in size).
+ * @param out_pw Where to write the retrieved password into (this needs to be at least 256 bytes in size).
  * @param out_totps_base32 Where to write the retrieved TOTP secret into (this needs to be exactly 49 bytes big). This will be filled with <c>0x00</c> if the user doesn't have 2FA configured.
  * @return <c>0</c> on success; <c>1</c> if the user was not found or fetch from db failed for some other unknown reason.
  */

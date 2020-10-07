@@ -89,7 +89,7 @@ void opsick_post_useradd(http_s* request)
         goto exit;
     }
 
-    const fio_str_info_s pw_sha512 = fiobj_obj2cstr(pw_obj);
+    const fio_str_info_s pw = fiobj_obj2cstr(pw_obj);
     const fio_str_info_s userpubkey = fiobj_obj2cstr(public_key_curve448_obj);
 
     if (userpubkey.len != 112)
@@ -105,7 +105,7 @@ void opsick_post_useradd(http_s* request)
     char pw_hash[256];
     mbedtls_platform_zeroize(pw_hash, sizeof(pw_hash));
 
-    int r = argon2id_hash_encoded(adminsettings.argon2_time_cost, adminsettings.argon2_memory_cost, adminsettings.argon2_parallelism, pw_sha512.data, pw_sha512.len, salt, sizeof(salt), 64, pw_hash, sizeof(pw_hash) - 1);
+    int r = argon2id_hash_encoded(adminsettings.argon2_time_cost, adminsettings.argon2_memory_cost, adminsettings.argon2_parallelism, pw.data, pw.len, salt, sizeof(salt), 64, pw_hash, sizeof(pw_hash) - 1);
     if (r != ARGON2_OK)
     {
         fprintf(stderr, "Failure to hash user's password server-side using \"argon2id_hash_encoded()\". Returned error code: %d", r);

@@ -14,10 +14,13 @@
    limitations under the License.
 */
 
+#include "opsick/db.h"
 #include "opsick/util.h"
 #include "opsick/keys.h"
 #include "opsick/constants.h"
+#include <tfac.h>
 #include <stdio.h>
+#include <argon2.h>
 #include <ed25519.h>
 #include <cecies/decrypt.h>
 #include <mbedtls/platform_util.h>
@@ -203,6 +206,24 @@ int opsick_verify_user_totp(uint64_t user_id, const char* totp)
     {
         return 1;
     }
+
+    char totps[49];
+    if (opsick_db_get_user_pw_and_totps(user_id, NULL, totps))
+    {
+        return 2;
+    }
+
+    for (int i = 0; i < sizeof(totps); i++)
+    {
+        if (totps[i] != '\0')
+            goto exit;
+    }
+
+    return 3;
+
+exit:
+
+    return 0 == tfac_verify_totp(totps, totp, OPSICK_2FA_STEPS, OPSICK_2FA_HASH_ALGO);
 }
 
 int opsick_verify_user_pw(uint64_t user_id, const char* pw)
@@ -211,4 +232,14 @@ int opsick_verify_user_pw(uint64_t user_id, const char* pw)
     {
         return 1;
     }
+
+    char pwhash[256];
+    mbedtls_platform_zeroize(pwhash, sizeof(pwhash));
+
+    if (opsick_db_get_user_pw_and_totps(user_id, pwhash, NULL))
+    {
+        return 2;
+    }
+
+    return ARGON2_OK == argon2id_verify(pwhash, pw, strlen(pw));
 }
