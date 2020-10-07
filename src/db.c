@@ -17,7 +17,6 @@
 #include "opsick/db.h"
 #include "opsick/util.h"
 #include "opsick/config.h"
-#include "opsick/constants.h"
 #include "opsick/sql/users.h"
 #include "opsick/sql/db_migrations.h"
 
@@ -27,6 +26,7 @@
 #include <stdlib.h>
 #include <sqlite3.h>
 #include <mbedtls/platform_util.h>
+#include <cecies/util.h>
 
 static bool initialized = false;
 static uint64_t last_used_userid = 0;
@@ -90,6 +90,7 @@ void opsick_db_init()
         goto error;
     }
 
+    cecies_dev_urandom(last128B, 128);
     sqlite3_exec(db, init_sql, &callback_select_schema_version_nr, 0, &err_msg);
     sqlite3_free(err_msg);
     initialized = true;
@@ -165,7 +166,7 @@ time_t opsick_db_get_last_db_schema_version_nr_lookup()
     return last_db_schema_version_nr_lookup;
 }
 
-int opsick_db_create_user(const char* pw, const time_t exp_utc, const char* body, const char* public_key_ed25519, const char* encrypted_private_key_ed25519, const char* public_key_curve448, const char* encrypted_private_key_curve448)
+int opsick_db_create_user(const char* pw, const time_t exp_utc, const char* body, const char* public_key_ed25519, const char* encrypted_private_key_ed25519, const char* public_key_curve448, const char* encrypted_private_key_curve448, uint64_t* out_user_id)
 {
     int rc = sqlite3_bind_text(useradd_stmt, 1, pw, -1, 0);
     if (rc != SQLITE_OK)
@@ -224,10 +225,31 @@ int opsick_db_create_user(const char* pw, const time_t exp_utc, const char* body
     }
 
     rc = 0;
+
+    *out_user_id = last_used_userid = opsick_db_get_last_insert_rowid();
     memcpy(last128B, public_key_curve448, OPSICK_MIN(64, strlen(public_key_curve448)));
     memcpy(last128B + 64, body, OPSICK_MIN(64, strlen(body)));
 
 exit:
     sqlite3_reset(useradd_stmt);
     return rc;
+}
+
+uint64_t opsick_db_get_last_insert_rowid()
+{
+    return (uint64_t)sqlite3_last_insert_rowid(db);
+}
+
+int opsick_db_delete_user(uint64_t user_id)
+{
+    // TODO: impl. asap!
+
+    return 0;
+}
+
+int opsick_db_get_user_pw_and_totps(uint64_t user_id, char* out_pw, char* out_totps_base32)
+{
+    // TODO: impl. asap!
+
+    return 0;
 }

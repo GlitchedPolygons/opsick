@@ -67,6 +67,9 @@ static inline void init()
     adminsettings.use_index_html = true;
     adminsettings.key_refresh_interval_hours = 72;
     adminsettings.api_key_algo = 0;
+    adminsettings.argon2_time_cost = 16;
+    adminsettings.argon2_memory_cost = 65536;
+    adminsettings.argon2_parallelism = 2;
     strcpy(adminsettings.api_key_public_hexstr, "9a074e6abb4d7cca97842d6e43704bafcc71c39f7394d65a7d6eba95909b4ec6");
     strcpy(adminsettings.user_registration_password, "opsick_registration_password");
 }
@@ -139,6 +142,25 @@ static bool load_adminsettings(toml_table_t* conf)
     parse_toml_uint(table, "max_users", &adminsettings.max_users);
     parse_toml_uint(table, "max_user_quota", &adminsettings.max_user_quota);
     parse_toml_uint(table, "key_refresh_interval_hours", &adminsettings.key_refresh_interval_hours);
+
+    uint64_t argon2_time_cost, argon2_memory_cost, argon2_parallelism;
+    parse_toml_uint(table, "argon2_time_cost", &argon2_time_cost);
+    parse_toml_uint(table, "argon2_memory_cost_kib", &argon2_memory_cost);
+    parse_toml_uint(table, "argon2_parallelism", &argon2_parallelism);
+
+    if (argon2_time_cost > UINT32_MAX)
+        argon2_time_cost = UINT32_MAX;
+
+    if (argon2_memory_cost > UINT32_MAX)
+        argon2_memory_cost = UINT32_MAX;
+
+    if (argon2_parallelism > OPSICK_MAX_ARGON2_PARALLELISM)
+        argon2_parallelism = OPSICK_MAX_ARGON2_PARALLELISM;
+
+    adminsettings.argon2_time_cost = argon2_time_cost;
+    adminsettings.argon2_memory_cost = argon2_memory_cost;
+    adminsettings.argon2_parallelism = argon2_parallelism;
+
     adminsettings.use_index_html = opsick_strncmpic(toml_raw_in(table, "use_index_html"), "true", 4) == 0;
 
     char* user_registration_password = NULL;

@@ -47,6 +47,11 @@ extern "C" {
  */
 #define OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH 1024
 
+/**
+ * Maximum amount of threads to allow for usage by Argon2.
+ */
+#define OPSICK_MAX_ARGON2_PARALLELISM 16
+
 #pragma region HASHES
 
 /**

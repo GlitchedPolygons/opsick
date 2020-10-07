@@ -85,6 +85,22 @@ int opsick_hexstr2bin(const char* hexstr, size_t hexstr_length, uint8_t* output,
 int opsick_bin2hexstr(const uint8_t* bin, size_t bin_length, char* output, size_t output_size, size_t* output_length, uint8_t uppercase);
 
 /**
+ * Verifies a TOTP against a \p user_id.
+ * @param user_id The User ID against which to verify the TOTP.
+ * @param totp The 2FA token to verify.
+ * @return <c>0</c> if the token is valid; <c>1</c> if the token is not valid; <c>2</c> if the user wasn't found; <c>3</c> if the user was found but doesn't have 2FA activated.
+ */
+int opsick_verify_totp(uint64_t user_id, const char* totp);
+
+/**
+ * Verifies a password SHA2-512 against a \p user_id
+ * @param user_id The user whose password you want to verify.
+ * @param pw The password to verify.
+ * @return <c>0</c> if the password is valid; <c>1</c> if the password is not valid; <c>2</c> if the user wasn't found.
+ */
+int opsick_verify_pw(uint64_t user_id, const char* pw);
+
+/**
  * Signs a string using the Opsick server's private signing key.
  * @param string The NUL-terminated string to sign.
  * @param out A writable output buffer of at least 129B size (128 characters + 1 NUL-terminator).

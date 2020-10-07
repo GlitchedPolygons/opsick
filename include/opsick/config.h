@@ -140,6 +140,21 @@ struct opsick_config_adminsettings
     char user_registration_password[OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH];
 
     /**
+     * Time cost parameter for the Argon2 hashing (the higher this iteration count, the slower the hashing, the safer the passwords).
+     */
+    uint32_t argon2_time_cost;
+
+    /**
+     * Memory cost parameter for the Argon2 hashing (higher == slower == safer).
+     */
+    uint32_t argon2_memory_cost;
+
+    /**
+     * Amount of threads to use for the Argon2 hashing.
+     */
+    uint32_t argon2_parallelism;
+
+    /**
      * The algorithm ID for the API key.
      */
     uint8_t api_key_algo;

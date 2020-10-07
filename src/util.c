@@ -196,3 +196,19 @@ exit:
     free(decrypted);
     return r;
 }
+
+int opsick_verify_totp(const uint64_t user_id, const char* totp)
+{
+    if (totp == NULL)
+    {
+        return 1;
+    }
+}
+
+int opsick_verify_pw(const uint64_t user_id, const char* pw)
+{
+    if (pw == NULL)
+    {
+        return 1;
+    }
+}
