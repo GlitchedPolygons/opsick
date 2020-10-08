@@ -33,7 +33,7 @@ void opsick_init_endpoint_userdel()
 
 void opsick_post_userdel(http_s* request)
 {
-    if (!opsick_verify(request, api_key_public))
+    if (!opsick_verify_request_signature(request, api_key_public))
     {
         http_send_error(request, 403);
         return;
@@ -43,36 +43,49 @@ void opsick_post_userdel(http_s* request)
     size_t json_length = 0;
     FIOBJ jsonobj = FIOBJ_INVALID;
 
-    FIOBJ userid_jsonkey = fiobj_str_new("user_id", 7);
-    FIOBJ pw_jsonkey = fiobj_str_new("pw", 2);
-    FIOBJ totp_jsonkey = fiobj_str_new("totp", 4);
-
-    if (opsick_decrypt(request, &json) != 0)
+    // Decrypt the request body.
+    if (opsick_decrypt(request, &json) != 0 || (json_length = strlen(json)) == 0)
     {
         http_send_error(request, 403);
         goto exit;
     }
 
-    json_length = strlen(json);
-    if (json_length == 0)
-    {
-        http_send_error(request, 403);
-        goto exit;
-    }
-
+    // Parse the decrypted JSON.
     if (fiobj_json2obj(&jsonobj, json, json_length) == 0)
     {
         http_send_error(request, 403);
         goto exit;
     }
 
-    const FIOBJ userid_obj = fiobj_hash_get(jsonobj, userid_jsonkey);
-    const FIOBJ pw_obj = fiobj_hash_get(jsonobj, pw_jsonkey);
-    const FIOBJ totp_obj = fiobj_hash_get(jsonobj, totp_jsonkey);
+    const FIOBJ userid_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_USER_ID));
+    const FIOBJ pw_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PW));
+    const FIOBJ totp_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_TOTP));
 
-    if (!userid_obj || !pw_obj)
+    if (!userid_obj || !fiobj_type_is(userid_obj, FIOBJ_T_NUMBER) || !pw_obj)
     {
         http_send_error(request, 403);
+        goto exit;
+    }
+
+    const uint64_t userid = (uint64_t)fiobj_obj2num(userid_obj);
+
+    if (opsick_verify_user_pw(userid, fiobj_obj2cstr(pw_obj).data) != 0)
+    {
+        http_send_error(request, 403);
+        goto exit;
+    }
+
+    switch (opsick_verify_user_totp(userid, fiobj_obj2cstr(totp_obj).data))
+    {
+        case 1:
+        case 2:
+            http_send_error(request, 403);
+            goto exit;
+    }
+
+    if (opsick_db_delete_user(userid) != 0)
+    {
+        http_send_error(request, 500);
         goto exit;
     }
 
@@ -86,12 +99,7 @@ exit:
         free(json);
     }
 
-    if (!fiobj_type_is(jsonobj, FIOBJ_INVALID))
-    {
-        fiobj_free(jsonobj);
-    }
-
-    fiobj_free(userid_jsonkey);
+    fiobj_free(jsonobj);
 }
 
 void opsick_free_endpoint_userdel()

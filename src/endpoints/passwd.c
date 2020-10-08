@@ -15,21 +15,90 @@
 */
 
 #include <mbedtls/platform_util.h>
+
+#include "opsick/db.h"
 #include "opsick/keys.h"
 #include "opsick/util.h"
+#include "opsick/config.h"
 #include "opsick/endpoints/passwd.h"
+
+static uint8_t api_key_public[32];
 
 void opsick_init_endpoint_passwd()
 {
-    // nop
+    struct opsick_config_adminsettings adminsettings;
+    opsick_config_get_adminsettings(&adminsettings);
+    memcpy(api_key_public, adminsettings.api_key_public, sizeof(api_key_public));
 }
 
 void opsick_post_passwd(http_s* request)
 {
-    // TODO: decrypt request, check pw, eventually check TOTP, perform action
+    if (!opsick_verify_request_signature(request, api_key_public))
+    {
+        http_send_error(request, 403);
+        return;
+    }
+
+    char* json = NULL;
+    size_t json_length = 0;
+    FIOBJ jsonobj = FIOBJ_INVALID;
+
+    // Decrypt the request body.
+    if (opsick_decrypt(request, &json) != 0 || (json_length = strlen(json)) == 0)
+    {
+        http_send_error(request, 403);
+        goto exit;
+    }
+
+    // Parse the decrypted JSON.
+    if (fiobj_json2obj(&jsonobj, json, json_length) == 0)
+    {
+        http_send_error(request, 403);
+        goto exit;
+    }
+
+    const FIOBJ userid_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_USER_ID));
+    const FIOBJ pw_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PW));
+    const FIOBJ totp_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_TOTP));
+
+    if (!userid_obj || !fiobj_type_is(userid_obj, FIOBJ_T_NUMBER) || !pw_obj)
+    {
+        http_send_error(request, 403);
+        goto exit;
+    }
+
+    const uint64_t userid = (uint64_t)fiobj_obj2num(userid_obj);
+
+    if (opsick_verify_user_pw(userid, fiobj_obj2cstr(pw_obj).data) != 0)
+    {
+        http_send_error(request, 403);
+        goto exit;
+    }
+
+    switch (opsick_verify_user_totp(userid, fiobj_obj2cstr(totp_obj).data))
+    {
+        case 1:
+        case 2:
+            http_send_error(request, 403);
+            goto exit;
+    }
+
+    // TODO: change user pw here
+
+exit:
+    if (json != NULL)
+    {
+        if (json_length > 0)
+        {
+            mbedtls_platform_zeroize(json, json_length);
+        }
+        free(json);
+    }
+
+    fiobj_free(jsonobj);
 }
 
 void opsick_free_endpoint_passwd()
 {
-    // nop
+    mbedtls_platform_zeroize(api_key_public, sizeof(api_key_public));
 }

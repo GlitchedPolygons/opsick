@@ -38,7 +38,7 @@ void opsick_init_endpoint_useradd()
 
 void opsick_post_useradd(http_s* request)
 {
-    if (!opsick_verify(request, api_key_public))
+    if (!opsick_verify_request_signature(request, api_key_public))
     {
         http_send_error(request, 403);
         return;

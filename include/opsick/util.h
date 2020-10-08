@@ -113,7 +113,7 @@ void opsick_sign(const char* string, char* out);
  * @param public_key The public key to use for verifying the signature.
  * @return <c>1</c> if the signature is valid; <c>0</c> if otherwise.
  */
-int opsick_verify(http_s* request, const uint8_t* public_key);
+int opsick_verify_request_signature(http_s* request, const uint8_t* public_key);
 
 /**
  * Decrypts an HTTP request's body that was encrypted for the Opsick server.

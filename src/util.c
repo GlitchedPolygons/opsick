@@ -30,6 +30,9 @@ static FIOBJ preallocated_string_table[128] = { 0x00 };
 void opsick_util_init()
 {
     preallocated_string_table[0] = fiobj_str_new("ed25519-signature", 17);
+    preallocated_string_table[1] = fiobj_str_new("user_id", 7);
+    preallocated_string_table[2] = fiobj_str_new("pw", 2);
+    preallocated_string_table[3] = fiobj_str_new("totp", 4);
 }
 
 void opsick_util_free()
@@ -37,7 +40,7 @@ void opsick_util_free()
     for (unsigned int i = 0; i < sizeof(preallocated_string_table) / sizeof(FIOBJ); i++)
     {
         FIOBJ ie = preallocated_string_table[i];
-        if (!fiobj_type_is(ie, FIOBJ_T_NULL))
+        if (ie != FIOBJ_INVALID && !fiobj_type_is(ie, FIOBJ_T_NULL))
         {
             fiobj_free(ie);
         }
@@ -130,7 +133,7 @@ void opsick_sign(const char* string, char* out)
     mbedtls_platform_zeroize(&keypair, sizeof(keypair));
 }
 
-int opsick_verify(http_s* request, const uint8_t* public_key)
+int opsick_verify_request_signature(http_s* request, const uint8_t* public_key)
 {
     const struct fio_str_info_s body = fiobj_obj2cstr(request->body);
     if (body.data == NULL || body.len == 0)
