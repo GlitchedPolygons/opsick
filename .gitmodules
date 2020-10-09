@@ -13,3 +13,6 @@
 [submodule "lib/argon2"]
 	path = lib/argon2
 	url = https://github.com/P-H-C/phc-winner-argon2.git
+[submodule "lib/ed25519"]
+	path = lib/ed25519
+	url = https://github.com/GlitchedPolygons/GlitchEd25519
