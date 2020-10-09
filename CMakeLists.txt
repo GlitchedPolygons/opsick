@@ -35,13 +35,6 @@ endif ()
 
 set(${PROJECT_NAME}_HEADERS
         ${CMAKE_CURRENT_LIST_DIR}/lib/sqlite3/sqlite3.h
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/ed25519.h
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/fe.h
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/fixedint.h
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/ge.h
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/precomp_data.h
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/sc.h
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/sha512.h
         ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/blake2/blake2b.c
         ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/argon2.c
         ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/core.c
@@ -73,16 +66,6 @@ set(${PROJECT_NAME}_HEADERS
 
 set(${PROJECT_NAME}_SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/lib/sqlite3/sqlite3.c
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/add_scalar.c
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/fe.c
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/ge.c
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/key_exchange.c
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/keypair.c
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/sc.c
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/seed.c
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/sha512.c
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/sign.c
-        ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src/verify.c
         ${CMAKE_CURRENT_LIST_DIR}/src/config.c
         ${CMAKE_CURRENT_LIST_DIR}/src/strncmpic.c
         ${CMAKE_CURRENT_LIST_DIR}/src/guid.c
@@ -123,6 +106,10 @@ if (NOT TARGET TFAC)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/tfac tfac)
 endif ()
 
+if (NOT TARGET orlp-ed25519)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/ed25519 ed25519)
+endif ()
+
 configure_file(${CMAKE_CURRENT_LIST_DIR}/src/index.html ${CMAKE_CURRENT_BINARY_DIR}/index.html COPYONLY)
 configure_file(${CMAKE_CURRENT_LIST_DIR}/src/favicon.ico ${CMAKE_CURRENT_BINARY_DIR}/favicon.ico COPYONLY)
 configure_file(${CMAKE_CURRENT_LIST_DIR}/src/config.toml ${CMAKE_CURRENT_BINARY_DIR}/config.toml COPYONLY)
@@ -138,6 +125,7 @@ target_link_libraries(${PROJECT_NAME}
         PUBLIC cecies
         PUBLIC tomlc99
         PUBLIC TFAC
+        PUBLIC orlp-ed25519
         )
 
 if (UNIX AND NOT APPLE)
