@@ -97,6 +97,75 @@ int opsick_db_delete_user(uint64_t user_id);
 int opsick_db_get_user_pw_and_totps(uint64_t user_id, char* out_pw, char* out_totps_base32);
 
 /**
+ * Changes a user's password in the db.
+ * @param user_id User ID whose password you want to change.
+ * @param new_pw The new pw hash.
+ * @return <c>0</c> on success; <c>1</c> on failure.
+ */
+int opsick_db_set_user_pw(uint64_t user_id, const char* new_pw);
+
+/**
+ * Changes a user's TOTPS (TOTP secret for 2FA) in the db.
+ * @param user_id User ID whose TOTPS you want to change.
+ * @param new_pw The new TOTPS (base32 encoded).
+ * @return <c>0</c> on success; <c>1</c> on failure.
+ */
+int opsick_db_set_user_totps(uint64_t user_id, const char* new_totps);
+
+/**
+ * Retrieves a user's body from the db.
+ * @param user_id User id.
+ * @return <c>0</c> on success; <c>1</c> if the user was not found or fetch from db failed.
+ */
+int opsick_db_get_user_body(uint64_t user_id);
+
+/**
+ * Updates a user's body in the db.
+ * @param user_id User id.
+ * @param body The new body to write into the db.
+ * @return <c>0</c> on success; non-zero on failure.
+ */
+int opsick_db_set_user_body(uint64_t user_id, const char* body);
+
+/**
+ * Gets a user's expiration datetime (UTC) from the db.
+ * @param user_id User ID whose expiration date you want to query.
+ * @param out_exp Where to write the found expiration date into (will be left alone if the user couldn't be found).
+ * @return <c>0</c> on success; non-zero on failure (e.g. \p user_id not found).
+ */
+int opsick_db_get_user_exp(uint64_t user_id, time_t* out_exp);
+
+/**
+ * Sets a new expiration datetime (UTC) to a user in the db.
+ * @param user_id ID of the user whose expiration date needs to be changed.
+ * @param new_exp The new UTC timestamp of when the user account will become read-only.
+ * @return <c>0</c> on success; non-zero on failure.
+ */
+int opsick_db_set_user_exp(uint64_t user_id, time_t new_exp);
+
+/**
+ * Gets a user's keys from the DB and writes them into the passed output ``char*`` buffers (these will be left untouched in case of a failure e.g. \p user_id not found)..
+ * @param user_id The id of the user whose keys you want to query from the db.
+ * @param out_pubkey_ed25519 Where to write the found public ed25519 key into (allocate 256B just to be sure, it will be NUL-terminated so you can use strlen on it without any trouble).
+ * @param out_prvkey_ed25519 Where to write the found private ed25519 key into (allocate 256B just to be sure, it will be NUL-terminated so you can use strlen on it without any trouble).
+ * @param out_pubkey_curve448 (same as with ed25519 argument)
+ * @param out_prvkey_curve448 (same as with ed25519 argument)
+ * @return <c>0</c> on success; non-zero on failure.
+ */
+int opsick_db_get_user_keys(uint64_t user_id, char* out_pubkey_ed25519, char* out_prvkey_ed25519, char* out_pubkey_curve448, char* out_prvkey_curve448);
+
+/**
+ * Updated a user's key pairs in the db.
+ * @param user_id User id.
+ * @param new_pubkey_ed25519 The new ed25519 public key (NUL-terminated C-string).
+ * @param new_prvkey_ed25519 The new ed25519 encrypted private key (NUL-terminated C-string).
+ * @param new_pubkey_curve448 The new curve448 public key (NUL-terminated C-string).
+ * @param new_prvkey_curve448 The new curve448 encrypted private key (NUL-terminated C-string).
+ * @return <c>0</c> on success; non-zero on failure.
+ */
+int opsick_db_set_user_keys(uint64_t user_id, const char* new_pubkey_ed25519, const char* new_prvkey_ed25519, const char* new_pubkey_curve448, const char* new_prvkey_curve448);
+
+/**
  * Disconnects from the db and frees all the related resources.
  */
 void opsick_db_free();

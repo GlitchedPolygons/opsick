@@ -37,7 +37,6 @@ static const char opsick_sql_get_user_pw_and_totps[] = "SELECT pw, totps FROM us
 static const char opsick_sql_set_user_pw[] = "UPDATE users SET pw = ?, lastmod_utc = (strftime('%s','now')) WHERE id = ?";
 static const char opsick_sql_set_user_totps[] = "UPDATE users SET totps = ?, lastmod_utc = (strftime('%s','now')) WHERE id = ?";
 
-static const char opsick_sql_get_user_iat[] = "SELECT iat_utc FROM users WHERE id = ?";
 static const char opsick_sql_get_user_exp[] = "SELECT exp_utc FROM users WHERE id = ?";
 static const char opsick_sql_set_user_exp[] = "UPDATE users SET exp_utc = ?, lastmod_utc = (strftime('%s','now')) WHERE id = ?";
 
