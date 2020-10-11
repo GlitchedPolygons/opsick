@@ -73,13 +73,7 @@ void opsick_post_user2fa(http_s* request)
 
     const uint64_t userid = (uint64_t)fiobj_obj2num(userid_obj);
 
-    if (opsick_verify_user_pw(userid, fiobj_obj2cstr(pw_obj).data) != 0)
-    {
-        http_send_error(request, 403);
-        goto exit;
-    }
-
-    switch (opsick_verify_user_totp(userid, fiobj_obj2cstr(totp_obj).data))
+    switch (opsick_verify_user_pw_and_totp(userid, fiobj_obj2cstr(pw_obj).data, fiobj_obj2cstr(totp_obj).data))
     {
         case 1:
         case 2:

@@ -243,3 +243,37 @@ int opsick_verify_user_pw(uint64_t user_id, const char* pw)
 
     return ARGON2_OK == argon2id_verify(pwhash, pw, strlen(pw));
 }
+
+int opsick_verify_user_pw_and_totp(uint64_t user_id, const char* pw, const char* totp)
+{
+    if (pw == NULL || totp == NULL)
+    {
+        return 1;
+    }
+
+    char pw_hash[256] = { 0x00 };
+    char totps[49] = { 0x00 };
+    static const char totpsz[49] = { 0x00 };
+
+    if (opsick_db_get_user_pw_and_totps(user_id, pw_hash, totps) != 0)
+    {
+        return 2;
+    }
+
+    if (argon2id_verify(pw_hash, pw, strlen(pw)) != ARGON2_OK)
+    {
+        return 1;
+    }
+
+    if (memcmp(totps, totpsz, sizeof(totps)) == 0)
+    {
+        return 3;
+    }
+
+    if (tfac_verify_totp(totps, totp, OPSICK_2FA_STEPS, OPSICK_2FA_HASH_ALGO) != 0)
+    {
+        return 1;
+    }
+
+    return 0;
+}

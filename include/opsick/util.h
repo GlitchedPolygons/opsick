@@ -101,6 +101,15 @@ int opsick_verify_user_totp(uint64_t user_id, const char* totp);
 int opsick_verify_user_pw(uint64_t user_id, const char* pw);
 
 /**
+ * Verifies a user's password SHA512 and TOTP.
+ * @param user_id User id.
+ * @param pw The password to check.
+ * @param totp 2FA token.
+ * @return <c>0</c> if the password + TOTP is valid; <c>1</c> if either the password, the TOTP or both are not valid; <c>2</c> if the user wasn't found; <c>3</c> if the user was found, the password is valid but doesn't have 2FA activated.
+ */
+int opsick_verify_user_pw_and_totp(uint64_t user_id, const char* pw, const char* totp);
+
+/**
  * Signs a string using the Opsick server's private signing key.
  * @param string The NUL-terminated string to sign.
  * @param out A writable output buffer of at least 129B size (128 characters + 1 NUL-terminator).

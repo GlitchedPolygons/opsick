@@ -71,13 +71,7 @@ void opsick_post_passwd(http_s* request)
 
     const uint64_t user_id = (uint64_t)fiobj_obj2num(user_id_obj);
 
-    if (opsick_verify_user_pw(user_id, fiobj_obj2cstr(pw_obj).data) != 0)
-    {
-        http_send_error(request, 403);
-        goto exit;
-    }
-
-    switch (opsick_verify_user_totp(user_id, fiobj_obj2cstr(totp_obj).data))
+    switch (opsick_verify_user_pw_and_totp(user_id, fiobj_obj2cstr(pw_obj).data, fiobj_obj2cstr(totp_obj).data))
     {
         case 1:
         case 2:
