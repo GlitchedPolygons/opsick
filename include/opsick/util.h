@@ -88,17 +88,17 @@ int opsick_bin2hexstr(const uint8_t* bin, size_t bin_length, char* output, size_
 /**
  * Signs a string using the opsick server's private signing key.
  * @param string The NUL-terminated string to sign.
- * @param string_length Length of \p string argument (passing <c>0</c> will result in usage of <c>strlen()</c>).
+ * @param string_length Length of \p string argument (passing <c>0</c> will result in usage of <c>strlen(string)</c>).
  * @param out A writable output buffer of at least 129B size (128 characters + 1 NUL-terminator).
  */
 void opsick_sign(const char* string, size_t string_length, char* out);
 
 /**
  * Signs a string using the opsick server's private signing key
- * and sets the HTTP response signature header + body accordingly.
+ * and sets the HTTP response signature header + response body accordingly.
  * @param request The HTTP request.
  * @param body The response body to sign and send.
- * @param body_length Length of the passed \p body parameter.
+ * @param body_length Length of the passed \p body string parameter (passing <c>0</c> will result in usage of <c>strlen(body)</c>).
  */
 void opsick_sign_and_send(http_s* request, char* body, size_t body_length);
 
@@ -112,7 +112,7 @@ int opsick_request_has_signature(http_s* request);
 /**
  * Verifies an HTTP request's signature.
  * @param request The HTTP request whose body signature you want to verify.
- * @return <c>1</c> if the signature is valid; <c>0</c> if otherwise.
+ * @return <c>1</c> if the signature is valid; <c>0</c> otherwise.
  */
 int opsick_verify_api_request_signature(http_s* request);
 
@@ -120,7 +120,7 @@ int opsick_verify_api_request_signature(http_s* request);
  * Verifies an HTTP request's signature.
  * @param request The HTTP request whose body signature you want to verify.
  * @param public_key The public key to use for verifying the signature.
- * @return <c>1</c> if the signature is valid; <c>0</c> if otherwise.
+ * @return <c>1</c> if the signature is valid; <c>0</c> otherwise.
  */
 int opsick_verify_request_signature(http_s* request, const char* public_key);
 

@@ -19,6 +19,7 @@
 #include "opsick/keys.h"
 #include "opsick/config.h"
 #include "opsick/constants.h"
+
 #include <tfac.h>
 #include <stdio.h>
 #include <argon2.h>
@@ -28,12 +29,10 @@
 
 static FIOBJ preallocated_string_table[128] = { 0x00 };
 static struct opsick_config_adminsettings adminsettings;
-static uint8_t api_key[32];
 
 void opsick_util_init()
 {
     opsick_config_get_adminsettings(&adminsettings);
-    memcpy(api_key, adminsettings.api_key_public, 32);
 
     preallocated_string_table[0] = fiobj_str_new("ed25519-signature", 17);
     preallocated_string_table[1] = fiobj_str_new("user_id", 7);
@@ -44,7 +43,6 @@ void opsick_util_init()
 
 void opsick_util_free()
 {
-    mbedtls_platform_zeroize(api_key, sizeof(api_key));
     mbedtls_platform_zeroize(&adminsettings, sizeof(adminsettings));
 
     for (unsigned int i = 0; i < sizeof(preallocated_string_table) / sizeof(FIOBJ); i++)
@@ -168,6 +166,16 @@ int opsick_request_has_signature(http_s* request)
 
 int opsick_verify_api_request_signature(http_s* request)
 {
+    return opsick_verify_request_signature(request, adminsettings.api_key_public_hexstr);
+}
+
+int opsick_verify_request_signature(http_s* request, const char* public_key)
+{
+    if (request == NULL || public_key == NULL || strlen(public_key) != 64)
+    {
+        return 0;
+    }
+
     const struct fio_str_info_s body = fiobj_obj2cstr(request->body);
     if (body.data == NULL || body.len == 0)
     {
@@ -175,7 +183,7 @@ int opsick_verify_api_request_signature(http_s* request)
     }
 
     FIOBJ signature_header = fiobj_hash_get(request->headers, opsick_get_preallocated_string(OPSICK_PREALLOCATED_STRING_ID_ED25519_SIGNATURE));
-    if (!fiobj_type_is(signature_header, FIOBJ_T_STRING))
+    if (!signature_header || !fiobj_type_is(signature_header, FIOBJ_T_STRING))
     {
         return 0;
     }
@@ -189,12 +197,13 @@ int opsick_verify_api_request_signature(http_s* request)
         return 0;
     }
 
-    return ed25519_verify(signature_bytes, (unsigned char*)body.data, body.len, api_key);
-}
+    uint8_t public_key_bytes[32 + 1];
+    if (opsick_hexstr2bin(public_key, 64, public_key_bytes, sizeof(public_key_bytes), NULL) != 0)
+    {
+        return 0;
+    }
 
-int opsick_verify_request_signature(http_s* request, const char* public_key)
-{
-    //
+    return ed25519_verify(signature_bytes, (unsigned char*)body.data, body.len, public_key_bytes);
 }
 
 int opsick_decrypt(http_s* request, char** out)
