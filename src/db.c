@@ -670,22 +670,22 @@ int opsick_db_get_user_keys(uint64_t user_id, char* out_pubkey_ed25519, char* ou
 
     if (out_pubkey_ed25519 != NULL && pubkey_ed25519 != NULL)
     {
-        snprintf(out_pubkey_ed25519, strlen(pubkey_ed25519), "%s", pubkey_ed25519);
+        sprintf(out_pubkey_ed25519, "%s", pubkey_ed25519);
     }
 
     if (out_prvkey_ed25519 != NULL && prvkey_ed25519 != NULL)
     {
-        snprintf(out_prvkey_ed25519, strlen(prvkey_ed25519), "%s", prvkey_ed25519);
+        sprintf(out_prvkey_ed25519, "%s", prvkey_ed25519);
     }
 
     if (out_pubkey_curve448 != NULL && pubkey_curve448 != NULL)
     {
-        snprintf(out_pubkey_curve448, strlen(pubkey_curve448), "%s", pubkey_curve448);
+        sprintf(out_pubkey_curve448, "%s", pubkey_curve448);
     }
 
     if (out_prvkey_curve448 != NULL && prvkey_curve448 != NULL)
     {
-        snprintf(out_prvkey_curve448, strlen(prvkey_curve448), "%s", prvkey_curve448);
+        sprintf(out_prvkey_curve448, "%s", prvkey_curve448);
     }
 
     rc = 0;
