@@ -79,7 +79,7 @@ static void keyregen()
     opsick_bin2hexstr(ed25519_keypair.public_key, sizeof(ed25519_keypair.public_key), ed25519_keypair.public_key_hexstr, sizeof(ed25519_keypair.public_key_hexstr), NULL, 0);
     opsick_bin2hexstr(ed25519_keypair.private_key, sizeof(ed25519_keypair.private_key), ed25519_keypair.private_key_hexstr, sizeof(ed25519_keypair.private_key_hexstr), NULL, 0);
 
-    snprintf(pubkey_outjson, sizeof(pubkey_outjson), "{\"publicKeyEd25519\":\"%s\",\"publicKeyCurve448\":\"%s\"}", ed25519_keypair.public_key_hexstr, curve448_keypair.public_key.hexstring);
+    snprintf(pubkey_outjson, sizeof(pubkey_outjson), "{\"public_key_ed25519\":\"%s\",\"public_key_curve448\":\"%s\"}", ed25519_keypair.public_key_hexstr, curve448_keypair.public_key.hexstring);
     pubkey_outjson_len = strlen(pubkey_outjson);
 
     mbedtls_platform_zeroize(additional_entropy, sizeof(additional_entropy));

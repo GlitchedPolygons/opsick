@@ -329,9 +329,12 @@ int opsick_db_get_user_pw_and_totps(uint64_t user_id, char* out_pw, char* out_to
         snprintf(out_pw, 256, "%s", pw);
     }
 
-    if (out_totps_base32 != NULL && totps != NULL)
+    if (out_totps_base32 != NULL)
     {
-        snprintf(out_totps_base32, 49, "%s", totps);
+        if (totps != NULL)
+            snprintf(out_totps_base32, 49, "%s", totps);
+        else
+            mbedtls_platform_zeroize(out_totps_base32, 49);
     }
 
     rc = 0;

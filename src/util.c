@@ -33,6 +33,7 @@ void opsick_util_init()
     preallocated_string_table[1] = fiobj_str_new("user_id", 7);
     preallocated_string_table[2] = fiobj_str_new("pw", 2);
     preallocated_string_table[3] = fiobj_str_new("totp", 4);
+    preallocated_string_table[4] = fiobj_str_new("new_pw", 6);
 }
 
 void opsick_util_free()
@@ -210,21 +211,18 @@ int opsick_verify_user_totp(uint64_t user_id, const char* totp)
         return 1;
     }
 
-    char totps[49];
+    char totps[49] = { 0x00 };
+    static const char totpsz[49] = { 0x00 };
+
     if (opsick_db_get_user_pw_and_totps(user_id, NULL, totps))
     {
         return 2;
     }
 
-    for (int i = 0; i < sizeof(totps); i++)
+    if (memcmp(totps, totpsz, sizeof(totps)) == 0)
     {
-        if (totps[i] != '\0')
-            goto exit;
+        return 3;
     }
-
-    return 3;
-
-exit:
 
     return 0 == tfac_verify_totp(totps, totp, OPSICK_2FA_STEPS, OPSICK_2FA_HASH_ALGO);
 }
@@ -236,8 +234,7 @@ int opsick_verify_user_pw(uint64_t user_id, const char* pw)
         return 1;
     }
 
-    char pwhash[256];
-    mbedtls_platform_zeroize(pwhash, sizeof(pwhash));
+    char pwhash[256] = { 0x00 };
 
     if (opsick_db_get_user_pw_and_totps(user_id, pwhash, NULL))
     {

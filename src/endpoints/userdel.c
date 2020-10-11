@@ -89,6 +89,8 @@ void opsick_post_userdel(http_s* request)
         goto exit;
     }
 
+    http_finish(request);
+
 exit:
     if (json != NULL)
     {

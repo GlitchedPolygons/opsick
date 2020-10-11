@@ -62,6 +62,8 @@ extern "C" {
  */
 #define OPSICK_2FA_HASH_ALGO 0
 
+#pragma region STRING PRE-ALLOCATION IDs
+
 /**
  * Index to pass to #opsick_get_preallocated_string() to receive back the FIOBJ string "ed25519-signature".
  */
@@ -81,6 +83,13 @@ extern "C" {
  * Index to pass to #opsick_get_preallocated_string() to receive back the FIOBJ string "totp".
  */
 #define OPSICK_STRPREALLOC_INDEX_TOTP 3
+
+/**
+ * Index to pass to #opsick_get_preallocated_string() to receive back the FIOBJ string "new_pw".
+ */
+#define OPSICK_STRPREALLOC_INDEX_NEW_PW 4
+
+#pragma endregion
 
 #pragma region HASHES
 

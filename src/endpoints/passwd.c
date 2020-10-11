@@ -15,6 +15,7 @@
 */
 
 #include <mbedtls/platform_util.h>
+#include <argon2.h>
 
 #include "opsick/db.h"
 #include "opsick/keys.h"
@@ -23,10 +24,10 @@
 #include "opsick/endpoints/passwd.h"
 
 static uint8_t api_key_public[32];
+static struct opsick_config_adminsettings adminsettings;
 
 void opsick_init_endpoint_passwd()
 {
-    struct opsick_config_adminsettings adminsettings;
     opsick_config_get_adminsettings(&adminsettings);
     memcpy(api_key_public, adminsettings.api_key_public, sizeof(api_key_public));
 }
@@ -57,25 +58,26 @@ void opsick_post_passwd(http_s* request)
         goto exit;
     }
 
-    const FIOBJ userid_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_USER_ID));
+    const FIOBJ user_id_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_USER_ID));
     const FIOBJ pw_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PW));
+    const FIOBJ new_pw_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_NEW_PW));
     const FIOBJ totp_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_TOTP));
 
-    if (!userid_obj || !fiobj_type_is(userid_obj, FIOBJ_T_NUMBER) || !pw_obj)
+    if (!user_id_obj || !fiobj_type_is(user_id_obj, FIOBJ_T_NUMBER) || !pw_obj || !new_pw_obj)
     {
         http_send_error(request, 403);
         goto exit;
     }
 
-    const uint64_t userid = (uint64_t)fiobj_obj2num(userid_obj);
+    const uint64_t user_id = (uint64_t)fiobj_obj2num(user_id_obj);
 
-    if (opsick_verify_user_pw(userid, fiobj_obj2cstr(pw_obj).data) != 0)
+    if (opsick_verify_user_pw(user_id, fiobj_obj2cstr(pw_obj).data) != 0)
     {
         http_send_error(request, 403);
         goto exit;
     }
 
-    switch (opsick_verify_user_totp(userid, fiobj_obj2cstr(totp_obj).data))
+    switch (opsick_verify_user_totp(user_id, fiobj_obj2cstr(totp_obj).data))
     {
         case 1:
         case 2:
@@ -83,7 +85,26 @@ void opsick_post_passwd(http_s* request)
             goto exit;
     }
 
-    // TODO: change user pw here
+    uint8_t salt[32];
+    cecies_dev_urandom(salt, sizeof(salt));
+
+    char new_pw_hash[256] = { 0x00 };
+    struct fio_str_info_s new_pw_strobj = fiobj_obj2cstr(new_pw_obj);
+
+    int r = argon2id_hash_encoded(adminsettings.argon2_time_cost, adminsettings.argon2_memory_cost, adminsettings.argon2_parallelism, new_pw_strobj.data, new_pw_strobj.len, salt, sizeof(salt), 64, new_pw_hash, sizeof(new_pw_hash) - 1);
+    if (r != ARGON2_OK)
+    {
+        fprintf(stderr, "Failure to hash user's password server-side using \"argon2id_hash_encoded()\". Returned error code: %d", r);
+        http_send_error(request, 500);
+        goto exit;
+    }
+
+    if (opsick_db_set_user_pw(user_id, new_pw_hash) != 0)
+    {
+        fprintf(stderr, "Failure to write new user pw hash to db.");
+        http_send_error(request, 500);
+        goto exit;
+    }
 
 exit:
     if (json != NULL)
@@ -100,5 +121,6 @@ exit:
 
 void opsick_free_endpoint_passwd()
 {
+    mbedtls_platform_zeroize(&adminsettings, sizeof(adminsettings));
     mbedtls_platform_zeroize(api_key_public, sizeof(api_key_public));
 }
