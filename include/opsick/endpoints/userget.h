@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-#ifndef OPSICK_PRVKEY_H
-#define OPSICK_PRVKEY_H
+#ifndef OPSICK_USERGET_H
+#define OPSICK_USERGET_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,31 +24,30 @@ extern "C" {
 #include "http.h"
 
 /**
- * @file prvkey.h
+ * @file userget.h
  * @author Raphael Beck
- * @brief User account private key retrieval endpoint (in encrypted form).
+ * @brief User metadata fetch endpoint.
  */
 
 /**
- * Initializes the "/users/prvkey" endpoint.
+ * Initializes the "/users" endpoint.
  */
-void opsick_init_endpoint_prvkey();
+void opsick_init_endpoint_userget();
 
 /**
- * GET request to "/users/prvkey". <p>
- * Gets a user's encrypted private key(s) and returns it in the HTTP response body.
- * The user ID should be passed in the request body.
+ * GET request to "/users". <p>
+ * Gets a user's metadata from the server db.
  * @param request The HTTP request.
  */
-void opsick_get_prvkey(http_s* request);
+void opsick_get_user(http_s* request);
 
 /**
- * Frees the "/users/prvkey" endpoint resources.
+ * Frees the "/users" endpoint resources.
  */
-void opsick_free_endpoint_prvkey();
+void opsick_free_endpoint_userget();
 
 #ifdef __cplusplus
 } // extern "C"
 #endif
 
-#endif // OPSICK_PRVKEY_H
+#endif // OPSICK_USERGET_H

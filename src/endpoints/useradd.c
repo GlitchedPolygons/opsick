@@ -38,15 +38,9 @@ void opsick_init_endpoint_useradd()
 
 void opsick_post_useradd(http_s* request)
 {
-    if (!opsick_verify_request_signature(request, api_key_public))
-    {
-        http_send_error(request, 403);
-        return;
-    }
-
+    sqlite3* db = NULL;
     char* json = NULL;
     size_t json_length = 0;
-
     FIOBJ jsonobj = FIOBJ_INVALID;
     FIOBJ pw_jsonkey = fiobj_str_new("pw", 2);
     FIOBJ exp_utc_jsonkey = fiobj_str_new("exp_utc", 7);
@@ -55,6 +49,25 @@ void opsick_post_useradd(http_s* request)
     FIOBJ encrypted_private_key_ed25519_jsonkey = fiobj_str_new("encrypted_private_key_ed25519", 29);
     FIOBJ public_key_curve448_jsonkey = fiobj_str_new("public_key_curve448", 19);
     FIOBJ encrypted_private_key_curve448_jsonkey = fiobj_str_new("encrypted_private_key_curve448", 30);
+
+    if (!opsick_request_has_signature(request))
+    {
+        http_send_error(request, 500);
+        goto exit;
+    }
+
+    db = opsick_db_connect();
+    if (db == NULL)
+    {
+        http_send_error(request, 500);
+        goto exit;
+    }
+
+    if (!opsick_verify_request_signature(request, api_key_public))
+    {
+        http_send_error(request, 403);
+        goto exit;
+    }
 
     if (opsick_decrypt(request, &json) != 0)
     {
@@ -114,7 +127,7 @@ void opsick_post_useradd(http_s* request)
     }
 
     uint64_t user_id = 0;
-    r = opsick_db_create_user(pw_hash, (time_t)fiobj_obj2num(exp_utc_obj), fiobj_obj2cstr(body_obj).data, fiobj_obj2cstr(public_key_ed25519_obj).data, fiobj_obj2cstr(encrypted_private_key_ed25519_obj).data, userpubkey.data, fiobj_obj2cstr(encrypted_private_key_curve448_obj).data, &user_id);
+    r = opsick_db_create_user(db, pw_hash, (time_t)fiobj_obj2num(exp_utc_obj), fiobj_obj2cstr(body_obj).data, fiobj_obj2cstr(public_key_ed25519_obj).data, fiobj_obj2cstr(encrypted_private_key_ed25519_obj).data, userpubkey.data, fiobj_obj2cstr(encrypted_private_key_curve448_obj).data, &user_id);
     if (r != 0)
     {
         fprintf(stderr, "Failure to create new user server-side using \"opsick_db_create_user()\". Returned error code: %d", r);

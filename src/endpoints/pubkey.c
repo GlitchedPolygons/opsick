@@ -14,11 +14,10 @@
    limitations under the License.
 */
 
-#include <mbedtls/platform_util.h>
 #include "opsick/keys.h"
 #include "opsick/util.h"
-#include "opsick/constants.h"
 #include "opsick/endpoints/pubkey.h"
+#include <mbedtls/platform_util.h>
 
 void opsick_init_endpoint_pubkey()
 {
@@ -31,14 +30,9 @@ void opsick_get_pubkey(http_s* request)
     size_t json_length;
     opsick_keys_get_public_keys_json(json, &json_length);
 
-    char signature[128 + 1];
-    opsick_sign(json, signature);
-
-    http_set_header(request, opsick_get_preallocated_string(OPSICK_PREALLOCATED_STRING_ID_ED25519_SIGNATURE), fiobj_str_new(signature, 128));
-    http_send_body(request, json, json_length);
+    opsick_sign_and_send(request,json,json_length);
 
     mbedtls_platform_zeroize(json, sizeof(json));
-    mbedtls_platform_zeroize(signature, sizeof(signature));
 }
 
 void opsick_free_endpoint_pubkey()

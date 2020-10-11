@@ -71,12 +71,7 @@ void opsick_get_home(http_s* request)
         return;
     }
 
-    char signature[128 + 1];
-    opsick_sign(html, signature);
-
-    http_set_header(request, opsick_get_preallocated_string(OPSICK_PREALLOCATED_STRING_ID_ED25519_SIGNATURE), fiobj_str_new(signature, 128));
-
-    http_send_body(request, html, html_len);
+    opsick_sign_and_send(request, html, html_len);
 }
 
 void opsick_free_endpoint_home()

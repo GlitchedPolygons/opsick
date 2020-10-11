@@ -1,39 +1,21 @@
-/*
-   Copyright 2020 Raphael Beck
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
+#include "opsick/db.h"
+#include "opsick/util.h"
+#include "opsick/constants.h"
+#include "opsick/endpoints/userget.h"
 
 #include <tfac.h>
 #include <argon2.h>
+#include <sqlite3.h>
+#include <ed25519.h>
+#include <cecies/encrypt.h>
 #include <mbedtls/platform_util.h>
 
-#include "opsick/db.h"
-#include "opsick/keys.h"
-#include "opsick/util.h"
-#include "opsick/config.h"
-#include "opsick/endpoints/passwd.h"
-
-static uint8_t api_key_public[32];
-static struct opsick_config_adminsettings adminsettings;
-
-void opsick_init_endpoint_passwd()
+void opsick_init_endpoint_userget()
 {
-    opsick_config_get_adminsettings(&adminsettings);
-    memcpy(api_key_public, adminsettings.api_key_public, sizeof(api_key_public));
+    // nop
 }
 
-void opsick_post_passwd(http_s* request)
+void opsick_get_user(http_s* request)
 {
     char* json = NULL;
     size_t json_length = 0;
@@ -70,10 +52,9 @@ void opsick_post_passwd(http_s* request)
 
     const FIOBJ user_id_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_USER_ID));
     const FIOBJ pw_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PW));
-    const FIOBJ new_pw_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_NEW_PW));
     const FIOBJ totp_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_TOTP));
 
-    if (!user_id_obj || !pw_obj || !new_pw_obj)
+    if (!user_id_obj || !pw_obj)
     {
         http_send_error(request, 403);
         goto exit;
@@ -104,28 +85,24 @@ void opsick_post_passwd(http_s* request)
         goto exit;
     }
 
-    uint8_t salt[32];
-    cecies_dev_urandom(salt, sizeof(salt));
+    char out_json[1024];
+    snprintf(out_json, sizeof(out_json),
+            "{\"id\":%zu,\"iat_utc\":%zu,\"exp_utc\":%zu,\"lastmod_utc\":%zu,\"public_key_ed25519\":\"%s\",\"encrypted_private_key_ed25519\":\"%s\",\"public_key_curve448\":\"%s\",\"encrypted_private_key_curve448\":\"%s\"}", //
+            user_metadata.id, user_metadata.iat_utc, user_metadata.exp_utc, user_metadata.lastmod_utc, user_metadata.public_key_ed25519.hexstring, user_metadata.encrypted_private_key_ed25519, user_metadata.public_key_curve448.hexstring, user_metadata.encrypted_private_key_curve448 //
+    );
 
-    char new_pw_hash[256] = { 0x00 };
-    const struct fio_str_info_s new_pw_strobj = fiobj_obj2cstr(new_pw_obj);
+    size_t out_enc_len = 0;
+    char out_enc[2048];
 
-    int r = argon2id_hash_encoded(adminsettings.argon2_time_cost, adminsettings.argon2_memory_cost, adminsettings.argon2_parallelism, new_pw_strobj.data, new_pw_strobj.len, salt, sizeof(salt), 64, new_pw_hash, sizeof(new_pw_hash) - 1);
-    if (r != ARGON2_OK)
+    if (cecies_curve448_encrypt((unsigned char*)out_json, strlen(out_json), user_metadata.public_key_curve448, (unsigned char*)out_enc, sizeof(out_enc), &out_enc_len, true) != 0)
     {
-        fprintf(stderr, "Failure to hash user's password server-side using \"argon2id_hash_encoded()\". Returned error code: %d", r);
         http_send_error(request, 500);
         goto exit;
     }
 
-    if (opsick_db_set_user_pw(db, user_id, new_pw_hash) != 0)
-    {
-        fprintf(stderr, "Failure to write new user pw hash to db.");
-        http_send_error(request, 500);
-        goto exit;
-    }
+    opsick_sign_and_send(request, out_enc, out_enc_len);
 
-    http_finish(request);
+    mbedtls_platform_zeroize(out_json, sizeof(out_json));
 
 exit:
     if (json != NULL)
@@ -142,8 +119,7 @@ exit:
     mbedtls_platform_zeroize(&user_metadata, sizeof(user_metadata));
 }
 
-void opsick_free_endpoint_passwd()
+void opsick_free_endpoint_userget()
 {
-    mbedtls_platform_zeroize(&adminsettings, sizeof(adminsettings));
-    mbedtls_platform_zeroize(api_key_public, sizeof(api_key_public));
+    // nop
 }

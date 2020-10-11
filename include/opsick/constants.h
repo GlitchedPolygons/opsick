@@ -62,7 +62,7 @@ extern "C" {
  */
 #define OPSICK_2FA_HASH_ALGO 0
 
-#pragma region STRING PRE-ALLOCATION IDs
+#pragma region STRING PRE - ALLOCATION IDs
 
 /**
  * Index to pass to #opsick_get_preallocated_string() to receive back the FIOBJ string "ed25519-signature".
@@ -134,6 +134,13 @@ extern "C" {
  * </c>
  */
 #define OPSICK_PASSWD_PATH_HASH 2697305887
+
+/**
+ * <c>
+ * murmur3("/users")
+ * </c>
+ */
+#define OPSICK_USERGET_PATH_HASH 456400922
 
 /**
  * <c>

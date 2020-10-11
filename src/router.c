@@ -23,10 +23,10 @@
 #include "opsick/constants.h"
 #include "opsick/endpoints/home.h"
 #include "opsick/endpoints/pubkey.h"
-#include "opsick/endpoints/prvkey.h"
 #include "opsick/endpoints/passwd.h"
 #include "opsick/endpoints/useradd.h"
 #include "opsick/endpoints/userdel.h"
+#include "opsick/endpoints/userget.h"
 #include "opsick/endpoints/user2fa.h"
 #include "opsick/endpoints/version.h"
 
@@ -112,8 +112,8 @@ static void route_request(http_s* request, const uint32_t pathstr_hash)
             opsick_get_pubkey(request);
             break;
         }
-        case OPSICK_PRVKEY_PATH_HASH: {
-            opsick_get_prvkey(request);
+        case OPSICK_USERGET_PATH_HASH: {
+            opsick_get_user(request);
             break;
         }
         case OPSICK_PASSWD_PATH_HASH: {
@@ -143,8 +143,8 @@ static void init_all_endpoints()
 {
     opsick_init_endpoint_home();
     opsick_init_endpoint_pubkey();
-    opsick_init_endpoint_prvkey();
     opsick_init_endpoint_passwd();
+    opsick_init_endpoint_userget();
     opsick_init_endpoint_useradd();
     opsick_init_endpoint_userdel();
     opsick_init_endpoint_user2fa();
@@ -155,8 +155,8 @@ static void free_all_endpoints()
 {
     opsick_free_endpoint_home();
     opsick_free_endpoint_pubkey();
-    opsick_free_endpoint_prvkey();
     opsick_free_endpoint_passwd();
+    opsick_free_endpoint_userget();
     opsick_free_endpoint_useradd();
     opsick_free_endpoint_userdel();
     opsick_free_endpoint_user2fa();

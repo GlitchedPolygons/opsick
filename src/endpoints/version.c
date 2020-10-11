@@ -34,13 +34,7 @@ void opsick_init_endpoint_version()
 
 void opsick_get_version(http_s* request)
 {
-    char sig[128 + 1];
-    opsick_sign(json, sig);
-
-    http_set_header(request, opsick_get_preallocated_string(0), fiobj_str_new(sig, 128));
-    http_send_body(request, json, json_length);
-
-    mbedtls_platform_zeroize(sig, sizeof(sig));
+    opsick_sign_and_send(request, json, json_length);
 }
 
 void opsick_free_endpoint_version()

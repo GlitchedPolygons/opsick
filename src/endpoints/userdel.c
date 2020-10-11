@@ -33,15 +33,30 @@ void opsick_init_endpoint_userdel()
 
 void opsick_post_userdel(http_s* request)
 {
-    if (!opsick_verify_request_signature(request, api_key_public))
-    {
-        http_send_error(request, 403);
-        return;
-    }
-
     char* json = NULL;
     size_t json_length = 0;
     FIOBJ jsonobj = FIOBJ_INVALID;
+    sqlite3* db = NULL;
+    struct opsick_user_metadata user_metadata = { 0x00 };
+
+    if (!opsick_request_has_signature(request))
+    {
+        http_send_error(request, 500);
+        goto exit;
+    }
+
+    db = opsick_db_connect();
+    if (db == NULL)
+    {
+        http_send_error(request, 500);
+        goto exit;
+    }
+
+    if (!opsick_verify_request_signature(request, api_key_public))
+    {
+        http_send_error(request, 403);
+        goto exit;
+    }
 
     // Decrypt the request body.
     if (opsick_decrypt(request, &json) != 0 || (json_length = strlen(json)) == 0)
@@ -96,6 +111,7 @@ exit:
     }
 
     fiobj_free(jsonobj);
+    opsick_db_disconnect(db);
 }
 
 void opsick_free_endpoint_userdel()

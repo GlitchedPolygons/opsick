@@ -17,6 +17,7 @@
 #include "opsick/db.h"
 #include "opsick/util.h"
 #include "opsick/keys.h"
+#include "opsick/config.h"
 #include "opsick/constants.h"
 #include <tfac.h>
 #include <stdio.h>
@@ -26,9 +27,14 @@
 #include <mbedtls/platform_util.h>
 
 static FIOBJ preallocated_string_table[128] = { 0x00 };
+static struct opsick_config_adminsettings adminsettings;
+static uint8_t api_key[32];
 
 void opsick_util_init()
 {
+    opsick_config_get_adminsettings(&adminsettings);
+    memcpy(api_key, adminsettings.api_key_public, 32);
+
     preallocated_string_table[0] = fiobj_str_new("ed25519-signature", 17);
     preallocated_string_table[1] = fiobj_str_new("user_id", 7);
     preallocated_string_table[2] = fiobj_str_new("pw", 2);
@@ -38,6 +44,9 @@ void opsick_util_init()
 
 void opsick_util_free()
 {
+    mbedtls_platform_zeroize(api_key, sizeof(api_key));
+    mbedtls_platform_zeroize(&adminsettings, sizeof(adminsettings));
+
     for (unsigned int i = 0; i < sizeof(preallocated_string_table) / sizeof(FIOBJ); i++)
     {
         FIOBJ ie = preallocated_string_table[i];
@@ -120,13 +129,13 @@ int opsick_bin2hexstr(const uint8_t* bin, const size_t bin_length, char* output,
     return 0;
 }
 
-void opsick_sign(const char* string, char* out)
+void opsick_sign(const char* string, size_t string_length, char* out)
 {
     struct opsick_ed25519_keypair keypair;
     opsick_keys_get_ed25519_keypair(&keypair);
 
     uint8_t signature[64];
-    ed25519_sign(signature, (unsigned char*)string, strlen(string), keypair.public_key, keypair.private_key);
+    ed25519_sign(signature, (unsigned char*)string, string_length ? string_length : strlen(string), keypair.public_key, keypair.private_key);
 
     opsick_bin2hexstr(signature, sizeof(signature), out, 128 + 1, NULL, 0);
 
@@ -134,7 +143,30 @@ void opsick_sign(const char* string, char* out)
     mbedtls_platform_zeroize(&keypair, sizeof(keypair));
 }
 
-int opsick_verify_request_signature(http_s* request, const uint8_t* public_key)
+void opsick_sign_and_send(http_s* request, char* body, size_t body_length)
+{
+    if (request == NULL || body == NULL)
+        return;
+
+    char signature[128 + 1];
+    opsick_sign(body, body_length ? body_length : strlen(body), signature);
+
+    http_set_header(request, opsick_get_preallocated_string(OPSICK_PREALLOCATED_STRING_ID_ED25519_SIGNATURE), fiobj_str_new(signature, sizeof(signature) - 1));
+    http_send_body(request, body, body_length);
+}
+
+int opsick_request_has_signature(http_s* request)
+{
+    if (request == NULL)
+    {
+        return 0;
+    }
+
+    FIOBJ signature_header = fiobj_hash_get(request->headers, opsick_get_preallocated_string(OPSICK_PREALLOCATED_STRING_ID_ED25519_SIGNATURE));
+    return signature_header != FIOBJ_INVALID && fiobj_type_is(signature_header, FIOBJ_T_STRING);
+}
+
+int opsick_verify_api_request_signature(http_s* request)
 {
     const struct fio_str_info_s body = fiobj_obj2cstr(request->body);
     if (body.data == NULL || body.len == 0)
@@ -157,7 +189,12 @@ int opsick_verify_request_signature(http_s* request, const uint8_t* public_key)
         return 0;
     }
 
-    return ed25519_verify(signature_bytes, (unsigned char*)body.data, body.len, public_key);
+    return ed25519_verify(signature_bytes, (unsigned char*)body.data, body.len, api_key);
+}
+
+int opsick_verify_request_signature(http_s* request, const char* public_key)
+{
+    //
 }
 
 int opsick_decrypt(http_s* request, char** out)
@@ -202,78 +239,4 @@ exit:
     mbedtls_platform_zeroize(decrypted, decrypted_length);
     free(decrypted);
     return r;
-}
-
-int opsick_verify_user_totp(uint64_t user_id, const char* totp)
-{
-    if (totp == NULL)
-    {
-        return 1;
-    }
-
-    char totps[49] = { 0x00 };
-    static const char totpsz[49] = { 0x00 };
-
-    if (opsick_db_get_user_pw_and_totps(user_id, NULL, totps))
-    {
-        return 2;
-    }
-
-    if (memcmp(totps, totpsz, sizeof(totps)) == 0)
-    {
-        return 3;
-    }
-
-    return 0 == tfac_verify_totp(totps, totp, OPSICK_2FA_STEPS, OPSICK_2FA_HASH_ALGO);
-}
-
-int opsick_verify_user_pw(uint64_t user_id, const char* pw)
-{
-    if (pw == NULL)
-    {
-        return 1;
-    }
-
-    char pwhash[256] = { 0x00 };
-
-    if (opsick_db_get_user_pw_and_totps(user_id, pwhash, NULL))
-    {
-        return 2;
-    }
-
-    return ARGON2_OK == argon2id_verify(pwhash, pw, strlen(pw));
-}
-
-int opsick_verify_user_pw_and_totp(uint64_t user_id, const char* pw, const char* totp)
-{
-    if (pw == NULL || totp == NULL)
-    {
-        return 1;
-    }
-
-    char pw_hash[256] = { 0x00 };
-    char totps[49] = { 0x00 };
-    static const char totpsz[49] = { 0x00 };
-
-    if (opsick_db_get_user_pw_and_totps(user_id, pw_hash, totps) != 0)
-    {
-        return 2;
-    }
-
-    if (argon2id_verify(pw_hash, pw, strlen(pw)) != ARGON2_OK)
-    {
-        return 1;
-    }
-
-    if (memcmp(totps, totpsz, sizeof(totps)) == 0)
-    {
-        return 3;
-    }
-
-    if (tfac_verify_totp(totps, totp, OPSICK_2FA_STEPS, OPSICK_2FA_HASH_ALGO) != 0)
-    {
-        return 1;
-    }
-
-    return 0;
 }

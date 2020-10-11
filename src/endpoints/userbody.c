@@ -28,7 +28,7 @@ void opsick_init_endpoint_userbody()
 
 void opsick_post_userbody(http_s* request)
 {
-    // TODO: impl!
+    //
 }
 
 void opsick_free_endpoint_userbody()

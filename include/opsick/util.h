@@ -31,6 +31,7 @@ extern "C" {
 #include <stddef.h>
 #include <stdbool.h>
 #include <http.h>
+#include <sqlite3.h>
 
 /**
  * <c>x < y ? x : y</c>
@@ -85,44 +86,43 @@ int opsick_hexstr2bin(const char* hexstr, size_t hexstr_length, uint8_t* output,
 int opsick_bin2hexstr(const uint8_t* bin, size_t bin_length, char* output, size_t output_size, size_t* output_length, uint8_t uppercase);
 
 /**
- * Verifies a TOTP against a \p user_id.
- * @param user_id The User ID against which to verify the TOTP.
- * @param totp The 2FA token to verify.
- * @return <c>0</c> if the token is valid; <c>1</c> if the token is not valid; <c>2</c> if the user wasn't found; <c>3</c> if the user was found but doesn't have 2FA activated.
- */
-int opsick_verify_user_totp(uint64_t user_id, const char* totp);
-
-/**
- * Verifies a password SHA2-512 against a \p user_id
- * @param user_id The user whose password you want to verify.
- * @param pw The password to verify.
- * @return <c>0</c> if the password is valid; <c>1</c> if the password is not valid; <c>2</c> if the user wasn't found.
- */
-int opsick_verify_user_pw(uint64_t user_id, const char* pw);
-
-/**
- * Verifies a user's password SHA512 and TOTP.
- * @param user_id User id.
- * @param pw The password to check.
- * @param totp 2FA token.
- * @return <c>0</c> if the password + TOTP is valid; <c>1</c> if either the password, the TOTP or both are not valid; <c>2</c> if the user wasn't found; <c>3</c> if the user was found, the password is valid but doesn't have 2FA activated.
- */
-int opsick_verify_user_pw_and_totp(uint64_t user_id, const char* pw, const char* totp);
-
-/**
- * Signs a string using the Opsick server's private signing key.
+ * Signs a string using the opsick server's private signing key.
  * @param string The NUL-terminated string to sign.
+ * @param string_length Length of \p string argument (passing <c>0</c> will result in usage of <c>strlen()</c>).
  * @param out A writable output buffer of at least 129B size (128 characters + 1 NUL-terminator).
  */
-void opsick_sign(const char* string, char* out);
+void opsick_sign(const char* string, size_t string_length, char* out);
 
 /**
- * Verifies an HTTP request signature.
+ * Signs a string using the opsick server's private signing key
+ * and sets the HTTP response signature header + body accordingly.
+ * @param request The HTTP request.
+ * @param body The response body to sign and send.
+ * @param body_length Length of the passed \p body parameter.
+ */
+void opsick_sign_and_send(http_s* request, char* body, size_t body_length);
+
+/**
+ * Checks whether a given request has a signature header or not.
+ * @param request The request to check.
+ * @return <c>1</c> if the request has a signature header; <c>0</c> if \p request is <c>NULL</c> or has no signature header.
+ */
+int opsick_request_has_signature(http_s* request);
+
+/**
+ * Verifies an HTTP request's signature.
+ * @param request The HTTP request whose body signature you want to verify.
+ * @return <c>1</c> if the signature is valid; <c>0</c> if otherwise.
+ */
+int opsick_verify_api_request_signature(http_s* request);
+
+/**
+ * Verifies an HTTP request's signature.
  * @param request The HTTP request whose body signature you want to verify.
  * @param public_key The public key to use for verifying the signature.
  * @return <c>1</c> if the signature is valid; <c>0</c> if otherwise.
  */
-int opsick_verify_request_signature(http_s* request, const uint8_t* public_key);
+int opsick_verify_request_signature(http_s* request, const char* public_key);
 
 /**
  * Decrypts an HTTP request's body that was encrypted for the Opsick server.

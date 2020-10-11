@@ -54,12 +54,13 @@ set(${PROJECT_NAME}_HEADERS
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/sql/db_migrations.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/sql/users.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/util.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/user.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/home.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/pubkey.h
-        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/prvkey.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/passwd.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/useradd.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/userdel.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/userget.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/user2fa.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/userext.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/userbody.h
@@ -78,10 +79,10 @@ set(${PROJECT_NAME}_SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/src/util.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/home.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/pubkey.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/prvkey.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/passwd.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/useradd.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/userdel.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/userget.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/user2fa.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/userext.c
         ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/userbody.c
