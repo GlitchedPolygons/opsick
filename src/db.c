@@ -21,19 +21,21 @@
 #include "opsick/sql/db_migrations.h"
 
 #include <string.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <sqlite3.h>
 #include <cecies/util.h>
 #include <mbedtls/platform_util.h>
 
 static bool initialized = false;
+
+static uint8_t last128B[128];
 static uint64_t last_used_userid = 0;
 static uint64_t cached_db_schema_version_nr = 0;
 static uint64_t last_db_schema_version_nr_lookup = 0;
-static uint8_t last128B[128];
 static struct opsick_config_hostsettings hostsettings;
+
 static int callback_select_schema_version_nr(void*, int, char**, char**);
 
 static sqlite3* connect()
@@ -162,7 +164,7 @@ uint64_t opsick_db_get_last_db_schema_version_nr_lookup()
 int opsick_db_create_user(const char* pw, const uint64_t exp_utc, const char* body, const char* public_key_ed25519, const char* encrypted_private_key_ed25519, const char* public_key_curve448, const char* encrypted_private_key_curve448, uint64_t* out_user_id)
 {
     sqlite3* db = connect();
-    if (db == NULL)
+    if (db == NULL || exp_utc < time(0) || body == NULL || public_key_ed25519 == NULL || encrypted_private_key_ed25519 == NULL || public_key_curve448 == NULL || encrypted_private_key_curve448 == NULL || out_user_id == NULL)
     {
         return 1;
     }
@@ -289,7 +291,7 @@ exit:
 int opsick_db_get_user_pw_and_totps(uint64_t user_id, char* out_pw, char* out_totps_base32)
 {
     sqlite3* db = connect();
-    if (db == NULL)
+    if (db == NULL || (out_pw == NULL && out_totps_base32 == NULL))
     {
         return 1;
     }
@@ -343,7 +345,7 @@ exit:
 int opsick_db_set_user_pw(uint64_t user_id, const char* new_pw)
 {
     sqlite3* db = connect();
-    if (db == NULL)
+    if (db == NULL || new_pw == NULL)
     {
         return 1;
     }
@@ -391,7 +393,7 @@ exit:
 int opsick_db_set_user_totps(uint64_t user_id, const char* new_totps)
 {
     sqlite3* db = connect();
-    if (db == NULL)
+    if (db == NULL || new_totps == NULL)
     {
         return 1;
     }
@@ -492,7 +494,7 @@ exit:
 int opsick_db_set_user_body(uint64_t user_id, const char* body)
 {
     sqlite3* db = connect();
-    if (db == NULL)
+    if (db == NULL || body == NULL)
     {
         return 1;
     }
@@ -614,7 +616,7 @@ int opsick_db_set_user_exp(uint64_t user_id, const uint64_t new_exp)
     }
 
     rc = sqlite3_step(stmt);
-    if (rc != SQLITE_ROW)
+    if (rc != SQLITE_DONE)
     {
         fprintf(stderr, "opsick_db_set_user_exp: Failure during execution of the prepared sqlite3 statement.");
         goto exit;
@@ -654,6 +656,13 @@ int opsick_db_get_user_keys(uint64_t user_id, char* out_pubkey_ed25519, char* ou
         goto exit;
     }
 
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_ROW)
+    {
+        fprintf(stderr, "opsick_db_get_user_keys: Failure during execution of the prepared sqlite3 statement.");
+        goto exit;
+    }
+
     const char* pubkey_ed25519 = (const char*)sqlite3_column_text(stmt, 0);
     const char* prvkey_ed25519 = (const char*)sqlite3_column_text(stmt, 1);
     const char* pubkey_curve448 = (const char*)sqlite3_column_text(stmt, 2);
@@ -690,7 +699,7 @@ exit:
 int opsick_db_set_user_keys(uint64_t user_id, const char* new_pubkey_ed25519, const char* new_prvkey_ed25519, const char* new_pubkey_curve448, const char* new_prvkey_curve448)
 {
     sqlite3* db = connect();
-    if (db == NULL)
+    if (db == NULL || new_pubkey_ed25519 == NULL || new_prvkey_ed25519 == NULL || new_pubkey_curve448 == NULL || new_prvkey_curve448 == NULL)
     {
         return 1;
     }
@@ -706,7 +715,48 @@ int opsick_db_set_user_keys(uint64_t user_id, const char* new_pubkey_ed25519, co
         goto exit;
     }
 
-    // TODO
+    rc = sqlite3_bind_text(stmt, 1, new_pubkey_ed25519, -1, 0);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_set_user_keys: Failure to bind \"new_pubkey_ed25519\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    rc = sqlite3_bind_text(stmt, 2, new_prvkey_ed25519, -1, 0);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_set_user_keys: Failure to bind \"new_prvkey_ed25519\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    rc = sqlite3_bind_text(stmt, 3, new_pubkey_curve448, -1, 0);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_set_user_keys: Failure to bind \"new_pubkey_curve448\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    rc = sqlite3_bind_text(stmt, 4, new_prvkey_curve448, -1, 0);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_set_user_keys: Failure to bind \"new_prvkey_curve448\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    rc = sqlite3_bind_int64(stmt, 5, user_id);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_set_user_keys: Failure to bind \"user_id\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE)
+    {
+        fprintf(stderr, "opsick_db_set_user_keys: Failure during execution of the prepared sqlite3 statement.");
+        goto exit;
+    }
+
     rc = 0;
 exit:
     last_used_userid = user_id;
