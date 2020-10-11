@@ -31,7 +31,7 @@
 static bool initialized = false;
 static uint64_t last_used_userid = 0;
 static uint64_t cached_db_schema_version_nr = 0;
-static time_t last_db_schema_version_nr_lookup = 0;
+static uint64_t last_db_schema_version_nr_lookup = 0;
 static uint8_t last128B[128];
 static struct opsick_config_hostsettings hostsettings;
 static int callback_select_schema_version_nr(void*, int, char**, char**);
@@ -136,7 +136,7 @@ static int callback_select_schema_version_nr(void* nop, int argc, char* argv[], 
 
 uint64_t opsick_db_get_schema_version_number()
 {
-    last_db_schema_version_nr_lookup = time(NULL);
+    last_db_schema_version_nr_lookup = (uint64_t)time(NULL);
     return cached_db_schema_version_nr;
 }
 
@@ -154,12 +154,12 @@ void opsick_db_last_128_bytes_of_ciphertext(uint8_t out[128])
     memcpy(out, last128B, 128);
 }
 
-time_t opsick_db_get_last_db_schema_version_nr_lookup()
+uint64_t opsick_db_get_last_db_schema_version_nr_lookup()
 {
     return last_db_schema_version_nr_lookup;
 }
 
-int opsick_db_create_user(const char* pw, const time_t exp_utc, const char* body, const char* public_key_ed25519, const char* encrypted_private_key_ed25519, const char* public_key_curve448, const char* encrypted_private_key_curve448, uint64_t* out_user_id)
+int opsick_db_create_user(const char* pw, const uint64_t exp_utc, const char* body, const char* public_key_ed25519, const char* encrypted_private_key_ed25519, const char* public_key_curve448, const char* encrypted_private_key_curve448, uint64_t* out_user_id)
 {
     sqlite3* db = connect();
     if (db == NULL)
@@ -436,10 +436,10 @@ exit:
     return rc;
 }
 
-int opsick_db_get_user_body(uint64_t user_id)
+int opsick_db_get_user_body(uint64_t user_id, char** out_body)
 {
     sqlite3* db = connect();
-    if (db == NULL)
+    if (db == NULL || out_body == NULL)
     {
         return 1;
     }
@@ -455,7 +455,32 @@ int opsick_db_get_user_body(uint64_t user_id)
         goto exit;
     }
 
-    // TODO
+    rc = sqlite3_bind_int64(stmt, 1, user_id);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_get_user_body: Failure to bind \"user_id\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_ROW)
+    {
+        fprintf(stderr, "opsick_db_get_user_body: Failure during execution of the prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    const char* body = (const char*)sqlite3_column_text(stmt, 0);
+    if (body == NULL)
+    {
+        fprintf(stderr, "opsick_db_get_user_body: The user's body column was empty!");
+        goto exit;
+    }
+
+    const size_t bodylen = strlen(body);
+    *out_body = malloc(bodylen + 1);
+    memcpy(*out_body, body, bodylen);
+    (*out_body)[bodylen] = '\0';
+
     rc = 0;
 exit:
     last_used_userid = user_id;
@@ -483,7 +508,27 @@ int opsick_db_set_user_body(uint64_t user_id, const char* body)
         goto exit;
     }
 
-    // TODO
+    rc = sqlite3_bind_text(stmt, 1, body, -1, 0);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_set_user_body: Failure to bind \"body\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    rc = sqlite3_bind_int64(stmt, 2, user_id);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_set_user_body: Failure to bind \"user_id\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE)
+    {
+        fprintf(stderr, "opsick_db_set_user_body: Failure during execution of the prepared sqlite3 statement.");
+        goto exit;
+    }
+
     rc = 0;
 exit:
     last_used_userid = user_id;
@@ -492,7 +537,7 @@ exit:
     return rc;
 }
 
-int opsick_db_get_user_exp(uint64_t user_id, time_t* out_exp)
+int opsick_db_get_user_exp(uint64_t user_id, uint64_t* out_exp)
 {
     sqlite3* db = connect();
     if (db == NULL)
@@ -511,7 +556,22 @@ int opsick_db_get_user_exp(uint64_t user_id, time_t* out_exp)
         goto exit;
     }
 
-    // TODO
+    rc = sqlite3_bind_int64(stmt, 1, user_id);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_get_user_exp: Failure to bind \"user_id\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_ROW)
+    {
+        fprintf(stderr, "opsick_db_get_user_exp: Failure during execution of the prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    *out_exp = (uint64_t)sqlite3_column_int64(stmt, 0);
+
     rc = 0;
 exit:
     last_used_userid = user_id;
@@ -520,7 +580,7 @@ exit:
     return rc;
 }
 
-int opsick_db_set_user_exp(uint64_t user_id, time_t new_exp)
+int opsick_db_set_user_exp(uint64_t user_id, const uint64_t new_exp)
 {
     sqlite3* db = connect();
     if (db == NULL)
@@ -539,7 +599,27 @@ int opsick_db_set_user_exp(uint64_t user_id, time_t new_exp)
         goto exit;
     }
 
-    // TODO
+    rc = sqlite3_bind_int64(stmt, 1, new_exp);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_set_user_exp: Failure to bind \"new_exp\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    rc = sqlite3_bind_int64(stmt, 2, user_id);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_set_user_exp: Failure to bind \"user_id\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_ROW)
+    {
+        fprintf(stderr, "opsick_db_set_user_exp: Failure during execution of the prepared sqlite3 statement.");
+        goto exit;
+    }
+
     rc = 0;
 exit:
     last_used_userid = user_id;
@@ -567,7 +647,38 @@ int opsick_db_get_user_keys(uint64_t user_id, char* out_pubkey_ed25519, char* ou
         goto exit;
     }
 
-    // TODO
+    rc = sqlite3_bind_int64(stmt, 1, user_id);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_get_user_keys: Failure to bind \"user_id\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    const char* pubkey_ed25519 = (const char*)sqlite3_column_text(stmt, 0);
+    const char* prvkey_ed25519 = (const char*)sqlite3_column_text(stmt, 1);
+    const char* pubkey_curve448 = (const char*)sqlite3_column_text(stmt, 2);
+    const char* prvkey_curve448 = (const char*)sqlite3_column_text(stmt, 3);
+
+    if (out_pubkey_ed25519 != NULL && pubkey_ed25519 != NULL)
+    {
+        snprintf(out_pubkey_ed25519, strlen(pubkey_ed25519), "%s", pubkey_ed25519);
+    }
+
+    if (out_prvkey_ed25519 != NULL && prvkey_ed25519 != NULL)
+    {
+        snprintf(out_prvkey_ed25519, strlen(prvkey_ed25519), "%s", prvkey_ed25519);
+    }
+
+    if (out_pubkey_curve448 != NULL && pubkey_curve448 != NULL)
+    {
+        snprintf(out_pubkey_curve448, strlen(pubkey_curve448), "%s", pubkey_curve448);
+    }
+
+    if (out_prvkey_curve448 != NULL && prvkey_curve448 != NULL)
+    {
+        snprintf(out_prvkey_curve448, strlen(prvkey_curve448), "%s", prvkey_curve448);
+    }
+
     rc = 0;
 exit:
     last_used_userid = user_id;

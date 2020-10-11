@@ -21,7 +21,6 @@
 extern "C" {
 #endif
 
-#include <time.h>
 #include <stdint.h>
 
 /**
@@ -56,9 +55,9 @@ void opsick_db_last_128_bytes_of_ciphertext(uint8_t out[128]);
 
 /**
  * When was the last time somebody checked the db schema version number?
- * @return time_t
+ * @return UTC timestamp of the last schema version lookup.
  */
-time_t opsick_db_get_last_db_schema_version_nr_lookup();
+uint64_t opsick_db_get_last_db_schema_version_nr_lookup();
 
 /**
  * Adds a new user to the DB.
@@ -72,7 +71,7 @@ time_t opsick_db_get_last_db_schema_version_nr_lookup();
  * @param out_user_id Where to write the ID of the freshly created user into.
  * @return <c>0</c> on success; error code in case of a failure.
  */
-int opsick_db_create_user(const char* pw, time_t exp_utc, const char* body, const char* public_key_ed25519, const char* encrypted_private_key_ed25519, const char* public_key_curve448, const char* encrypted_private_key_curve448, uint64_t* out_user_id);
+int opsick_db_create_user(const char* pw, uint64_t exp_utc, const char* body, const char* public_key_ed25519, const char* encrypted_private_key_ed25519, const char* public_key_curve448, const char* encrypted_private_key_curve448, uint64_t* out_user_id);
 
 /**
  * Deletes a user from the DB.
@@ -109,9 +108,10 @@ int opsick_db_set_user_totps(uint64_t user_id, const char* new_totps);
 /**
  * Retrieves a user's body from the db.
  * @param user_id User id.
+ * @param out_body Pointer to an output body string that will contain the retrieved user body (will be left untouched if the user couldn't be found). This will be malloc'ed on success, so don't forget to free()!
  * @return <c>0</c> on success; <c>1</c> if the user was not found or fetch from db failed.
  */
-int opsick_db_get_user_body(uint64_t user_id);
+int opsick_db_get_user_body(uint64_t user_id, char** out_body);
 
 /**
  * Updates a user's body in the db.
@@ -127,7 +127,7 @@ int opsick_db_set_user_body(uint64_t user_id, const char* body);
  * @param out_exp Where to write the found expiration date into (will be left alone if the user couldn't be found).
  * @return <c>0</c> on success; non-zero on failure (e.g. \p user_id not found).
  */
-int opsick_db_get_user_exp(uint64_t user_id, time_t* out_exp);
+int opsick_db_get_user_exp(uint64_t user_id, uint64_t* out_exp);
 
 /**
  * Sets a new expiration datetime (UTC) to a user in the db.
@@ -135,7 +135,7 @@ int opsick_db_get_user_exp(uint64_t user_id, time_t* out_exp);
  * @param new_exp The new UTC timestamp of when the user account will become read-only.
  * @return <c>0</c> on success; non-zero on failure.
  */
-int opsick_db_set_user_exp(uint64_t user_id, time_t new_exp);
+int opsick_db_set_user_exp(uint64_t user_id, uint64_t new_exp);
 
 /**
  * Gets a user's keys from the DB and writes them into the passed output ``char*`` buffers (these will be left untouched in case of a failure e.g. \p user_id not found)..
