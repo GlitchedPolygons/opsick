@@ -234,12 +234,11 @@ int opsick_db_create_user(const char* pw, const time_t exp_utc, const char* body
         goto exit;
     }
 
-    rc = 0;
-
     *out_user_id = last_used_userid = sqlite3_last_insert_rowid(db);
     memcpy(last128B, public_key_curve448, OPSICK_MIN(64, strlen(public_key_curve448)));
     memcpy(last128B + 64, body, OPSICK_MIN(64, strlen(body)));
 
+    rc = 0;
 exit:
     sqlite3_finalize(stmt);
     disconnect(db);
@@ -279,6 +278,7 @@ int opsick_db_delete_user(uint64_t user_id)
         goto exit;
     }
 
+    rc = 0;
 exit:
     last_used_userid = user_id;
     sqlite3_finalize(stmt);
@@ -332,6 +332,231 @@ int opsick_db_get_user_pw_and_totps(uint64_t user_id, char* out_pw, char* out_to
         snprintf(out_totps_base32, 49, "%s", totps);
     }
 
+    rc = 0;
+exit:
+    last_used_userid = user_id;
+    sqlite3_finalize(stmt);
+    disconnect(db);
+    return rc;
+}
+
+int opsick_db_set_user_pw(uint64_t user_id, const char* new_pw)
+{
+    sqlite3* db = connect();
+    if (db == NULL)
+    {
+        return 1;
+    }
+
+    sqlite3_stmt* stmt = NULL;
+    const char* sql = opsick_sql_set_user_pw;
+    const size_t sql_length = sizeof(opsick_sql_set_user_pw) - 1;
+
+    int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        goto exit;
+    }
+
+    // TODO
+    rc = 0;
+exit:
+    last_used_userid = user_id;
+    sqlite3_finalize(stmt);
+    disconnect(db);
+    return rc;
+}
+
+int opsick_db_set_user_totps(uint64_t user_id, const char* new_totps)
+{
+    sqlite3* db = connect();
+    if (db == NULL)
+    {
+        return 1;
+    }
+
+    sqlite3_stmt* stmt = NULL;
+    const char* sql = opsick_sql_set_user_totps;
+    const size_t sql_length = sizeof(opsick_sql_set_user_totps) - 1;
+
+    int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        goto exit;
+    }
+
+    // TODO
+    rc = 0;
+exit:
+    last_used_userid = user_id;
+    sqlite3_finalize(stmt);
+    disconnect(db);
+    return rc;
+}
+
+int opsick_db_get_user_body(uint64_t user_id)
+{
+    sqlite3* db = connect();
+    if (db == NULL)
+    {
+        return 1;
+    }
+
+    sqlite3_stmt* stmt = NULL;
+    const char* sql = opsick_sql_get_user_body;
+    const size_t sql_length = sizeof(opsick_sql_get_user_body) - 1;
+
+    int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        goto exit;
+    }
+
+    // TODO
+    rc = 0;
+exit:
+    last_used_userid = user_id;
+    sqlite3_finalize(stmt);
+    disconnect(db);
+    return rc;
+}
+
+int opsick_db_set_user_body(uint64_t user_id, const char* body)
+{
+    sqlite3* db = connect();
+    if (db == NULL)
+    {
+        return 1;
+    }
+
+    sqlite3_stmt* stmt = NULL;
+    const char* sql = opsick_sql_set_user_body;
+    const size_t sql_length = sizeof(opsick_sql_set_user_body) - 1;
+
+    int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        goto exit;
+    }
+
+    // TODO
+    rc = 0;
+exit:
+    last_used_userid = user_id;
+    sqlite3_finalize(stmt);
+    disconnect(db);
+    return rc;
+}
+
+int opsick_db_get_user_exp(uint64_t user_id, time_t* out_exp)
+{
+    sqlite3* db = connect();
+    if (db == NULL)
+    {
+        return 1;
+    }
+
+    sqlite3_stmt* stmt = NULL;
+    const char* sql = opsick_sql_get_user_exp;
+    const size_t sql_length = sizeof(opsick_sql_get_user_exp) - 1;
+
+    int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        goto exit;
+    }
+
+    // TODO
+    rc = 0;
+exit:
+    last_used_userid = user_id;
+    sqlite3_finalize(stmt);
+    disconnect(db);
+    return rc;
+}
+
+int opsick_db_set_user_exp(uint64_t user_id, time_t new_exp)
+{
+    sqlite3* db = connect();
+    if (db == NULL)
+    {
+        return 1;
+    }
+
+    sqlite3_stmt* stmt = NULL;
+    const char* sql = opsick_sql_set_user_exp;
+    const size_t sql_length = sizeof(opsick_sql_set_user_exp) - 1;
+
+    int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        goto exit;
+    }
+
+    // TODO
+    rc = 0;
+exit:
+    last_used_userid = user_id;
+    sqlite3_finalize(stmt);
+    disconnect(db);
+    return rc;
+}
+
+int opsick_db_get_user_keys(uint64_t user_id, char* out_pubkey_ed25519, char* out_prvkey_ed25519, char* out_pubkey_curve448, char* out_prvkey_curve448)
+{
+    sqlite3* db = connect();
+    if (db == NULL)
+    {
+        return 1;
+    }
+
+    sqlite3_stmt* stmt = NULL;
+    const char* sql = opsick_sql_get_user_keys;
+    const size_t sql_length = sizeof(opsick_sql_get_user_keys) - 1;
+
+    int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        goto exit;
+    }
+
+    // TODO
+    rc = 0;
+exit:
+    last_used_userid = user_id;
+    sqlite3_finalize(stmt);
+    disconnect(db);
+    return rc;
+}
+
+int opsick_db_set_user_keys(uint64_t user_id, const char* new_pubkey_ed25519, const char* new_prvkey_ed25519, const char* new_pubkey_curve448, const char* new_prvkey_curve448)
+{
+    sqlite3* db = connect();
+    if (db == NULL)
+    {
+        return 1;
+    }
+
+    sqlite3_stmt* stmt = NULL;
+    const char* sql = opsick_sql_set_user_keys;
+    const size_t sql_length = sizeof(opsick_sql_set_user_keys) - 1;
+
+    int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        goto exit;
+    }
+
+    // TODO
+    rc = 0;
 exit:
     last_used_userid = user_id;
     sqlite3_finalize(stmt);
