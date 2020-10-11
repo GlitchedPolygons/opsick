@@ -33,6 +33,8 @@ if (CMAKE_SYSTEM_PROCESSOR MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
     set(${PROJECT_NAME}_ARGON2_IMPL ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/opt.c)
 endif ()
 
+add_compile_definitions("SQLITE_THREADSAFE=1")
+
 set(${PROJECT_NAME}_HEADERS
         ${CMAKE_CURRENT_LIST_DIR}/lib/sqlite3/sqlite3.h
         ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/blake2/blake2b.c
