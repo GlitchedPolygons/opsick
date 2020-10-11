@@ -142,7 +142,7 @@ uint64_t opsick_db_get_schema_version_number()
 
 uint64_t opsick_db_get_last_used_userid()
 {
-    return last_used_userid; // TODO: set this in all functions where possible!
+    return last_used_userid;
 }
 
 void opsick_db_last_128_bytes_of_ciphertext(uint8_t out[128])
@@ -174,63 +174,63 @@ int opsick_db_create_user(const char* pw, const time_t exp_utc, const char* body
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        fprintf(stderr, "opsick_db_create_user: Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
         goto exit;
     }
 
     rc = sqlite3_bind_text(stmt, 1, pw, -1, 0);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure to bind \"pw\" value to prepared sqlite3 statement.");
+        fprintf(stderr, "opsick_db_create_user: Failure to bind \"pw\" value to prepared sqlite3 statement.");
         goto exit;
     }
 
     rc = sqlite3_bind_int64(stmt, 2, exp_utc);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure to bind \"exp_utc\" value to prepared sqlite3 statement.");
+        fprintf(stderr, "opsick_db_create_user: Failure to bind \"exp_utc\" value to prepared sqlite3 statement.");
         goto exit;
     }
 
     rc = sqlite3_bind_text(stmt, 3, body, -1, 0);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure to bind \"body\" value to prepared sqlite3 statement.");
+        fprintf(stderr, "opsick_db_create_user: Failure to bind \"body\" value to prepared sqlite3 statement.");
         goto exit;
     }
 
     rc = sqlite3_bind_text(stmt, 4, public_key_ed25519, -1, 0);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure to bind \"public_key_ed25519\" value to prepared sqlite3 statement.");
+        fprintf(stderr, "opsick_db_create_user: Failure to bind \"public_key_ed25519\" value to prepared sqlite3 statement.");
         goto exit;
     }
 
     rc = sqlite3_bind_text(stmt, 5, encrypted_private_key_ed25519, -1, 0);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure to bind \"encrypted_private_key_ed25519\" value to prepared sqlite3 statement.");
+        fprintf(stderr, "opsick_db_create_user: Failure to bind \"encrypted_private_key_ed25519\" value to prepared sqlite3 statement.");
         goto exit;
     }
 
     rc = sqlite3_bind_text(stmt, 6, public_key_curve448, -1, 0);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure to bind \"public_key_curve448\" value to prepared sqlite3 statement.");
+        fprintf(stderr, "opsick_db_create_user: Failure to bind \"public_key_curve448\" value to prepared sqlite3 statement.");
         goto exit;
     }
 
     rc = sqlite3_bind_text(stmt, 7, encrypted_private_key_curve448, -1, 0);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure to bind \"encrypted_private_key_curve448\" value to prepared sqlite3 statement.");
+        fprintf(stderr, "opsick_db_create_user: Failure to bind \"encrypted_private_key_curve448\" value to prepared sqlite3 statement.");
         goto exit;
     }
 
     rc = sqlite3_step(stmt);
     if (rc != SQLITE_DONE)
     {
-        fprintf(stderr, "opsick_db_create_user: Failure during execution of the prepared sqlite3 statement.");
+        fprintf(stderr, "opsick_db_create_user: opsick_db_create_user: Failure during execution of the prepared sqlite3 statement.");
         goto exit;
     }
 
@@ -260,14 +260,14 @@ int opsick_db_delete_user(uint64_t user_id)
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        fprintf(stderr, "opsick_db_delete_user: Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
         goto exit;
     }
 
     rc = sqlite3_bind_int64(stmt, 1, user_id);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure to bind \"user_id\" value to prepared sqlite3 statement.");
+        fprintf(stderr, "opsick_db_delete_user: Failure to bind \"user_id\" value to prepared sqlite3 statement.");
         goto exit;
     }
 
@@ -301,14 +301,14 @@ int opsick_db_get_user_pw_and_totps(uint64_t user_id, char* out_pw, char* out_to
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        fprintf(stderr, "opsick_db_get_user_pw_and_totps: Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
         goto exit;
     }
 
     rc = sqlite3_bind_int64(stmt, 1, user_id);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure to bind \"user_id\" value to prepared sqlite3 statement.");
+        fprintf(stderr, "opsick_db_get_user_pw_and_totps: Failure to bind \"user_id\" value to prepared sqlite3 statement.");
         goto exit;
     }
 
@@ -355,11 +355,31 @@ int opsick_db_set_user_pw(uint64_t user_id, const char* new_pw)
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        fprintf(stderr, "opsick_db_set_user_pw: Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
         goto exit;
     }
 
-    // TODO
+    rc = sqlite3_bind_text(stmt, 1, new_pw, -1, 0);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_set_user_pw: Failure to bind \"new_pw\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    rc = sqlite3_bind_int64(stmt, 2, user_id);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_set_user_pw: Failure to bind \"user_id\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE)
+    {
+        fprintf(stderr, "opsick_db_set_user_pw: Failure during execution of the prepared sqlite3 statement.");
+        goto exit;
+    }
+
     rc = 0;
 exit:
     last_used_userid = user_id;
@@ -383,11 +403,31 @@ int opsick_db_set_user_totps(uint64_t user_id, const char* new_totps)
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        fprintf(stderr, "opsick_db_set_user_totps: Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
         goto exit;
     }
 
-    // TODO
+    rc = sqlite3_bind_text(stmt, 1, new_totps, -1, 0);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_set_user_totps: Failure to bind \"new_totps\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    rc = sqlite3_bind_int64(stmt, 2, user_id);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_set_user_totps: Failure to bind \"user_id\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE)
+    {
+        fprintf(stderr, "opsick_db_set_user_totps: Failure during execution of the prepared sqlite3 statement.");
+        goto exit;
+    }
+
     rc = 0;
 exit:
     last_used_userid = user_id;
@@ -411,7 +451,7 @@ int opsick_db_get_user_body(uint64_t user_id)
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        fprintf(stderr, "opsick_db_get_user_body: Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
         goto exit;
     }
 
@@ -439,7 +479,7 @@ int opsick_db_set_user_body(uint64_t user_id, const char* body)
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        fprintf(stderr, "opsick_db_set_user_body: Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
         goto exit;
     }
 
@@ -467,7 +507,7 @@ int opsick_db_get_user_exp(uint64_t user_id, time_t* out_exp)
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        fprintf(stderr, "opsick_db_get_user_exp: Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
         goto exit;
     }
 
@@ -495,7 +535,7 @@ int opsick_db_set_user_exp(uint64_t user_id, time_t new_exp)
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        fprintf(stderr, "opsick_db_set_user_exp: Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
         goto exit;
     }
 
@@ -523,7 +563,7 @@ int opsick_db_get_user_keys(uint64_t user_id, char* out_pubkey_ed25519, char* ou
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        fprintf(stderr, "opsick_db_get_user_keys: Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
         goto exit;
     }
 
@@ -551,7 +591,7 @@ int opsick_db_set_user_keys(uint64_t user_id, const char* new_pubkey_ed25519, co
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        fprintf(stderr, "opsick_db_set_user_keys: Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
         goto exit;
     }
 
