@@ -22,13 +22,10 @@
 #include "opsick/config.h"
 #include "opsick/endpoints/userdel.h"
 
-static uint8_t api_key_public[32];
-
 void opsick_init_endpoint_userdel()
 {
     struct opsick_config_adminsettings adminsettings;
     opsick_config_get_adminsettings(&adminsettings);
-    memcpy(api_key_public, adminsettings.api_key_public, sizeof(api_key_public));
 }
 
 void opsick_post_userdel(http_s* request)
@@ -49,12 +46,6 @@ void opsick_post_userdel(http_s* request)
     if (db == NULL)
     {
         http_send_error(request, 500);
-        goto exit;
-    }
-
-    if (!opsick_verify_request_signature(request, api_key_public))
-    {
-        http_send_error(request, 403);
         goto exit;
     }
 
@@ -82,9 +73,9 @@ void opsick_post_userdel(http_s* request)
         goto exit;
     }
 
-    const uint64_t userid = (uint64_t)fiobj_obj2num(userid_obj);
+    const uint64_t user_id = (uint64_t)fiobj_obj2num(userid_obj);
 
-    switch (opsick_verify_user_pw_and_totp(userid, fiobj_obj2cstr(pw_obj).data, fiobj_obj2cstr(totp_obj).data))
+    switch (opsick_verify_user_pw_and_totp(user_id, fiobj_obj2cstr(pw_obj).data, fiobj_obj2cstr(totp_obj).data))
     {
         case 1:
         case 2:
@@ -92,7 +83,7 @@ void opsick_post_userdel(http_s* request)
             goto exit;
     }
 
-    if (opsick_db_delete_user(userid) != 0)
+    if (opsick_db_delete_user(db, user_id) != 0)
     {
         http_send_error(request, 500);
         goto exit;
@@ -116,5 +107,5 @@ exit:
 
 void opsick_free_endpoint_userdel()
 {
-    mbedtls_platform_zeroize(api_key_public, sizeof(api_key_public));
+    // nop
 }

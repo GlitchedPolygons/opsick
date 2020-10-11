@@ -88,7 +88,12 @@ void opsick_post_passwd(http_s* request)
         goto exit;
     }
 
-    // TODO: verify req signature
+    // Verify request signature.
+    if (!opsick_verify_request_signature(request, user_metadata.public_key_ed25519.hexstring))
+    {
+        http_send_error(request, 403);
+        goto exit;
+    }
 
     // Check user password.
     if (argon2id_verify(user_metadata.pw, pw_strobj.data, pw_strobj.len) != ARGON2_OK)
