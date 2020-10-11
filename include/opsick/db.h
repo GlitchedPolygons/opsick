@@ -61,12 +61,6 @@ void opsick_db_last_128_bytes_of_ciphertext(uint8_t out[128]);
 time_t opsick_db_get_last_db_schema_version_nr_lookup();
 
 /**
- * Gets the ID of the last inserted row (useful during user creation).
- * @return The found ID as an unsigned 64-bit integer.
- */
-uint64_t opsick_db_get_last_insert_rowid();
-
-/**
  * Adds a new user to the DB.
  * @param pw The user's password (hashed).
  * @param exp_utc When the user expires (UTC).
