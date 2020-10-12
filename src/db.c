@@ -26,6 +26,7 @@
 #include <stdbool.h>
 #include <sqlite3.h>
 #include <cecies/util.h>
+#include <mbedtls/sha512.h>
 #include <mbedtls/platform_util.h>
 
 static bool initialized = false;
@@ -541,7 +542,20 @@ int opsick_db_set_user_body(sqlite3* db, uint64_t user_id, const char* body)
         goto exit;
     }
 
-    rc = sqlite3_bind_int64(stmt, 2, user_id);
+    unsigned char body_sha512_bytes[64] = { 0x00 };
+    mbedtls_sha512_ret((unsigned char*)body, strlen(body), body_sha512_bytes, 0);
+
+    char body_sha512[128 + 1] = { 0x00 };
+    cecies_bin2hexstr(body_sha512_bytes, sizeof(body_sha512_bytes), body_sha512, sizeof(body_sha512), NULL, true);
+
+    rc = sqlite3_bind_text(stmt, 2, body_sha512, 128, 0);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_set_user_body: Failure to bind \"body_sha512\" value to prepared sqlite3 statement.");
+        goto exit;
+    }
+
+    rc = sqlite3_bind_int64(stmt, 3, user_id);
     if (rc != SQLITE_OK)
     {
         fprintf(stderr, "opsick_db_set_user_body: Failure to bind \"user_id\" value to prepared sqlite3 statement.");

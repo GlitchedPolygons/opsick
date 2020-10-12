@@ -34,7 +34,7 @@ static const char opsick_sql_create_user[] = "INSERT INTO users (pw, exp_utc, bo
 static const char opsick_sql_delete_user[] = "DELETE FROM users WHERE id = ?";
 
 static const char opsick_sql_set_user_pw[] = "UPDATE users SET pw = ?, lastmod_utc = (strftime('%s','now')) WHERE id = ?";
-static const char opsick_sql_set_user_body[] = "UPDATE users SET body = ?, lastmod_utc = (strftime('%s','now')) WHERE id = ?";
+static const char opsick_sql_set_user_body[] = "UPDATE users SET body = ?, body_sha512 = ?, lastmod_utc = (strftime('%s','now')) WHERE id = ?";
 static const char opsick_sql_set_user_exp[] = "UPDATE users SET exp_utc = ?, lastmod_utc = (strftime('%s','now')) WHERE id = ?";
 static const char opsick_sql_set_user_totps[] = "UPDATE users SET totps = ?, lastmod_utc = (strftime('%s','now')) WHERE id = ?";
 static const char opsick_sql_set_user_keys[] = "UPDATE users SET public_key_ed25519 = ?, encrypted_private_key_ed25519 = ?, public_key_curve448 = ?, encrypted_private_key_curve448 = ?, lastmod_utc = (strftime('%s','now')) WHERE id = ?";
