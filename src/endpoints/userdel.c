@@ -60,10 +60,9 @@ void opsick_post_userdel(http_s* request)
 
     const FIOBJ user_id_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_USER_ID));
     const FIOBJ pw_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PW));
-    const FIOBJ new_pw_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_NEW_PW));
     const FIOBJ totp_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_TOTP));
 
-    if (!user_id_obj || !pw_obj || !new_pw_obj)
+    if (!user_id_obj || !pw_obj)
     {
         http_send_error(request, 403);
         goto exit;
