@@ -69,7 +69,6 @@ void opsick_post_useradd(http_s* request)
 
     const FIOBJ pw_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PW));
     const FIOBJ exp_utc_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_EXP_UTC));
-    const FIOBJ body_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_BODY));
     const FIOBJ public_key_ed25519_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PUBKEY_ED25519));
     const FIOBJ encrypted_private_key_ed25519_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PRVKEY_ED25519));
     const FIOBJ public_key_curve448_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PUBKEY_CURVE448));
@@ -114,7 +113,7 @@ void opsick_post_useradd(http_s* request)
     }
 
     uint64_t user_id = 0;
-    r = opsick_db_create_user(db, pw_hash, (uint64_t)strtoull(fiobj_obj2cstr(exp_utc_obj).data, NULL, 10), fiobj_obj2cstr(body_obj).data, userpubkey_ed25519.data, fiobj_obj2cstr(encrypted_private_key_ed25519_obj).data, userpubkey_curve448.data, fiobj_obj2cstr(encrypted_private_key_curve448_obj).data, &user_id);
+    r = opsick_db_create_user(db, pw_hash, (uint64_t)strtoull(fiobj_obj2cstr(exp_utc_obj).data, NULL, 10), userpubkey_ed25519.data, fiobj_obj2cstr(encrypted_private_key_ed25519_obj).data, userpubkey_curve448.data, fiobj_obj2cstr(encrypted_private_key_curve448_obj).data, &user_id);
     if (r != 0)
     {
         fprintf(stderr, "Failure to create new user server-side using \"opsick_db_create_user()\". Returned error code: %d", r);

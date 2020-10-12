@@ -21,8 +21,10 @@
 extern "C" {
 #endif
 
+#include <stddef.h>
 #include <stdint.h>
 #include <sqlite3.h>
+
 #include "user.h"
 
 /**
@@ -77,7 +79,6 @@ uint64_t opsick_db_get_last_db_schema_version_nr_lookup();
  * Adds a new user to the DB.
  * @param pw The user's password (hashed).
  * @param exp_utc When the user expires (UTC).
- * @param body The user's encrypted data body.
  * @param public_key_ed25519 The user's public Ed25519 key.
  * @param encrypted_private_key_ed25519 The user's encrypted private Ed25519 key.
  * @param public_key_curve448 The user's public Curve448 key.
@@ -85,7 +86,7 @@ uint64_t opsick_db_get_last_db_schema_version_nr_lookup();
  * @param out_user_id Where to write the ID of the freshly created user into.
  * @return <c>0</c> on success; error code in case of a failure.
  */
-int opsick_db_create_user(sqlite3* db, const char* pw, uint64_t exp_utc, const char* body, const char* public_key_ed25519, const char* encrypted_private_key_ed25519, const char* public_key_curve448, const char* encrypted_private_key_curve448, uint64_t* out_user_id);
+int opsick_db_create_user(sqlite3* db, const char* pw, uint64_t exp_utc, const char* public_key_ed25519, const char* encrypted_private_key_ed25519, const char* public_key_curve448, const char* encrypted_private_key_curve448, uint64_t* out_user_id);
 
 /**
  * Deletes a user from the DB.
@@ -122,9 +123,10 @@ int opsick_db_set_user_totps(sqlite3* db, uint64_t user_id, const char* new_totp
  * Retrieves a user's body from the db.
  * @param user_id User id.
  * @param out_body Pointer to an output body string that will contain the retrieved user body (will be left untouched if the user couldn't be found). This will be malloc'ed on success, so don't forget to free()!
+ * @param out_body_length [OPTIONAL] Where to write the output body length into (can be <c>NULL</c> if you don't need it).
  * @return <c>0</c> on success; <c>1</c> if the user was not found or fetch from db failed.
  */
-int opsick_db_get_user_body(sqlite3* db, uint64_t user_id, char** out_body);
+int opsick_db_get_user_body(sqlite3* db, uint64_t user_id, char** out_body, size_t* out_body_length);
 
 /**
  * Updates a user's body in the db.

@@ -1,12 +1,14 @@
 #include "opsick/db.h"
 #include "opsick/util.h"
 #include "opsick/constants.h"
+#include "opsick/strncmpic.h"
 #include "opsick/endpoints/userget.h"
 
 #include <tfac.h>
 #include <argon2.h>
 #include <sqlite3.h>
 #include <ed25519.h>
+#include <cecies/util.h>
 #include <cecies/encrypt.h>
 #include <mbedtls/platform_util.h>
 
@@ -17,6 +19,7 @@ void opsick_init_endpoint_userget()
 
 void opsick_get_user(http_s* request)
 {
+    char* body = NULL;
     char* json = NULL;
     size_t json_length = 0;
     FIOBJ jsonobj = FIOBJ_INVALID;
@@ -46,6 +49,7 @@ void opsick_get_user(http_s* request)
     const FIOBJ user_id_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_USER_ID));
     const FIOBJ pw_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PW));
     const FIOBJ totp_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_TOTP));
+    const FIOBJ body_sha512_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_BODY_SHA512));
 
     if (!user_id_obj || !pw_obj)
     {
@@ -91,24 +95,72 @@ void opsick_get_user(http_s* request)
         goto exit;
     }
 
-    char out_json[1024];
-    snprintf(out_json, sizeof(out_json),
-            "{\"id\":%zu,\"iat_utc\":%zu,\"exp_utc\":%zu,\"lastmod_utc\":%zu,\"public_key_ed25519\":\"%s\",\"encrypted_private_key_ed25519\":\"%s\",\"public_key_curve448\":\"%s\",\"encrypted_private_key_curve448\":\"%s\"}", //
-            user_metadata.id, user_metadata.iat_utc, user_metadata.exp_utc, user_metadata.lastmod_utc, user_metadata.public_key_ed25519.hexstring, user_metadata.encrypted_private_key_ed25519, user_metadata.public_key_curve448.hexstring, user_metadata.encrypted_private_key_curve448 //
-    );
-
-    size_t out_enc_len = 0;
-    char out_enc[2048];
-
-    if (cecies_curve448_encrypt((unsigned char*)out_json, strlen(out_json), user_metadata.public_key_curve448, (unsigned char*)out_enc, sizeof(out_enc), &out_enc_len, true) != 0)
+    // If the last body SHA-512 sent is different from the current one in the db, return the user's newest body too!
+    if (opsick_strncmpic(user_metadata.body_sha512, body_sha512_obj ? fiobj_obj2cstr(body_sha512_obj).data : "NULL", 128) != 0)
     {
-        http_send_error(request, 500);
-        goto exit;
+        size_t bodylen = 0;
+        if (opsick_db_get_user_body(db, user_id, &body, &bodylen) != 0)
+        {
+            http_send_error(request, 403);
+            goto exit;
+        }
+
+        size_t out_json_length = 1024 + bodylen + 128;
+        char* out_json = malloc(out_json_length);
+
+        size_t out_enc_length = cecies_calc_base64_length(cecies_curve448_calc_output_buffer_needed_size(out_json_length));
+        char* out_enc = malloc(out_enc_length);
+
+        if (out_json == NULL || out_enc == NULL)
+        {
+            fprintf(stderr, "OUT OF MEMORY!");
+            http_send_error(request, 500);
+            free(out_json);
+            free(out_enc);
+            goto exit;
+        }
+
+        snprintf(out_json, out_json_length, //
+                "{\"id\":%zu,\"iat_utc\":%zu,\"exp_utc\":%zu,\"lastmod_utc\":%zu,\"body\":\"%s\",\"body_sha512\":\"%s\",\"public_key_ed25519\":\"%s\",\"encrypted_private_key_ed25519\":\"%s\",\"public_key_curve448\":\"%s\",\"encrypted_private_key_curve448\":\"%s\"}", //
+                user_metadata.id, user_metadata.iat_utc, user_metadata.exp_utc, user_metadata.lastmod_utc, body, user_metadata.body_sha512, user_metadata.public_key_ed25519.hexstring, user_metadata.encrypted_private_key_ed25519, user_metadata.public_key_curve448.hexstring, user_metadata.encrypted_private_key_curve448 //
+        );
+
+        if (cecies_curve448_encrypt((unsigned char*)out_json, strlen(out_json), user_metadata.public_key_curve448, (unsigned char*)out_enc, out_enc_length, &out_enc_length, true) != 0)
+        {
+            http_send_error(request, 500);
+            free(out_json);
+            free(out_enc);
+            goto exit;
+        }
+
+        opsick_sign_and_send(request, out_enc, out_enc_length);
+
+        mbedtls_platform_zeroize(out_json, out_json_length);
+        free(out_json);
+        free(out_enc);
     }
+    else // User already has the newest body, only return the metadata
+    {
+        char out_json[1024];
+        snprintf(out_json, sizeof(out_json),
+                "{\"id\":%zu,\"iat_utc\":%zu,\"exp_utc\":%zu,\"lastmod_utc\":%zu,\"public_key_ed25519\":\"%s\",\"encrypted_private_key_ed25519\":\"%s\",\"public_key_curve448\":\"%s\",\"encrypted_private_key_curve448\":\"%s\"}", //
+                user_metadata.id, user_metadata.iat_utc, user_metadata.exp_utc, user_metadata.lastmod_utc, user_metadata.public_key_ed25519.hexstring, user_metadata.encrypted_private_key_ed25519, user_metadata.public_key_curve448.hexstring, user_metadata.encrypted_private_key_curve448 //
+        );
 
-    opsick_sign_and_send(request, out_enc, out_enc_len);
+        size_t out_enc_len = 0;
+        char out_enc[2048];
 
-    mbedtls_platform_zeroize(out_json, sizeof(out_json));
+        if (cecies_curve448_encrypt((unsigned char*)out_json, strlen(out_json), user_metadata.public_key_curve448, (unsigned char*)out_enc, sizeof(out_enc), &out_enc_len, true) != 0)
+        {
+            mbedtls_platform_zeroize(out_json, sizeof(out_json));
+            http_send_error(request, 500);
+            goto exit;
+        }
+
+        opsick_sign_and_send(request, out_enc, out_enc_len);
+
+        mbedtls_platform_zeroize(out_json, sizeof(out_json));
+    }
 
 exit:
     if (json != NULL)
@@ -120,6 +172,7 @@ exit:
         free(json);
     }
 
+    free(body);
     fiobj_free(jsonobj);
     opsick_db_disconnect(db);
     mbedtls_platform_zeroize(&user_metadata, sizeof(user_metadata));

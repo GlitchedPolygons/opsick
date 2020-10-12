@@ -41,6 +41,7 @@ struct opsick_user_metadata
     uint64_t iat_utc;
     uint64_t exp_utc;
     uint64_t lastmod_utc;
+    char body_sha512[128 + 1];
     struct cecies_curve25519_key public_key_ed25519;
     char encrypted_private_key_ed25519[256];
     struct cecies_curve448_key public_key_curve448;

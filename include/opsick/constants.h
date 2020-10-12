@@ -124,6 +124,11 @@ extern "C" {
  */
 #define OPSICK_STRPREALLOC_INDEX_EXT 11
 
+/**
+ * Index to pass to #opsick_get_preallocated_string() to receive back the FIOBJ string "body_sha512".
+ */
+#define OPSICK_STRPREALLOC_INDEX_BODY_SHA512 12
+
 #pragma endregion
 
 #pragma region HASHES
