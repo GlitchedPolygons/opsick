@@ -39,6 +39,12 @@ void opsick_util_init()
     preallocated_string_table[2] = fiobj_str_new("pw", 2);
     preallocated_string_table[3] = fiobj_str_new("totp", 4);
     preallocated_string_table[4] = fiobj_str_new("new_pw", 6);
+    preallocated_string_table[5] = fiobj_str_new("exp_utc", 7);
+    preallocated_string_table[6] = fiobj_str_new("body", 4);
+    preallocated_string_table[7] = fiobj_str_new("public_key_ed25519", 18);
+    preallocated_string_table[8] = fiobj_str_new("encrypted_private_key_ed25519", 29);
+    preallocated_string_table[9] = fiobj_str_new("public_key_curve448", 19);
+    preallocated_string_table[10] = fiobj_str_new("encrypted_private_key_curve448", 30);
 }
 
 void opsick_util_free()

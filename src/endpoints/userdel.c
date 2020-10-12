@@ -14,6 +14,8 @@
    limitations under the License.
 */
 
+#include <tfac.h>
+#include <argon2.h>
 #include <mbedtls/platform_util.h>
 
 #include "opsick/db.h"
@@ -38,14 +40,7 @@ void opsick_post_userdel(http_s* request)
 
     if (!opsick_request_has_signature(request))
     {
-        http_send_error(request, 500);
-        goto exit;
-    }
-
-    db = opsick_db_connect();
-    if (db == NULL)
-    {
-        http_send_error(request, 500);
+        http_send_error(request, 403);
         goto exit;
     }
 
@@ -63,24 +58,53 @@ void opsick_post_userdel(http_s* request)
         goto exit;
     }
 
-    const FIOBJ userid_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_USER_ID));
+    const FIOBJ user_id_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_USER_ID));
     const FIOBJ pw_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PW));
+    const FIOBJ new_pw_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_NEW_PW));
     const FIOBJ totp_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_TOTP));
 
-    if (!userid_obj || !fiobj_type_is(userid_obj, FIOBJ_T_NUMBER) || !pw_obj)
+    if (!user_id_obj || !pw_obj || !new_pw_obj)
     {
         http_send_error(request, 403);
         goto exit;
     }
 
-    const uint64_t user_id = (uint64_t)fiobj_obj2num(userid_obj);
+    const uint64_t user_id = (uint64_t)strtoull(fiobj_obj2cstr(user_id_obj).data, NULL, 10);
+    const struct fio_str_info_s pw_strobj = fiobj_obj2cstr(pw_obj);
 
-    switch (opsick_verify_user_pw_and_totp(user_id, fiobj_obj2cstr(pw_obj).data, fiobj_obj2cstr(totp_obj).data))
+    db = opsick_db_connect();
+    if (db == NULL)
     {
-        case 1:
-        case 2:
-            http_send_error(request, 403);
-            goto exit;
+        http_send_error(request, 500);
+        goto exit;
+    }
+
+    // Fetch user metadata from db.
+    if (opsick_db_get_user_metadata(db, user_id, &user_metadata) != 0)
+    {
+        http_send_error(request, 403);
+        goto exit;
+    }
+
+    // Verify request signature.
+    if (!opsick_verify_request_signature(request, user_metadata.public_key_ed25519.hexstring))
+    {
+        http_send_error(request, 403);
+        goto exit;
+    }
+
+    // Check user password.
+    if (argon2id_verify(user_metadata.pw, pw_strobj.data, pw_strobj.len) != ARGON2_OK)
+    {
+        http_send_error(request, 403);
+        goto exit;
+    }
+
+    // Check TOTP (if user has 2FA enabled).
+    if (opsick_user_has_totp_active(&user_metadata) && !tfac_verify_totp(user_metadata.totps, totp_obj ? fiobj_obj2cstr(totp_obj).data : "", OPSICK_2FA_STEPS, OPSICK_2FA_HASH_ALGO))
+    {
+        http_send_error(request, 403);
+        goto exit;
     }
 
     if (opsick_db_delete_user(db, user_id) != 0)
@@ -103,6 +127,7 @@ exit:
 
     fiobj_free(jsonobj);
     opsick_db_disconnect(db);
+    mbedtls_platform_zeroize(&user_metadata, sizeof(user_metadata));
 }
 
 void opsick_free_endpoint_userdel()

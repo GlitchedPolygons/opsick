@@ -89,6 +89,36 @@ extern "C" {
  */
 #define OPSICK_STRPREALLOC_INDEX_NEW_PW 4
 
+/**
+ * Index to pass to #opsick_get_preallocated_string() to receive back the FIOBJ string "exp_utc".
+ */
+#define OPSICK_STRPREALLOC_INDEX_EXP_UTC 5
+
+/**
+ * Index to pass to #opsick_get_preallocated_string() to receive back the FIOBJ string "body".
+ */
+#define OPSICK_STRPREALLOC_INDEX_BODY 6
+
+/**
+ * Index to pass to #opsick_get_preallocated_string() to receive back the FIOBJ string "public_key_ed25519".
+ */
+#define OPSICK_STRPREALLOC_INDEX_PUBKEY_ED25519 7
+
+/**
+ * Index to pass to #opsick_get_preallocated_string() to receive back the FIOBJ string "encrypted_private_key_ed25519".
+ */
+#define OPSICK_STRPREALLOC_INDEX_PRVKEY_ED25519 8
+
+/**
+ * Index to pass to #opsick_get_preallocated_string() to receive back the FIOBJ string "public_key_curve448".
+ */
+#define OPSICK_STRPREALLOC_INDEX_PUBKEY_CURVE448 9
+
+/**
+ * Index to pass to #opsick_get_preallocated_string() to receive back the FIOBJ string "encrypted_private_key_curve448".
+ */
+#define OPSICK_STRPREALLOC_INDEX_PRVKEY_CURVE448 10
+
 #pragma endregion
 
 #pragma region HASHES

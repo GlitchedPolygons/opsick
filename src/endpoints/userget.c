@@ -29,13 +29,6 @@ void opsick_get_user(http_s* request)
         goto exit;
     }
 
-    db = opsick_db_connect();
-    if (db == NULL)
-    {
-        http_send_error(request, 500);
-        goto exit;
-    }
-
     // Decrypt the request body.
     if (opsick_decrypt(request, &json) != 0 || (json_length = strlen(json)) == 0)
     {
@@ -63,6 +56,14 @@ void opsick_get_user(http_s* request)
     const uint64_t user_id = (uint64_t)strtoull(fiobj_obj2cstr(user_id_obj).data, NULL, 10);
     const struct fio_str_info_s pw_strobj = fiobj_obj2cstr(pw_obj);
 
+    db = opsick_db_connect();
+    if (db == NULL)
+    {
+        http_send_error(request, 500);
+        goto exit;
+    }
+
+    // Fetch user metadata from db.
     if (opsick_db_get_user_metadata(db, user_id, &user_metadata) != 0)
     {
         http_send_error(request, 403);
