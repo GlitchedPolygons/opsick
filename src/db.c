@@ -346,6 +346,8 @@ int opsick_db_get_user_metadata(sqlite3* db, uint64_t user_id, struct opsick_use
 
     if (totps != NULL)
         snprintf(out_user_metadata->totps, sizeof(out_user_metadata->totps), "%s", totps);
+    else
+        memset(out_user_metadata->totps, 0x00, sizeof(out_user_metadata->totps));
 
     if (body_sha512 != NULL)
         snprintf(out_user_metadata->body_sha512, sizeof(out_user_metadata->body_sha512), "%s", body_sha512);
@@ -417,7 +419,7 @@ exit:
 
 int opsick_db_set_user_totps(sqlite3* db, uint64_t user_id, const char* new_totps)
 {
-    if (db == NULL || new_totps == NULL)
+    if (db == NULL)
     {
         return 1;
     }

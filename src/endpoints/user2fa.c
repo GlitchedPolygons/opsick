@@ -14,9 +14,10 @@
    limitations under the License.
 */
 
-#include <mbedtls/platform_util.h>
 #include <tfac.h>
 #include <argon2.h>
+#include <mbedtls/platform_util.h>
+#include <cecies/encrypt.h>
 
 #include "opsick/db.h"
 #include "opsick/keys.h"
@@ -119,9 +120,14 @@ void opsick_post_user2fa(http_s* request)
                 goto exit;
             }
 
-            // TODO: disable 2FA here
+            if (opsick_db_set_user_totps(db, user_id, NULL) != 0)
+            {
+                http_send_error(request, 500);
+                goto exit;
+            }
 
-            break;
+            http_finish(request);
+            goto exit;
         }
         case 1: // Enable 2FA and return the TOTP secret to the user (or return status 400 if 2FA is already enabled).
         {
@@ -131,9 +137,29 @@ void opsick_post_user2fa(http_s* request)
                 goto exit;
             }
 
-            // TODO: enable 2FA here
+            struct tfac_secret totps = tfac_generate_secret();
+            opsick_db_set_user_totps(db, user_id, totps.secret_key_base32);
 
-            break;
+            char out_json[256] = { 0x00 };
+            snprintf(out_json, sizeof(out_json), "{\"totps\":\"%s\",\"steps\":%d,\"digits\":6,\"hash_algo\":\"SHA-1\",\"qr\":\"otpauth://totp/opsick:%zu?secret=%s\"}", totps.secret_key_base32, OPSICK_2FA_STEPS, user_id, totps.secret_key_base32);
+
+            char out_enc[1024] = { 0x00 };
+            size_t out_enc_len = 0;
+
+            if (cecies_curve448_encrypt((unsigned char*)out_json, strlen(out_json), user_metadata.public_key_curve448, (unsigned char*)out_enc, sizeof(out_enc), &out_enc_len, true) != 0)
+            {
+                http_send_error(request, 500);
+
+                mbedtls_platform_zeroize(&totps, sizeof(totps));
+                mbedtls_platform_zeroize(out_json, sizeof(out_json));
+                goto exit;
+            }
+
+            opsick_sign_and_send(request, out_enc, out_enc_len);
+
+            mbedtls_platform_zeroize(&totps, sizeof(totps));
+            mbedtls_platform_zeroize(out_json, sizeof(out_json));
+            goto exit;
         }
         case 2: // If verifying a TOTP was everything the requesting user wanted, leave immediately.
         {
