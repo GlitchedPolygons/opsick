@@ -73,8 +73,6 @@ void opsick_post_user2fa(http_s* request)
     const struct fio_str_info_s pw_strobj = fiobj_obj2cstr(pw_obj);
     const int action = (int)fiobj_obj2num(action_obj); // 0 == disable; 1 == enable; 2 == verify
 
-    // TODO see todo below
-    
     db = opsick_db_connect();
     if (db == NULL)
     {
@@ -104,17 +102,50 @@ void opsick_post_user2fa(http_s* request)
     }
 
     // Check TOTP (if user has 2FA enabled).
-    if (opsick_user_has_totp_active(&user_metadata) && !tfac_verify_totp(user_metadata.totps, totp_obj ? fiobj_obj2cstr(totp_obj).data : "", OPSICK_2FA_STEPS, OPSICK_2FA_HASH_ALGO))
+    const int user_has_2fa_enabled = opsick_user_has_totp_active(&user_metadata);
+    if (user_has_2fa_enabled && !tfac_verify_totp(user_metadata.totps, totp_obj ? fiobj_obj2cstr(totp_obj).data : "", OPSICK_2FA_STEPS, OPSICK_2FA_HASH_ALGO))
     {
         http_send_error(request, 403);
         goto exit;
     }
 
-    // TODO: check if user action is validate, enable or disable.
-    //  - When disabling, check TOTP first.
-    //  - When enabling, check if it's not active yet (return status code 400 if the user is trying to enable an already 2FA-enabled account).
+    switch (action)
+    {
+        case 0: // Disable 2FA (if it's enabled, otherwise just return status code 200).
+        {
+            if (!user_has_2fa_enabled)
+            {
+                http_finish(request);
+                goto exit;
+            }
 
-    // TODO: activate or deactivate the user's 2FA (depending on the passed request body).
+            // TODO: disable 2FA here
+
+            break;
+        }
+        case 1: // Enable 2FA and return the TOTP secret to the user (or return status 400 if 2FA is already enabled).
+        {
+            if (user_has_2fa_enabled)
+            {
+                http_send_error(request, 400);
+                goto exit;
+            }
+
+            // TODO: enable 2FA here
+
+            break;
+        }
+        case 2: // If verifying a TOTP was everything the requesting user wanted, leave immediately.
+        {
+            http_finish(request);
+            goto exit;
+        }
+        default: // Bad client. Very bad.
+        {
+            http_send_error(request, 403);
+            goto exit;
+        }
+    }
 
 exit:
     if (json != NULL)
