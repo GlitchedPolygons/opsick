@@ -67,18 +67,31 @@ void opsick_post_userext(http_s* request)
         goto exit;
     }
 
+    const FIOBJ user_id_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_USER_ID));
+    const FIOBJ ext_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_EXT));
+
+    if (!user_id_obj || !ext_obj)
+    {
+        http_send_error(request, 403);
+        goto exit;
+    }
+
+    const uint64_t user_id = (uint64_t)strtoull(fiobj_obj2cstr(user_id_obj).data, NULL, 10);
+    const uint64_t ext = (uint64_t)strtoull(fiobj_obj2cstr(ext_obj).data, NULL, 10);
+
+    if (ext < 3600 * 48)
+    {
+        fprintf(stderr, "API Master tried to extend a user's account by less than the minimum account extension period of 48h...");
+        http_send_error(request, 400);
+        goto exit;
+    }
+
     db = opsick_db_connect();
     if (db == NULL)
     {
         http_send_error(request, 500);
         goto exit;
     }
-
-    const FIOBJ user_id_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_USER_ID));
-    const uint64_t user_id = (uint64_t)strtoull(fiobj_obj2cstr(user_id_obj).data, NULL, 10);
-
-    const FIOBJ new_exp_utc_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_EXP_UTC));
-    const uint64_t new_exp_utc = (uint64_t)strtoull(fiobj_obj2cstr(new_exp_utc_obj).data, NULL, 10);
 
     // Fetch user metadata from db.
     if (opsick_db_get_user_metadata(db, user_id, &user_metadata) != 0)
@@ -87,7 +100,25 @@ void opsick_post_userext(http_s* request)
         goto exit;
     }
 
-    // TODO: extend user here
+    const time_t ct = time(0);
+
+    if (user_metadata.exp_utc < ct)
+    {
+        user_metadata.exp_utc = ct;
+    }
+
+    user_metadata.exp_utc += ext;
+
+    if (opsick_db_set_user_exp(db, user_id, user_metadata.exp_utc) != 0)
+    {
+        http_send_error(request, 500);
+        goto exit;
+    }
+
+    char out_json[128];
+    snprintf(out_json, sizeof(out_json), "{\"user_id\":%zu,\"new_exp_utc\":%zu}", user_id, user_metadata.exp_utc);
+
+    opsick_sign_and_send(request, out_json, 0);
 
 exit:
     if (json != NULL)

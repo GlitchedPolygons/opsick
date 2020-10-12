@@ -18,11 +18,8 @@
 #include "opsick/util.h"
 #include "opsick/keys.h"
 #include "opsick/config.h"
-#include "opsick/constants.h"
 
-#include <tfac.h>
 #include <stdio.h>
-#include <argon2.h>
 #include <ed25519.h>
 #include <cecies/decrypt.h>
 #include <mbedtls/platform_util.h>
@@ -34,17 +31,18 @@ void opsick_util_init()
 {
     opsick_config_get_adminsettings(&adminsettings);
 
-    preallocated_string_table[0] = fiobj_str_new("ed25519-signature", 17);
-    preallocated_string_table[1] = fiobj_str_new("user_id", 7);
-    preallocated_string_table[2] = fiobj_str_new("pw", 2);
-    preallocated_string_table[3] = fiobj_str_new("totp", 4);
-    preallocated_string_table[4] = fiobj_str_new("new_pw", 6);
-    preallocated_string_table[5] = fiobj_str_new("exp_utc", 7);
-    preallocated_string_table[6] = fiobj_str_new("body", 4);
-    preallocated_string_table[7] = fiobj_str_new("public_key_ed25519", 18);
-    preallocated_string_table[8] = fiobj_str_new("encrypted_private_key_ed25519", 29);
-    preallocated_string_table[9] = fiobj_str_new("public_key_curve448", 19);
-    preallocated_string_table[10] = fiobj_str_new("encrypted_private_key_curve448", 30);
+    preallocated_string_table[OPSICK_STRPREALLOC_INDEX_ED25519_SIG] = fiobj_str_new("ed25519-signature", 17);
+    preallocated_string_table[OPSICK_STRPREALLOC_INDEX_USER_ID] = fiobj_str_new("user_id", 7);
+    preallocated_string_table[OPSICK_STRPREALLOC_INDEX_PW] = fiobj_str_new("pw", 2);
+    preallocated_string_table[OPSICK_STRPREALLOC_INDEX_TOTP] = fiobj_str_new("totp", 4);
+    preallocated_string_table[OPSICK_STRPREALLOC_INDEX_NEW_PW] = fiobj_str_new("new_pw", 6);
+    preallocated_string_table[OPSICK_STRPREALLOC_INDEX_EXP_UTC] = fiobj_str_new("exp_utc", 7);
+    preallocated_string_table[OPSICK_STRPREALLOC_INDEX_BODY] = fiobj_str_new("body", 4);
+    preallocated_string_table[OPSICK_STRPREALLOC_INDEX_PUBKEY_ED25519] = fiobj_str_new("public_key_ed25519", 18);
+    preallocated_string_table[OPSICK_STRPREALLOC_INDEX_PRVKEY_ED25519] = fiobj_str_new("encrypted_private_key_ed25519", 29);
+    preallocated_string_table[OPSICK_STRPREALLOC_INDEX_PUBKEY_CURVE448] = fiobj_str_new("public_key_curve448", 19);
+    preallocated_string_table[OPSICK_STRPREALLOC_INDEX_PRVKEY_CURVE448] = fiobj_str_new("encrypted_private_key_curve448", 30);
+    preallocated_string_table[OPSICK_STRPREALLOC_INDEX_EXT] = fiobj_str_new("ext", 3);
 }
 
 void opsick_util_free()

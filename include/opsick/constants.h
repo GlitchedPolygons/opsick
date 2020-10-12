@@ -119,6 +119,11 @@ extern "C" {
  */
 #define OPSICK_STRPREALLOC_INDEX_PRVKEY_CURVE448 10
 
+/**
+ * Index to pass to #opsick_get_preallocated_string() to receive back the FIOBJ string "ext".
+ */
+#define OPSICK_STRPREALLOC_INDEX_EXT 11
+
 #pragma endregion
 
 #pragma region HASHES
