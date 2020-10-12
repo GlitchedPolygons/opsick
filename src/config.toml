@@ -20,4 +20,4 @@ argon2_time_cost = 16
 argon2_memory_cost_kib = 65536
 argon2_parallelism = 2
 api_key_algo = 0
-api_key_public_hexstr = "9a074e6abb4d7cca97842d6e43704bafcc71c39f7394d65a7d6eba95909b4ec6"
+api_key_public_hexstr = "FF7A2DC59D1A09E2E7677DD1754A961F6510A43C70DF501DAB0DA068461E25C8"

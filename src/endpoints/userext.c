@@ -120,6 +120,8 @@ void opsick_post_userext(http_s* request)
 
     opsick_sign_and_send(request, out_json, 0);
 
+    mbedtls_platform_zeroize(out_json, sizeof(out_json));
+    
 exit:
     if (json != NULL)
     {
