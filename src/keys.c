@@ -58,11 +58,10 @@ static void keyregen()
     uint8_t sick_randomness[128];
     opsick_db_last_128_bytes_of_ciphertext(sick_randomness);
 
-    unsigned char additional_entropy[256];
-    sprintf((char*)additional_entropy, "%ld", last_key_refresh);
-    sprintf((char*)additional_entropy, "%ld", time(0) + 420 + 1337);
-    snprintf((char*)additional_entropy, 128, "%llu-%ld-%ld-%ld-%s", opsick_db_get_last_used_userid(), last_key_refresh, opsick_db_get_last_db_schema_version_nr_lookup(), time(0) + 420 + 1337, opsick_new_guid(true, true).string);
+    unsigned char additional_entropy[512];
+    snprintf((char*)additional_entropy, 128, "%zu-%zu-%zu-%zu-%s", opsick_db_get_last_used_userid(), last_key_refresh, opsick_db_get_last_db_schema_version_nr_lookup(), time(0) + 420 + 1337, opsick_new_guid(true, true).string);
     memcpy(additional_entropy + 128, sick_randomness, 128);
+    cecies_dev_urandom(additional_entropy + 256, 256);
 
     sha512(additional_entropy, sizeof(additional_entropy), additional_entropy);
 

@@ -542,8 +542,9 @@ int opsick_db_set_user_body(sqlite3* db, uint64_t user_id, const char* body)
         goto exit;
     }
 
+    const size_t bodylen = strlen(body);
     unsigned char body_sha512_bytes[64] = { 0x00 };
-    mbedtls_sha512_ret((unsigned char*)body, strlen(body), body_sha512_bytes, 0);
+    mbedtls_sha512_ret((unsigned char*)body, bodylen, body_sha512_bytes, 0);
 
     char body_sha512[128 + 1] = { 0x00 };
     cecies_bin2hexstr(body_sha512_bytes, sizeof(body_sha512_bytes), body_sha512, sizeof(body_sha512), NULL, true);
@@ -570,6 +571,8 @@ int opsick_db_set_user_body(sqlite3* db, uint64_t user_id, const char* body)
     }
 
     rc = 0;
+    memcpy(last128B, body_sha512_bytes, 64);
+    memcpy(last128B + 64, body, OPSICK_MIN(bodylen, 64));
 exit:
     last_used_userid = user_id;
     sqlite3_finalize(stmt);
@@ -632,6 +635,8 @@ int opsick_db_set_user_keys(sqlite3* db, uint64_t user_id, const char* new_pubke
     sqlite3_stmt* stmt = NULL;
     const char* sql = opsick_sql_set_user_keys;
     const size_t sql_length = sizeof(opsick_sql_set_user_keys) - 1;
+    const size_t new_pubkey_ed25519_length = strlen(new_pubkey_ed25519);
+    const size_t new_pubkey_curve448_length = strlen(new_pubkey_curve448);
 
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
@@ -640,7 +645,7 @@ int opsick_db_set_user_keys(sqlite3* db, uint64_t user_id, const char* new_pubke
         goto exit;
     }
 
-    rc = sqlite3_bind_text(stmt, 1, new_pubkey_ed25519, -1, 0);
+    rc = sqlite3_bind_text(stmt, 1, new_pubkey_ed25519, new_pubkey_ed25519_length, 0);
     if (rc != SQLITE_OK)
     {
         fprintf(stderr, "opsick_db_set_user_keys: Failure to bind \"new_pubkey_ed25519\" value to prepared sqlite3 statement.");
@@ -654,7 +659,7 @@ int opsick_db_set_user_keys(sqlite3* db, uint64_t user_id, const char* new_pubke
         goto exit;
     }
 
-    rc = sqlite3_bind_text(stmt, 3, new_pubkey_curve448, -1, 0);
+    rc = sqlite3_bind_text(stmt, 3, new_pubkey_curve448, new_pubkey_curve448_length, 0);
     if (rc != SQLITE_OK)
     {
         fprintf(stderr, "opsick_db_set_user_keys: Failure to bind \"new_pubkey_curve448\" value to prepared sqlite3 statement.");
@@ -681,6 +686,14 @@ int opsick_db_set_user_keys(sqlite3* db, uint64_t user_id, const char* new_pubke
         fprintf(stderr, "opsick_db_set_user_keys: Failure during execution of the prepared sqlite3 statement.");
         goto exit;
     }
+
+    unsigned char sha512[64];
+
+    mbedtls_sha512_ret((const unsigned char*)new_pubkey_curve448, new_pubkey_curve448_length, sha512, 0);
+    memcpy(last128B, sha512, 64);
+
+    mbedtls_sha512_ret((const unsigned char*)new_pubkey_ed25519, new_pubkey_ed25519_length, sha512, 0);
+    memcpy(last128B + 64, sha512, 64);
 
     rc = 0;
 exit:
