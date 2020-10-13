@@ -66,6 +66,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">util.h File Reference</div>  </div>
@@ -78,21 +79,30 @@ $(function() {
 <code>#include &lt;stddef.h&gt;</code><br />
 <code>#include &lt;stdbool.h&gt;</code><br />
 <code>#include &lt;http.h&gt;</code><br />
+<code>#include &lt;sqlite3.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for util.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="util_8h__incl.png" border="0" usemap="#include_2opsick_2util_8h" alt=""/></div>
 <map name="include_2opsick_2util_8h" id="include_2opsick_2util_8h">
-<area shape="rect" title="Opsick utility functions and pre&#45;allocated content." alt="" coords="108,5,245,32"/>
+<area shape="rect" title="Opsick utility functions and pre&#45;allocated content." alt="" coords="156,5,293,32"/>
 <area shape="rect" title=" " alt="" coords="5,80,71,107"/>
 <area shape="rect" title=" " alt="" coords="95,80,163,107"/>
 <area shape="rect" title=" " alt="" coords="187,80,262,107"/>
 <area shape="rect" title=" " alt="" coords="287,80,341,107"/>
+<area shape="rect" title=" " alt="" coords="365,80,436,107"/>
 </map>
 </div>
 </div>
 <p><a href="util_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a6aff07092dbd8eb5a34e0a33d299753c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a6aff07092dbd8eb5a34e0a33d299753c">OPSICK_MIN</a>(x,  y)&#160;&#160;&#160;(((x) &lt; (y)) ? (x) : (y))</td></tr>
+<tr class="separator:a6aff07092dbd8eb5a34e0a33d299753c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35864fba8b6a8b8bd310f220a64cf5eb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a35864fba8b6a8b8bd310f220a64cf5eb">OPSICK_MAX</a>(x,  y)&#160;&#160;&#160;(((x) &gt; (y)) ? (x) : (y))</td></tr>
+<tr class="separator:a35864fba8b6a8b8bd310f220a64cf5eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:afa5dc6546b5fe42f51265b536b12bcad"><td class="memItemLeft" align="right" valign="top">FIOBJ&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#afa5dc6546b5fe42f51265b536b12bcad">opsick_get_preallocated_string</a> (uint32_t id)</td></tr>
@@ -105,17 +115,82 @@ Functions</h2></td></tr>
 <tr class="separator:a7c395e89a7e4a2b5125acb64e04bb82b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9c87d8ccff9130e239f0b030c7cbdb4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#aa9c87d8ccff9130e239f0b030c7cbdb4">opsick_bin2hexstr</a> (const uint8_t *bin, size_t bin_length, char *output, size_t output_size, size_t *output_length, uint8_t uppercase)</td></tr>
 <tr class="separator:aa9c87d8ccff9130e239f0b030c7cbdb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae875462cf8ebe330dc7a5608394c4710"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#ae875462cf8ebe330dc7a5608394c4710">opsick_sign</a> (const char *string, char *out)</td></tr>
-<tr class="separator:ae875462cf8ebe330dc7a5608394c4710"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f12b77443f69e45f6ff64b9ec1a9681"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a5f12b77443f69e45f6ff64b9ec1a9681">opsick_verify</a> (http_s *request, const uint8_t *public_key)</td></tr>
-<tr class="separator:a5f12b77443f69e45f6ff64b9ec1a9681"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ca75762fe8b4adf6bce076a2d3130fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a0ca75762fe8b4adf6bce076a2d3130fb">opsick_sign</a> (const char *string, size_t string_length, char *out)</td></tr>
+<tr class="separator:a0ca75762fe8b4adf6bce076a2d3130fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c4b42109b8445db0b50cb0e03707b1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a6c4b42109b8445db0b50cb0e03707b1b">opsick_sign_and_send</a> (http_s *request, char *body, size_t body_length)</td></tr>
+<tr class="separator:a6c4b42109b8445db0b50cb0e03707b1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e599f4e0201e057ad56154ca89af084"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a5e599f4e0201e057ad56154ca89af084">opsick_request_has_signature</a> (http_s *request)</td></tr>
+<tr class="separator:a5e599f4e0201e057ad56154ca89af084"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5234c2403249b7f993af5f8e921bb80"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#ae5234c2403249b7f993af5f8e921bb80">opsick_verify_api_request_signature</a> (http_s *request)</td></tr>
+<tr class="separator:ae5234c2403249b7f993af5f8e921bb80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aadfc8ac5276d8aae33da54dec0d36972"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#aadfc8ac5276d8aae33da54dec0d36972">opsick_verify_request_signature</a> (http_s *request, const char *public_key)</td></tr>
+<tr class="separator:aadfc8ac5276d8aae33da54dec0d36972"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18836a741305e3a8e45bfbc055997986"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a18836a741305e3a8e45bfbc055997986">opsick_decrypt</a> (http_s *request, char **out)</td></tr>
 <tr class="separator:a18836a741305e3a8e45bfbc055997986"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Opsick utility functions and pre-allocated content. </p>
 <dl class="section author"><dt>Author</dt><dd>Raphael Beck </dd></dl>
-</div><h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a35864fba8b6a8b8bd310f220a64cf5eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a35864fba8b6a8b8bd310f220a64cf5eb">&#9670;&nbsp;</a></span>OPSICK_MAX</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define OPSICK_MAX</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">x, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">y&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;(((x) &gt; (y)) ? (x) : (y))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><code>x &gt; y ? x : y</code> </p>
+
+</div>
+</div>
+<a id="a6aff07092dbd8eb5a34e0a33d299753c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6aff07092dbd8eb5a34e0a33d299753c">&#9670;&nbsp;</a></span>OPSICK_MIN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define OPSICK_MIN</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">x, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">y&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;(((x) &lt; (y)) ? (x) : (y))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><code>x &lt; y ? x : y</code> </p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="aa9c87d8ccff9130e239f0b030c7cbdb4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa9c87d8ccff9130e239f0b030c7cbdb4">&#9670;&nbsp;</a></span>opsick_bin2hexstr()</h2>
 
@@ -300,8 +375,33 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae875462cf8ebe330dc7a5608394c4710"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae875462cf8ebe330dc7a5608394c4710">&#9670;&nbsp;</a></span>opsick_sign()</h2>
+<a id="a5e599f4e0201e057ad56154ca89af084"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e599f4e0201e057ad56154ca89af084">&#9670;&nbsp;</a></span>opsick_request_has_signature()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int opsick_request_has_signature </td>
+          <td>(</td>
+          <td class="paramtype">http_s *&#160;</td>
+          <td class="paramname"><em>request</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Checks whether a given request has a signature header or not. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">request</td><td>The request to check. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>1</code> if the request has a signature header; <code>0</code> if <code>request</code> is <code>NULL</code> or has no signature header. </dd></dl>
+
+</div>
+</div>
+<a id="a0ca75762fe8b4adf6bce076a2d3130fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ca75762fe8b4adf6bce076a2d3130fb">&#9670;&nbsp;</a></span>opsick_sign()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -311,6 +411,12 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>string</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>string_length</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -325,10 +431,53 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Signs a string using the Opsick server's private signing key. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Signs a string using the opsick server's private signing key. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">string</td><td>The NUL-terminated string to sign. </td></tr>
+    <tr><td class="paramname">string_length</td><td>Length of <code>string</code> argument (passing <code>0</code> will result in usage of <code>strlen(string)</code>). </td></tr>
     <tr><td class="paramname">out</td><td>A writable output buffer of at least 129B size (128 characters + 1 NUL-terminator). </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6c4b42109b8445db0b50cb0e03707b1b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c4b42109b8445db0b50cb0e03707b1b">&#9670;&nbsp;</a></span>opsick_sign_and_send()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void opsick_sign_and_send </td>
+          <td>(</td>
+          <td class="paramtype">http_s *&#160;</td>
+          <td class="paramname"><em>request</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>body</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>body_length</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Signs a string using the opsick server's private signing key and sets the HTTP response signature header + response body accordingly. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">request</td><td>The HTTP request. </td></tr>
+    <tr><td class="paramname">body</td><td>The response body to sign and send. </td></tr>
+    <tr><td class="paramname">body_length</td><td>Length of the passed <code>body</code> string parameter (passing <code>0</code> will result in usage of <code>strlen(body)</code>). </td></tr>
   </table>
   </dd>
 </dl>
@@ -371,14 +520,39 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a5f12b77443f69e45f6ff64b9ec1a9681"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5f12b77443f69e45f6ff64b9ec1a9681">&#9670;&nbsp;</a></span>opsick_verify()</h2>
+<a id="ae5234c2403249b7f993af5f8e921bb80"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5234c2403249b7f993af5f8e921bb80">&#9670;&nbsp;</a></span>opsick_verify_api_request_signature()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int opsick_verify </td>
+          <td class="memname">int opsick_verify_api_request_signature </td>
+          <td>(</td>
+          <td class="paramtype">http_s *&#160;</td>
+          <td class="paramname"><em>request</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Verifies an HTTP request's signature. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">request</td><td>The HTTP request whose body signature you want to verify. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>1</code> if the signature is valid; <code>0</code> otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="aadfc8ac5276d8aae33da54dec0d36972"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aadfc8ac5276d8aae33da54dec0d36972">&#9670;&nbsp;</a></span>opsick_verify_request_signature()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int opsick_verify_request_signature </td>
           <td>(</td>
           <td class="paramtype">http_s *&#160;</td>
           <td class="paramname"><em>request</em>, </td>
@@ -386,7 +560,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>public_key</em>&#160;</td>
         </tr>
         <tr>
@@ -396,14 +570,14 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Verifies an HTTP request signature. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Verifies an HTTP request's signature. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">request</td><td>The HTTP request whose body signature you want to verify. </td></tr>
     <tr><td class="paramname">public_key</td><td>The public key to use for verifying the signature. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><code>1</code> if the signature is valid; <code>0</code> if otherwise. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>1</code> if the signature is valid; <code>0</code> otherwise. </dd></dl>
 
 </div>
 </div>

@@ -36,4 +36,5 @@ var menudata={children:[
 {text:"Functions",url:"globals_func.html",children:[
 {text:"o",url:"globals_func.html#index_o"}]},
 {text:"Typedefs",url:"globals_type.html"},
-{text:"Macros",url:"globals_defs.html"}]}]}]}
+{text:"Macros",url:"globals_defs.html",children:[
+{text:"o",url:"globals_defs.html#index_o"}]}]}]}]}

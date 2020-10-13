@@ -100,45 +100,85 @@ $(function() {
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
 <div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="constants_8h.html#ac2f9866951bb70337fd33c7489876323">   48</a></span>&#160;<span class="preprocessor">#define OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH 1024</span></div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#pragma region HASHES</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="constants_8h.html#a21e49eaab3cf163e9f89d5f31890f463">   57</a></span>&#160;<span class="preprocessor">#define OPSICK_MURMUR3_SEED 133769420</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="constants_8h.html#a97789d18abb8f34a55feba76cd437e41">   64</a></span>&#160;<span class="preprocessor">#define OPSICK_HOME_PATH_HASH 2818192833</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="constants_8h.html#ab5c8bb5c5cfeec9d1cfe42385148f224">   71</a></span>&#160;<span class="preprocessor">#define OPSICK_FAVICON_PATH_HASH 1051445893</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="constants_8h.html#a1243a63a765a14093dc2994475162286">   78</a></span>&#160;<span class="preprocessor">#define OPSICK_PUBKEY_PATH_HASH 3855421118</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="constants_8h.html#a2ba7032bf54c15b6292f07cd52335ca3">   85</a></span>&#160;<span class="preprocessor">#define OPSICK_PRVKEY_PATH_HASH 944329335</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="constants_8h.html#a142cbba1d2aec3cc59187508a706267d">   53</a></span>&#160;<span class="preprocessor">#define OPSICK_MAX_ARGON2_PARALLELISM 16</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="constants_8h.html#a8a04af8b0cd56446b0650bfcd1b4fa62">   58</a></span>&#160;<span class="preprocessor">#define OPSICK_2FA_STEPS 30</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="constants_8h.html#a21b590bb9cc98031e316864823c30226">   63</a></span>&#160;<span class="preprocessor">#define OPSICK_2FA_HASH_ALGO 0</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#pragma region STRING PRE - ALLOCATION IDs</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="constants_8h.html#ac7a72c1c74678f54b5bca04b978af178">   70</a></span>&#160;<span class="preprocessor">#define OPSICK_STRPREALLOC_INDEX_ED25519_SIG 0</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="constants_8h.html#a0639b9828077a3f7e049c017eba8481c">   75</a></span>&#160;<span class="preprocessor">#define OPSICK_STRPREALLOC_INDEX_USER_ID 1</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="constants_8h.html#ad5c9837f903613c0e4fe7e3e724af6a1">   80</a></span>&#160;<span class="preprocessor">#define OPSICK_STRPREALLOC_INDEX_PW 2</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="constants_8h.html#adb750b8830a50c4d57dd41a52046ab9c">   85</a></span>&#160;<span class="preprocessor">#define OPSICK_STRPREALLOC_INDEX_TOTP 3</span></div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="constants_8h.html#a1c317eed3eaa5eaaaf86b545e1887537">   92</a></span>&#160;<span class="preprocessor">#define OPSICK_PASSWD_PATH_HASH 2697305887</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="constants_8h.html#a4b2671e3d02b5aed8b15e629a8d2511d">   99</a></span>&#160;<span class="preprocessor">#define OPSICK_USERADD_PATH_HASH 4242582731</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
-<div class="line"><a name="l00106"></a><span class="lineno"><a class="line" href="constants_8h.html#acb6e7f2e7f26122893c40ce1bfc6eb96">  106</a></span>&#160;<span class="preprocessor">#define OPSICK_USERDEL_PATH_HASH 1184612068</span></div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
-<div class="line"><a name="l00113"></a><span class="lineno"><a class="line" href="constants_8h.html#a02bebb30054161ebf127b74135b32329">  113</a></span>&#160;<span class="preprocessor">#define OPSICK_USEREXT_PATH_HASH 628309221</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
-<div class="line"><a name="l00120"></a><span class="lineno"><a class="line" href="constants_8h.html#a4cbd9cd0b3cac9e0dbe47ce10a8a0735">  120</a></span>&#160;<span class="preprocessor">#define OPSICK_USERBODY_PATH_HASH 413204006</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno"><a class="line" href="constants_8h.html#abf66706ec047053735e2f5021973a402">   90</a></span>&#160;<span class="preprocessor">#define OPSICK_STRPREALLOC_INDEX_NEW_PW 4</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="constants_8h.html#a5ea0af730621d50a581c9075d0854fa3">   95</a></span>&#160;<span class="preprocessor">#define OPSICK_STRPREALLOC_INDEX_EXP_UTC 5</span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="constants_8h.html#ab47af57db7257c08847b572ff72ef9a6">  100</a></span>&#160;<span class="preprocessor">#define OPSICK_STRPREALLOC_INDEX_BODY 6</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno"><a class="line" href="constants_8h.html#a25625e094f2cc0837ea25798a4c3c9f6">  105</a></span>&#160;<span class="preprocessor">#define OPSICK_STRPREALLOC_INDEX_PUBKEY_ED25519 7</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="constants_8h.html#a68ac104d1a9ecdc21557906a050dc37b">  110</a></span>&#160;<span class="preprocessor">#define OPSICK_STRPREALLOC_INDEX_PRVKEY_ED25519 8</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno"><a class="line" href="constants_8h.html#a09997c7351ec0d9b9db04904678be4f1">  115</a></span>&#160;<span class="preprocessor">#define OPSICK_STRPREALLOC_INDEX_PUBKEY_CURVE448 9</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno"><a class="line" href="constants_8h.html#a6a14d9019acb8d2b981fe2a3c8e3cc82">  120</a></span>&#160;<span class="preprocessor">#define OPSICK_STRPREALLOC_INDEX_PRVKEY_CURVE448 10</span></div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
-<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="constants_8h.html#aea38031860c3243fa0f15fa5fb4534f2">  127</a></span>&#160;<span class="preprocessor">#define OPSICK_USER2FA_PATH_HASH 2196777087</span></div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
-<div class="line"><a name="l00134"></a><span class="lineno"><a class="line" href="constants_8h.html#aed1c2ce4261b289668d2f393646c9858">  134</a></span>&#160;<span class="preprocessor">#define OPSICK_VERSION_PATH_HASH 692047655</span></div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="preprocessor">#pragma endregion</span></div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<span class="preprocessor">#pragma region Pre-allocated string IDs</span></div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
-<div class="line"><a name="l00143"></a><span class="lineno"><a class="line" href="constants_8h.html#a5ffc9347c397eab1f107457b33eb687d">  143</a></span>&#160;<span class="preprocessor">#define OPSICK_PREALLOCATED_STRING_ID_ED25519_SIGNATURE 0</span></div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="preprocessor">#pragma endregion</span></div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;} <span class="comment">// extern &quot;C&quot;</span></div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="preprocessor">#endif // OPSICK_CONSTANTS_H</span></div>
+<div class="line"><a name="l00125"></a><span class="lineno"><a class="line" href="constants_8h.html#ad36da3cf57651f0cd58c83ccda67cabd">  125</a></span>&#160;<span class="preprocessor">#define OPSICK_STRPREALLOC_INDEX_EXT 11</span></div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
+<div class="line"><a name="l00130"></a><span class="lineno"><a class="line" href="constants_8h.html#a9763883008f6180b16c856cc7587be3c">  130</a></span>&#160;<span class="preprocessor">#define OPSICK_STRPREALLOC_INDEX_BODY_SHA512 12</span></div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
+<div class="line"><a name="l00135"></a><span class="lineno"><a class="line" href="constants_8h.html#ade0cb24ee0734a30ea68095f7df26d17">  135</a></span>&#160;<span class="preprocessor">#define OPSICK_STRPREALLOC_INDEX_ACTION 13</span></div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="preprocessor">#pragma endregion</span></div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<span class="preprocessor">#pragma region HASHES</span></div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
+<div class="line"><a name="l00146"></a><span class="lineno"><a class="line" href="constants_8h.html#a21e49eaab3cf163e9f89d5f31890f463">  146</a></span>&#160;<span class="preprocessor">#define OPSICK_MURMUR3_SEED 133769420</span></div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
+<div class="line"><a name="l00153"></a><span class="lineno"><a class="line" href="constants_8h.html#a97789d18abb8f34a55feba76cd437e41">  153</a></span>&#160;<span class="preprocessor">#define OPSICK_HOME_PATH_HASH 2818192833</span></div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
+<div class="line"><a name="l00160"></a><span class="lineno"><a class="line" href="constants_8h.html#ab5c8bb5c5cfeec9d1cfe42385148f224">  160</a></span>&#160;<span class="preprocessor">#define OPSICK_FAVICON_PATH_HASH 1051445893</span></div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
+<div class="line"><a name="l00167"></a><span class="lineno"><a class="line" href="constants_8h.html#a1243a63a765a14093dc2994475162286">  167</a></span>&#160;<span class="preprocessor">#define OPSICK_PUBKEY_PATH_HASH 3855421118</span></div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
+<div class="line"><a name="l00174"></a><span class="lineno"><a class="line" href="constants_8h.html#a2ba7032bf54c15b6292f07cd52335ca3">  174</a></span>&#160;<span class="preprocessor">#define OPSICK_PRVKEY_PATH_HASH 944329335</span></div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
+<div class="line"><a name="l00181"></a><span class="lineno"><a class="line" href="constants_8h.html#a1c317eed3eaa5eaaaf86b545e1887537">  181</a></span>&#160;<span class="preprocessor">#define OPSICK_PASSWD_PATH_HASH 2697305887</span></div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160; </div>
+<div class="line"><a name="l00188"></a><span class="lineno"><a class="line" href="constants_8h.html#a19533b615c7a84d9ecfa6f5dd0e25221">  188</a></span>&#160;<span class="preprocessor">#define OPSICK_USERGET_PATH_HASH 456400922</span></div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160; </div>
+<div class="line"><a name="l00195"></a><span class="lineno"><a class="line" href="constants_8h.html#a4b2671e3d02b5aed8b15e629a8d2511d">  195</a></span>&#160;<span class="preprocessor">#define OPSICK_USERADD_PATH_HASH 4242582731</span></div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160; </div>
+<div class="line"><a name="l00202"></a><span class="lineno"><a class="line" href="constants_8h.html#acb6e7f2e7f26122893c40ce1bfc6eb96">  202</a></span>&#160;<span class="preprocessor">#define OPSICK_USERDEL_PATH_HASH 1184612068</span></div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160; </div>
+<div class="line"><a name="l00209"></a><span class="lineno"><a class="line" href="constants_8h.html#a02bebb30054161ebf127b74135b32329">  209</a></span>&#160;<span class="preprocessor">#define OPSICK_USEREXT_PATH_HASH 628309221</span></div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160; </div>
+<div class="line"><a name="l00216"></a><span class="lineno"><a class="line" href="constants_8h.html#a4cbd9cd0b3cac9e0dbe47ce10a8a0735">  216</a></span>&#160;<span class="preprocessor">#define OPSICK_USERBODY_PATH_HASH 413204006</span></div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160; </div>
+<div class="line"><a name="l00223"></a><span class="lineno"><a class="line" href="constants_8h.html#aea38031860c3243fa0f15fa5fb4534f2">  223</a></span>&#160;<span class="preprocessor">#define OPSICK_USER2FA_PATH_HASH 2196777087</span></div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
+<div class="line"><a name="l00230"></a><span class="lineno"><a class="line" href="constants_8h.html#aed1c2ce4261b289668d2f393646c9858">  230</a></span>&#160;<span class="preprocessor">#define OPSICK_VERSION_PATH_HASH 692047655</span></div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160; </div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="preprocessor">#pragma endregion</span></div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160; </div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="preprocessor">#pragma region Pre - allocated string IDs</span></div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160; </div>
+<div class="line"><a name="l00239"></a><span class="lineno"><a class="line" href="constants_8h.html#a5ffc9347c397eab1f107457b33eb687d">  239</a></span>&#160;<span class="preprocessor">#define OPSICK_PREALLOCATED_STRING_ID_ED25519_SIGNATURE 0</span></div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160; </div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="preprocessor">#pragma endregion</span></div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160; </div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;} <span class="comment">// extern &quot;C&quot;</span></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="preprocessor">#endif // OPSICK_CONSTANTS_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

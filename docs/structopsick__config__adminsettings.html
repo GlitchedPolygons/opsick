@@ -83,6 +83,12 @@ Public Attributes</h2></td></tr>
 <tr class="separator:af50d5091f653c8c0c921d7ecac21d037"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1783f73efebb68636cdbc3693657c219"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#a1783f73efebb68636cdbc3693657c219">user_registration_password</a> [<a class="el" href="constants_8h.html#ac2f9866951bb70337fd33c7489876323">OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH</a>]</td></tr>
 <tr class="separator:a1783f73efebb68636cdbc3693657c219"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3c031f2235d721adaccfd9abeb68f3e"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#af3c031f2235d721adaccfd9abeb68f3e">argon2_time_cost</a></td></tr>
+<tr class="separator:af3c031f2235d721adaccfd9abeb68f3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61d1866e36b7b2896d7b4bc5e920d981"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#a61d1866e36b7b2896d7b4bc5e920d981">argon2_memory_cost</a></td></tr>
+<tr class="separator:a61d1866e36b7b2896d7b4bc5e920d981"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a489579e0742edd0508896863b24a564a"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#a489579e0742edd0508896863b24a564a">argon2_parallelism</a></td></tr>
+<tr class="separator:a489579e0742edd0508896863b24a564a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c6a102ad5127040719f801242d29e59"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#a1c6a102ad5127040719f801242d29e59">api_key_algo</a></td></tr>
 <tr class="separator:a1c6a102ad5127040719f801242d29e59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f032e52b322c0b3f9c12db788ab13d9"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#a5f032e52b322c0b3f9c12db788ab13d9">api_key_public</a> [32]</td></tr>
@@ -136,6 +142,51 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>The hex-encoded <a class="el" href="structopsick__config__adminsettings.html#a5f032e52b322c0b3f9c12db788ab13d9">api_key_public</a> string (NUL-terminated). </p>
+
+</div>
+</div>
+<a id="a61d1866e36b7b2896d7b4bc5e920d981"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61d1866e36b7b2896d7b4bc5e920d981">&#9670;&nbsp;</a></span>argon2_memory_cost</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t opsick_config_adminsettings::argon2_memory_cost</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Memory cost parameter for the Argon2 hashing (higher == slower == safer). </p>
+
+</div>
+</div>
+<a id="a489579e0742edd0508896863b24a564a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a489579e0742edd0508896863b24a564a">&#9670;&nbsp;</a></span>argon2_parallelism</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t opsick_config_adminsettings::argon2_parallelism</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Amount of threads to use for the Argon2 hashing. </p>
+
+</div>
+</div>
+<a id="af3c031f2235d721adaccfd9abeb68f3e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3c031f2235d721adaccfd9abeb68f3e">&#9670;&nbsp;</a></span>argon2_time_cost</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t opsick_config_adminsettings::argon2_time_cost</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Time cost parameter for the Argon2 hashing (the higher this iteration count, the slower the hashing, the safer the passwords). </p>
 
 </div>
 </div>
