@@ -19,7 +19,7 @@ argon2_time_cost = 16
 argon2_memory_cost_kib = 65536
 argon2_parallelism = 2
 api_key_algo = 0
-api_key_public_hexstr = "FF7A2DC59D1A09E2E7677DD1754A961F6510A43C70DF501DAB0DA068461E25C8"
+api_key_public_hexstr = "F407F5E089CE64002EB417FB683A7302287BE84108BB8E62FD8ED647DC62805C"
 user_registration_password = "$argon2id$v=19$m=65536,t=16,p=2$M2o4M2pkMEZHSDNEZ2poM0ZkaitmaGo5Nz0yND1yamYseGt3Li5mbml1ZTNGZGozNDQtX2ZqODM0$nXl+F2sp4ckAhbBRwRK+8fu7mmwfcMb3AO9dlmGPj+thUaWw4sxw4b/gumb8lx9AtMJkoBN0Ueg5MWrQ/BV+XA"
 
 # This "user_registration_password" above is an Argon2 encoded hash of the password
