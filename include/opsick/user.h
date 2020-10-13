@@ -53,7 +53,7 @@ struct opsick_user_metadata
  * @param user_metadata The user to check.
  * @return boolean: <c>0</c> for false; <c>1</c> for true.
  */
-static inline int opsick_user_has_totp_active(struct opsick_user_metadata* user_metadata)
+static inline int opsick_user_has_2fa_enabled(struct opsick_user_metadata* user_metadata)
 {
     if (!user_metadata)
     {

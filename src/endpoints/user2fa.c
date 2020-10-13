@@ -103,7 +103,7 @@ void opsick_post_user2fa(http_s* request)
     }
 
     // Check TOTP (if user has 2FA enabled).
-    const int user_has_2fa_enabled = opsick_user_has_totp_active(&user_metadata);
+    const int user_has_2fa_enabled = opsick_user_has_2fa_enabled(&user_metadata);
     if (user_has_2fa_enabled && !tfac_verify_totp(user_metadata.totps, totp_obj ? fiobj_obj2cstr(totp_obj).data : "", OPSICK_2FA_STEPS, OPSICK_2FA_HASH_ALGO))
     {
         http_send_error(request, 403);
