@@ -18,10 +18,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <tomlc99/toml.h>
-#include "opsick/config.h"
-#include "opsick/constants.h"
-#include "opsick/strncmpic.h"
+#include <mbedtls/platform_util.h>
+
 #include "opsick/util.h"
+#include "opsick/config.h"
+#include "opsick/strncmpic.h"
 
 static struct opsick_config_hostsettings hostsettings;
 static struct opsick_config_adminsettings adminsettings;
@@ -164,13 +165,13 @@ static bool load_adminsettings(toml_table_t* conf)
     adminsettings.use_index_html = opsick_strncmpic(toml_raw_in(table, "use_index_html"), "true", 4) == 0;
 
     char* user_registration_password = NULL;
-    if (toml_rtos(toml_raw_in(table, "user_registration_password"), &user_registration_password))
+    if (toml_rtos(toml_raw_in(table, "user_registration_password"), &user_registration_password) == 0)
     {
-        fprintf(stderr, "ERROR: Failed to parse \"user_registration_password\" setting string from the opsick user config file \"%s\".", OPSICK_CONFIG_FILE_PATH);
+        strncpy(adminsettings.user_registration_password, user_registration_password, sizeof(adminsettings.user_registration_password));
     }
     else
     {
-        strncpy(adminsettings.user_registration_password, user_registration_password, sizeof(adminsettings.user_registration_password));
+        mbedtls_platform_zeroize(adminsettings.user_registration_password, sizeof(adminsettings.user_registration_password));
     }
     free(user_registration_password);
 

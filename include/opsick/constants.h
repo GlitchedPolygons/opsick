@@ -43,9 +43,9 @@ extern "C" {
 #define OPSICK_CONFIG_FILE_PATH "config.toml"
 
 /**
- * The maximum length of the instance's user creation endpoint password.
+ * The maximum length of the instance's user creation endpoint password hash.
  */
-#define OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH 1024
+#define OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH 256
 
 /**
  * Maximum amount of threads to allow for usage by Argon2.
@@ -133,6 +133,11 @@ extern "C" {
  * Index to pass to #opsick_get_preallocated_string() to receive back the FIOBJ string "action".
  */
 #define OPSICK_STRPREALLOC_INDEX_ACTION 13
+
+/**
+ * Index to pass to #opsick_get_preallocated_string() to receive back the FIOBJ string "ucpw".
+ */
+#define OPSICK_STRPREALLOC_INDEX_USER_CREATION_PW 14
 
 #pragma endregion
 

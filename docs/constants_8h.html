@@ -94,7 +94,7 @@ Macros</h2></td></tr>
 <tr class="separator:ab83afad3083b372205a6c18fcb9b712c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a549caa72bf3e78a2027dd53a7aaec6f0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8h.html#a549caa72bf3e78a2027dd53a7aaec6f0">OPSICK_CONFIG_FILE_PATH</a>&#160;&#160;&#160;&quot;config.toml&quot;</td></tr>
 <tr class="separator:a549caa72bf3e78a2027dd53a7aaec6f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2f9866951bb70337fd33c7489876323"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8h.html#ac2f9866951bb70337fd33c7489876323">OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH</a>&#160;&#160;&#160;1024</td></tr>
+<tr class="memitem:ac2f9866951bb70337fd33c7489876323"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8h.html#ac2f9866951bb70337fd33c7489876323">OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH</a>&#160;&#160;&#160;256</td></tr>
 <tr class="separator:ac2f9866951bb70337fd33c7489876323"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a142cbba1d2aec3cc59187508a706267d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8h.html#a142cbba1d2aec3cc59187508a706267d">OPSICK_MAX_ARGON2_PARALLELISM</a>&#160;&#160;&#160;16</td></tr>
 <tr class="separator:a142cbba1d2aec3cc59187508a706267d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -130,6 +130,8 @@ Macros</h2></td></tr>
 <tr class="separator:a9763883008f6180b16c856cc7587be3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade0cb24ee0734a30ea68095f7df26d17"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8h.html#ade0cb24ee0734a30ea68095f7df26d17">OPSICK_STRPREALLOC_INDEX_ACTION</a>&#160;&#160;&#160;13</td></tr>
 <tr class="separator:ade0cb24ee0734a30ea68095f7df26d17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affe56062c9cccc335d6ad431ce442193"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8h.html#affe56062c9cccc335d6ad431ce442193">OPSICK_STRPREALLOC_INDEX_USER_CREATION_PW</a>&#160;&#160;&#160;14</td></tr>
+<tr class="separator:affe56062c9cccc335d6ad431ce442193"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21e49eaab3cf163e9f89d5f31890f463"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8h.html#a21e49eaab3cf163e9f89d5f31890f463">OPSICK_MURMUR3_SEED</a>&#160;&#160;&#160;133769420</td></tr>
 <tr class="separator:a21e49eaab3cf163e9f89d5f31890f463"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97789d18abb8f34a55feba76cd437e41"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8h.html#a97789d18abb8f34a55feba76cd437e41">OPSICK_HOME_PATH_HASH</a>&#160;&#160;&#160;2818192833</td></tr>
@@ -260,11 +262,11 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH&#160;&#160;&#160;1024</td>
+          <td class="memname">#define OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH&#160;&#160;&#160;256</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The maximum length of the instance's user creation endpoint password. </p>
+<p>The maximum length of the instance's user creation endpoint password hash. </p>
 
 </div>
 </div>
@@ -565,6 +567,21 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Index to pass to <a class="el" href="util_8h.html#afa5dc6546b5fe42f51265b536b12bcad">opsick_get_preallocated_string()</a> to receive back the FIOBJ string "totp". </p>
+
+</div>
+</div>
+<a id="affe56062c9cccc335d6ad431ce442193"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#affe56062c9cccc335d6ad431ce442193">&#9670;&nbsp;</a></span>OPSICK_STRPREALLOC_INDEX_USER_CREATION_PW</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define OPSICK_STRPREALLOC_INDEX_USER_CREATION_PW&#160;&#160;&#160;14</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Index to pass to <a class="el" href="util_8h.html#afa5dc6546b5fe42f51265b536b12bcad">opsick_get_preallocated_string()</a> to receive back the FIOBJ string "ucpw". </p>
 
 </div>
 </div>

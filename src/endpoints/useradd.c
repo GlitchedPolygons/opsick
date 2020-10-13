@@ -15,6 +15,7 @@
 */
 
 #include <fiobject.h>
+#include <argon2.h>
 #include <cecies/encrypt.h>
 #include <cecies/decrypt.h>
 #include <mbedtls/platform_util.h>
@@ -27,11 +28,21 @@
 #include "opsick/constants.h"
 #include "opsick/endpoints/useradd.h"
 
-static struct opsick_config_adminsettings adminsettings;
+static struct opsick_config_adminsettings adminsettings = { 0x00 };
 
 void opsick_init_endpoint_useradd()
 {
     opsick_config_get_adminsettings(&adminsettings);
+}
+
+static inline int is_user_registration_pw_enabled()
+{
+    for (int i = 0; i < sizeof(adminsettings.user_registration_password); ++i)
+    {
+        if (adminsettings.user_registration_password[i] != 0x00)
+            return 1;
+    }
+    return 0;
 }
 
 void opsick_post_useradd(http_s* request)
@@ -68,6 +79,7 @@ void opsick_post_useradd(http_s* request)
     }
 
     const FIOBJ pw_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PW));
+    const FIOBJ ucpw_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_USER_CREATION_PW));
     const FIOBJ exp_utc_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_EXP_UTC));
     const FIOBJ public_key_ed25519_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PUBKEY_ED25519));
     const FIOBJ encrypted_private_key_ed25519_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PRVKEY_ED25519));
@@ -78,6 +90,22 @@ void opsick_post_useradd(http_s* request)
     {
         http_send_error(request, 403);
         goto exit;
+    }
+
+    if (is_user_registration_pw_enabled())
+    {
+        if (!ucpw_obj)
+        {
+            http_send_error(request, 403);
+            goto exit;
+        }
+
+        const struct fio_str_info_s ucpw = fiobj_obj2cstr(ucpw_obj);
+        if (argon2id_verify(adminsettings.user_registration_password, ucpw.data, ucpw.len) != ARGON2_OK)
+        {
+            http_send_error(request, 403);
+            goto exit;
+        }
     }
 
     const fio_str_info_s pw = fiobj_obj2cstr(pw_obj);
