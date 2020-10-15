@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['iat_5futc_15',['iat_utc',['../structopsick__user__metadata.html#a27cf9858026211fb47fce8506c6365ba',1,'opsick_user_metadata']]],
-  ['id_16',['id',['../structopsick__user__metadata.html#ab1503cc8ae582e88298e5256ff630f77',1,'opsick_user_metadata']]]
+  ['key_5frefresh_5finterval_5fhours_16',['key_refresh_interval_hours',['../structopsick__config__adminsettings.html#af50d5091f653c8c0c921d7ecac21d037',1,'opsick_config_adminsettings']]],
+  ['keys_2eh_17',['keys.h',['../keys_8h.html',1,'']]]
 ];
