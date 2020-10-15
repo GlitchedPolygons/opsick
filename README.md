@@ -51,3 +51,7 @@ Whether you built from sauce or grabbed pre-built binaries: it doesn't matter in
 
 Inside that file, you can customize your instance-specific user settings to whatever you need/want them to be (e.g. defining a user creation password, changing port numbers, etc...).
 By default, opsick listens to port `6677` by the way..
+
+### API Documentation
+
+Available here: https://glitchedpolygons.github.io/opsick/files.html
