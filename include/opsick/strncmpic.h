@@ -21,6 +21,7 @@
 extern "C" {
 #endif
 
+#include <stddef.h>
 #include <ctype.h>
 
 /**
