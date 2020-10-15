@@ -24,13 +24,11 @@
 #include "opsick/config.h"
 #include "opsick/endpoints/passwd.h"
 
-static uint8_t api_key_public[32];
 static struct opsick_config_adminsettings adminsettings;
 
 void opsick_init_endpoint_passwd()
 {
     opsick_config_get_adminsettings(&adminsettings);
-    memcpy(api_key_public, adminsettings.api_key_public, sizeof(api_key_public));
 }
 
 void opsick_post_passwd(http_s* request)
@@ -151,5 +149,4 @@ exit:
 void opsick_free_endpoint_passwd()
 {
     mbedtls_platform_zeroize(&adminsettings, sizeof(adminsettings));
-    mbedtls_platform_zeroize(api_key_public, sizeof(api_key_public));
 }
