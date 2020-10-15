@@ -129,7 +129,7 @@ target_link_libraries(${PROJECT_NAME}
         PUBLIC orlp-ed25519
         )
 
-if (UNIX AND NOT APPLE)
+if (UNIX AND NOT APPLE AND NOT ${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
     target_link_libraries(${PROJECT_NAME} PRIVATE -luuid -lm)
 endif ()
 
