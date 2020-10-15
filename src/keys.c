@@ -20,7 +20,6 @@
 #include <sha512.h>
 #include "opsick/db.h"
 #include "opsick/util.h"
-#include "opsick/guid.h"
 #include "opsick/keys.h"
 #include "opsick/config.h"
 #include <cecies/guid.h>
