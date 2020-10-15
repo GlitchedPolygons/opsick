@@ -16,10 +16,13 @@
 
 #if defined(_WIN32)
 #include <objbase.h>
-#elif defined(__FreeBSD__)
+#else
+#include <sys/param.h>
+#if defined(__FreeBSD__)
 #include <uuid.h>
 #else
 #include <uuid/uuid.h>
+#endif
 #endif
 
 #include <ctype.h>
