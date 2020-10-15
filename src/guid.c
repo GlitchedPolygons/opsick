@@ -14,14 +14,12 @@
    limitations under the License.
 */
 
-#ifdef _WIN32
+#if defined(_WIN32)
 #include <objbase.h>
-#else
-#ifdef __FreeBSD__
+#elif defined(__FreeBSD__)
 #include <uuid.h>
 #else
 #include <uuid/uuid.h>
-#endif
 #endif
 
 #include <ctype.h>
@@ -51,9 +49,7 @@ opsick_guid opsick_new_guid(const bool lowercase, const bool hyphens)
     return out;
 }
 
-#else
-
-#ifdef __FreeBSD__
+#elif defined(__FreeBSD__)
 
 opsick_guid opsick_new_guid(const bool lowercase, const bool hyphens)
 {
@@ -135,7 +131,6 @@ opsick_guid opsick_new_guid(const bool lowercase, const bool hyphens)
     return out;
 }
 
-#endif
 #endif
 
 #undef OPSICK_GUID_LOWERCASE_HYPHENS
