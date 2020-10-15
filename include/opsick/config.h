@@ -75,8 +75,8 @@ struct opsick_config_hostsettings
     uint64_t max_header_size;
 
     /**
-     * The maximum request body size. <p>
-     * [DEFAULT] <c>16MB</c> (<c>1024 * 1024 * 16B</c>).
+     * The maximum request body size (use this to protect your db from growing too big!). <p>
+     * [DEFAULT] <c>16MB</c> (<c>1024 * 1024 * 16 B</c>).
      */
     uint64_t max_body_size;
 
@@ -107,12 +107,6 @@ struct opsick_config_adminsettings
      * [DEFAULT] <c>0</c> (which means unlimited).
      */
     uint64_t max_users;
-
-    /**
-     * Maximum size (in bytes) of a user's data record (use this to protect your db from growing too big!). <p>
-     * [DEFAULT] <c>64MB</c>
-     */
-    uint64_t max_user_quota;
 
     /**
      * Set this to <c>true</c> if you want to let the home endpoint (reachable under "/")

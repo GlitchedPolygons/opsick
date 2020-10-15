@@ -75,8 +75,6 @@ $(function() {
 Public Attributes</h2></td></tr>
 <tr class="memitem:a3e0e62ffcefaa7b6fcb011d743809352"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#a3e0e62ffcefaa7b6fcb011d743809352">max_users</a></td></tr>
 <tr class="separator:a3e0e62ffcefaa7b6fcb011d743809352"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab82e53a522c70973e96f31d741f24bd3"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#ab82e53a522c70973e96f31d741f24bd3">max_user_quota</a></td></tr>
-<tr class="separator:ab82e53a522c70973e96f31d741f24bd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa584b21614d4c832bc3729027bcee0c1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#aa584b21614d4c832bc3729027bcee0c1">use_index_html</a></td></tr>
 <tr class="separator:aa584b21614d4c832bc3729027bcee0c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af50d5091f653c8c0c921d7ecac21d037"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#af50d5091f653c8c0c921d7ecac21d037">key_refresh_interval_hours</a></td></tr>
@@ -204,22 +202,6 @@ Public Attributes</h2></td></tr>
 <p>Define the interval (in hours) at which the opsick server keys are auto-replaced with freshly generated ones. </p>
 <p>These keys (one pair of public and private key) are used by the server to sign HTTP responses (private key), and by the clients to verify the HTTP responses' signature (public key). </p>
 <p>[DEFAULT] <code>72</code> (after 72 hours the server keys are regenerated and the old ones discarded). </p>
-
-</div>
-</div>
-<a id="ab82e53a522c70973e96f31d741f24bd3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab82e53a522c70973e96f31d741f24bd3">&#9670;&nbsp;</a></span>max_user_quota</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint64_t opsick_config_adminsettings::max_user_quota</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Maximum size (in bytes) of a user's data record (use this to protect your db from growing too big!). </p>
-<p>[DEFAULT] <code>64MB</code> </p>
 
 </div>
 </div>

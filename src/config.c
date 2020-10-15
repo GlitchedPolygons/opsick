@@ -64,7 +64,6 @@ static inline void init()
     strcpy(hostsettings.db_file, "opsick.db");
 
     adminsettings.max_users = 0;
-    adminsettings.max_user_quota = 16 * 1024 * 1024;
     adminsettings.use_index_html = true;
     adminsettings.key_refresh_interval_hours = 72;
     adminsettings.api_key_algo = 0;
@@ -97,7 +96,7 @@ static bool load_hostsettings(toml_table_t* conf)
     }
     else
     {
-        fprintf(stderr, "ERROR: The parsed port number \"%llu\" is not within the range of valid port numbers [0; 65535] - using default value of \"%d\" instead...", port, hostsettings.port);
+        fprintf(stderr, "ERROR: The parsed port number \"%zu\" is not within the range of valid port numbers [0; 65535] - using default value of \"%d\" instead...", port, hostsettings.port);
     }
 
     uint64_t threads = -1;
@@ -108,7 +107,7 @@ static bool load_hostsettings(toml_table_t* conf)
     }
     else
     {
-        fprintf(stderr, "ERROR: The parsed maximum thread count setting \"%llu\" is not within the range of recommended thread count limits [1; 64] - using default thread count of \"%d\" instead...", threads, hostsettings.threads);
+        fprintf(stderr, "ERROR: The parsed maximum thread count setting \"%zu\" is not within the range of recommended thread count limits [1; 64] - using default thread count of \"%d\" instead...", threads, hostsettings.threads);
     }
 
     parse_toml_uint(table, "max_clients", &hostsettings.max_clients);
@@ -141,7 +140,6 @@ static bool load_adminsettings(toml_table_t* conf)
     }
 
     parse_toml_uint(table, "max_users", &adminsettings.max_users);
-    parse_toml_uint(table, "max_user_quota", &adminsettings.max_user_quota);
     parse_toml_uint(table, "key_refresh_interval_hours", &adminsettings.key_refresh_interval_hours);
 
     uint64_t argon2_time_cost, argon2_memory_cost, argon2_parallelism;
@@ -183,7 +181,7 @@ static bool load_adminsettings(toml_table_t* conf)
     }
     else
     {
-        fprintf(stderr, "ERROR: The parsed algo id setting \"%llu\" is not within the range of valid algo IDs [0;255]", algo);
+        fprintf(stderr, "ERROR: The parsed algo id setting \"%zu\" is not within the range of valid algo IDs [0;255]", algo);
     }
 
     char* api_key_public_hexstr = NULL;
