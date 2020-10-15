@@ -58,6 +58,11 @@ extern "C" {
 #define OPSICK_2FA_STEPS 30
 
 /**
+ * Standard 2FA token digit count of 6 digits.
+ */
+#define OPSICK_2FA_DIGITS 6
+
+/**
  * Standard 2FA token HMAC hash algo SHA-1.
  */
 #define OPSICK_2FA_HASH_ALGO 0

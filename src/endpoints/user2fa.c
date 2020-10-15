@@ -104,7 +104,7 @@ void opsick_post_user2fa(http_s* request)
 
     // Check TOTP (if user has 2FA enabled).
     const int user_has_2fa_enabled = opsick_user_has_2fa_enabled(&user_metadata);
-    if (user_has_2fa_enabled && !tfac_verify_totp(user_metadata.totps, totp_obj ? fiobj_obj2cstr(totp_obj).data : "", OPSICK_2FA_STEPS, OPSICK_2FA_HASH_ALGO))
+    if (user_has_2fa_enabled && !tfac_verify_totp(user_metadata.totps, totp_obj ? fiobj_obj2cstr(totp_obj).data : "", OPSICK_2FA_DIGITS, OPSICK_2FA_STEPS, OPSICK_2FA_HASH_ALGO))
     {
         http_send_error(request, 403);
         goto exit;
@@ -141,7 +141,7 @@ void opsick_post_user2fa(http_s* request)
             opsick_db_set_user_totps(db, user_id, totps.secret_key_base32);
 
             char out_json[256] = { 0x00 };
-            snprintf(out_json, sizeof(out_json), "{\"totps\":\"%s\",\"steps\":%d,\"digits\":6,\"hash_algo\":\"SHA-1\",\"qr\":\"otpauth://totp/opsick:%zu?secret=%s\"}", totps.secret_key_base32, OPSICK_2FA_STEPS, user_id, totps.secret_key_base32);
+            snprintf(out_json, sizeof(out_json), "{\"totps\":\"%s\",\"steps\":%d,\"digits\":%d,\"hash_algo\":\"SHA-1\",\"qr\":\"otpauth://totp/opsick:%zu?secret=%s\"}", totps.secret_key_base32, OPSICK_2FA_STEPS, OPSICK_2FA_DIGITS, user_id, totps.secret_key_base32);
 
             char out_enc[1024] = { 0x00 };
             size_t out_enc_len = 0;

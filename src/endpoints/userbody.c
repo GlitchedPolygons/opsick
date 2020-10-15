@@ -100,7 +100,7 @@ void opsick_post_userbody(http_s* request)
     }
 
     // Check TOTP (if user has 2FA enabled).
-    if (opsick_user_has_2fa_enabled(&user_metadata) && !tfac_verify_totp(user_metadata.totps, totp_obj ? fiobj_obj2cstr(totp_obj).data : "", OPSICK_2FA_STEPS, OPSICK_2FA_HASH_ALGO))
+    if (opsick_user_has_2fa_enabled(&user_metadata) && !tfac_verify_totp(user_metadata.totps, totp_obj ? fiobj_obj2cstr(totp_obj).data : "", OPSICK_2FA_DIGITS, OPSICK_2FA_STEPS, OPSICK_2FA_HASH_ALGO))
     {
         http_send_error(request, 403);
         goto exit;
