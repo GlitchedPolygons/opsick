@@ -18,12 +18,13 @@
 #include <objbase.h>
 #elif defined(__FreeBSD__)
 #include <uuid.h>
-#define uuid_generate uuid_create
 #else
 #include <uuid/uuid.h>
 #endif
 
+#include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "opsick/guid.h"
 
@@ -45,6 +46,49 @@ opsick_guid opsick_new_guid(const bool lowercase, const bool hyphens)
     {
         snprintf(out.string, sizeof(out.string), OPSICK_GET_GUID_FORMAT(lowercase, hyphens), guid.Data1, guid.Data2, guid.Data3, guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3], guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7]);
     }
+    return out;
+}
+
+#elif defined(__FreeBSD__)
+
+opsick_guid opsick_new_guid(const bool lowercase, const bool hyphens)
+{
+    opsick_guid out;
+    memset(out.string, '\0', sizeof(out.string));
+
+    uuid_t uuid;
+    uint32_t status;
+    uuid_create(uuid, &status);
+
+    char* tmp = NULL;
+    uuid_to_string(uuid, &tmp, &status);
+    const size_t tmplen = strlen(tmp);
+
+    if (!lowercase)
+    {
+        for (int i = 0; i < tmplen; ++i)
+        {
+            tmp[i] = toupper(tmp[i]);
+        }
+    }
+
+    if (hyphens)
+    {
+        memcpy(out.string, tmp, tmplen);
+    }
+    else
+    {
+        char* c = out.string;
+        for (int i = 0; i < sizeof(tmp); ++i)
+        {
+            if (tmp[i] != '-')
+            {
+                *(c++) = tmp[i];
+            }
+        }
+    }
+
+    free(tmp);
     return out;
 }
 
