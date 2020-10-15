@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['key_5frefresh_5finterval_5fhours_183',['key_refresh_interval_hours',['../structopsick__config__adminsettings.html#af50d5091f653c8c0c921d7ecac21d037',1,'opsick_config_adminsettings']]]
+  ['db_5ffile_195',['db_file',['../structopsick__config__hostsettings.html#a819902fae99c2754660afc61bea73b22',1,'opsick_config_hostsettings']]]
 ];

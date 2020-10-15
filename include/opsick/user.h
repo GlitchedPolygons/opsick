@@ -35,16 +35,59 @@ extern "C" {
  */
 struct opsick_user_metadata
 {
+    /**
+     * User ID (unsigned 64-bit integer, DB primary key for the users table).
+     */
     uint64_t id;
+
+    /**
+     * A user's password (or rather, its salted, hashed and encoded representation).
+     */
     char pw[256];
+
+    /**
+     * 2FA secret that the user will use to generate TOTPs. This will only be presented exactly ONCE on enable!
+     */
     char totps[48 + 1];
+
+    /**
+     * The Unix timestamp of when the user account was created.
+     */
     uint64_t iat_utc;
+
+    /**
+     * Unix timestamp of when the user account will expire (become read-only).
+     */
     uint64_t exp_utc;
+
+    /**
+     * Unix timestamp of when the user last posted an update of any form.
+     */
     uint64_t lastmod_utc;
+
+    /**
+     * The NUL-terminated, hex-encoded string of the user's body, hashed using SHA2-512.
+     */
     char body_sha512[128 + 1];
+
+    /**
+     * The user's public Ed25519 key (the opsick server will use this to verify the user's request signatures).
+     */
     struct cecies_curve25519_key public_key_ed25519;
+
+    /**
+     * The user's private Ed25519 key (this is encrypted client-side, and is used by the user to sign requests to the server).
+     */
     char encrypted_private_key_ed25519[256];
+
+    /**
+     * The user's public Curve448 key (the opsick server will use this to encrypt HTTP responses for the user).
+     */
     struct cecies_curve448_key public_key_curve448;
+
+    /**
+     * The user's private Ed25519 key (this is encrypted client-side, and is used by the user to decrypt encrypted HTTP responses sent by the server).
+     */
     char encrypted_private_key_curve448[256];
 };
 

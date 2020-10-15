@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['key_5frefresh_5finterval_5fhours_11',['key_refresh_interval_hours',['../structopsick__config__adminsettings.html#af50d5091f653c8c0c921d7ecac21d037',1,'opsick_config_adminsettings']]],
-  ['keys_2eh_12',['keys.h',['../keys_8h.html',1,'']]]
+  ['encrypted_5fprivate_5fkey_5fcurve448_11',['encrypted_private_key_curve448',['../structopsick__user__metadata.html#ac2bf5e11cd32c519ff324b1ec8ad6fa3',1,'opsick_user_metadata']]],
+  ['encrypted_5fprivate_5fkey_5fed25519_12',['encrypted_private_key_ed25519',['../structopsick__user__metadata.html#a5b8f50cc14d9f94385df44da8d5386d7',1,'opsick_user_metadata']]],
+  ['exp_5futc_13',['exp_utc',['../structopsick__user__metadata.html#ac2818a6ac171fd10cd2d3355d398b0bf',1,'opsick_user_metadata']]]
 ];

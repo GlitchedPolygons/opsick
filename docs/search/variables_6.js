@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['string_190',['string',['../structopsick__guid.html#acbb74201b00844dce02f14233ce5cfdf',1,'opsick_guid']]]
+  ['lastmod_5futc_202',['lastmod_utc',['../structopsick__user__metadata.html#a4d81cbab823c7cf4d41b09f1d7b50e4a',1,'opsick_user_metadata']]],
+  ['log_203',['log',['../structopsick__config__hostsettings.html#a4375508c3fa5d689ad80be4993eb0550',1,'opsick_config_hostsettings']]]
 ];

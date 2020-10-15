@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['port_107',['port',['../structopsick__config__hostsettings.html#aa3848646aca3c1d392f792a7a1bd0232',1,'opsick_config_hostsettings']]]
+  ['lastmod_5futc_19',['lastmod_utc',['../structopsick__user__metadata.html#a4d81cbab823c7cf4d41b09f1d7b50e4a',1,'opsick_user_metadata']]],
+  ['log_20',['log',['../structopsick__config__hostsettings.html#a4375508c3fa5d689ad80be4993eb0550',1,'opsick_config_hostsettings']]]
 ];

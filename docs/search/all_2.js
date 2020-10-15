@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['db_2eh_8',['db.h',['../db_8h.html',1,'']]],
-  ['db_5ffile_9',['db_file',['../structopsick__config__hostsettings.html#a819902fae99c2754660afc61bea73b22',1,'opsick_config_hostsettings']]]
+  ['config_2eh_7',['config.h',['../config_8h.html',1,'']]],
+  ['constants_2eh_8',['constants.h',['../constants_8h.html',1,'']]]
 ];
