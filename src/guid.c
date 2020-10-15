@@ -18,7 +18,7 @@
 #include <objbase.h>
 #else
 #include <sys/param.h>
-#if defined(BSD)
+#if defined(__FreeBSD__)
 #include <uuid.h>
 #else
 #include <uuid/uuid.h>
@@ -52,7 +52,7 @@ opsick_guid opsick_new_guid(const bool lowercase, const bool hyphens)
     return out;
 }
 
-#elif defined(BSD)
+#elif defined(__FreeBSD__)
 
 opsick_guid opsick_new_guid(const bool lowercase, const bool hyphens)
 {
