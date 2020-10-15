@@ -16,6 +16,9 @@
 
 #ifdef _WIN32
 #include <objbase.h>
+#elif __FreeBSD__
+#include <uuid.h>
+#define uuid_generate uuid_create
 #else
 #include <uuid/uuid.h>
 #endif
