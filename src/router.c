@@ -85,7 +85,7 @@ void opsick_router_free()
     fio_stop();
     free_all_endpoints();
     opsick_util_free();
-    printf("Goodbye :)");
+    printf("Goodbye :) \n");
 }
 
 #pragma endregion
