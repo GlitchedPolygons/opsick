@@ -18,6 +18,8 @@ These you can install using the following commands;
       - Arch:                sudo pacman -S uuid-devel
       - Debian/*buntu:       sudo apt-get install uuid-dev
       - CentOS/Fedora/RHEL:  sudo dnf install uuid-devel
+#### FreeBSD:
+      - (UUID already included in OS)
 #### Windows:
       - Uninstall Windows
       - Proceed with one of the variants above...
