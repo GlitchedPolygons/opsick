@@ -37,13 +37,6 @@ static struct opsick_config_adminsettings adminsettings;
 static char pubkey_outjson[256];
 static size_t pubkey_outjson_len = 0;
 
-void opsick_keys_get_public_keys_json(char* out, size_t* outlen)
-{
-    memcpy(out, pubkey_outjson, pubkey_outjson_len);
-    out[pubkey_outjson_len] = 0x00;
-    *outlen = pubkey_outjson_len;
-}
-
 static void keyregen()
 {
     if (firstgen)
@@ -91,6 +84,14 @@ static inline void check_freshness()
     {
         keyregen();
     }
+}
+
+void opsick_keys_get_public_keys_json(char* out, size_t* outlen)
+{
+    check_freshness();
+    memcpy(out, pubkey_outjson, pubkey_outjson_len);
+    out[pubkey_outjson_len] = 0x00;
+    *outlen = pubkey_outjson_len;
 }
 
 void opsick_keys_init()
