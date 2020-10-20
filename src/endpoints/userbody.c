@@ -113,6 +113,8 @@ void opsick_post_userbody(http_s* request)
         goto exit;
     }
 
+    http_finish(request);
+
 exit:
     if (json != NULL)
     {
