@@ -156,7 +156,7 @@ void opsick_sign_and_send(http_s* request, char* body, size_t body_length)
     char signature[128 + 1];
     opsick_sign(body, body_length ? body_length : strlen(body), signature);
 
-    http_set_header(request, opsick_get_preallocated_string(OPSICK_PREALLOCATED_STRING_ID_ED25519_SIGNATURE), fiobj_str_new(signature, sizeof(signature) - 1));
+    http_set_header(request, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_ED25519_SIG), fiobj_str_new(signature, sizeof(signature) - 1));
     http_send_body(request, body, body_length);
 }
 
@@ -167,7 +167,7 @@ int opsick_request_has_signature(http_s* request)
         return 0;
     }
 
-    FIOBJ signature_header = fiobj_hash_get(request->headers, opsick_get_preallocated_string(OPSICK_PREALLOCATED_STRING_ID_ED25519_SIGNATURE));
+    FIOBJ signature_header = fiobj_hash_get(request->headers, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_ED25519_SIG));
     return signature_header != FIOBJ_INVALID && fiobj_type_is(signature_header, FIOBJ_T_STRING);
 }
 
@@ -189,7 +189,7 @@ int opsick_verify_request_signature(http_s* request, const char* public_key)
         return 0;
     }
 
-    FIOBJ signature_header = fiobj_hash_get(request->headers, opsick_get_preallocated_string(OPSICK_PREALLOCATED_STRING_ID_ED25519_SIGNATURE));
+    FIOBJ signature_header = fiobj_hash_get(request->headers, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_ED25519_SIG));
     if (!signature_header || !fiobj_type_is(signature_header, FIOBJ_T_STRING))
     {
         return 0;

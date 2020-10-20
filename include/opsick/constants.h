@@ -241,15 +241,6 @@ extern "C" {
 
 #pragma endregion
 
-#pragma region Pre - allocated string IDs
-
-/**
- * Pre-allocated string ID for "ed25519-signature".
- */
-#define OPSICK_PREALLOCATED_STRING_ID_ED25519_SIGNATURE 0
-
-#pragma endregion
-
 #ifdef __cplusplus
 } // extern "C"
 #endif
