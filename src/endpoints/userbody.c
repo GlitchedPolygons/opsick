@@ -92,6 +92,13 @@ void opsick_post_userbody(http_s* request)
         goto exit;
     }
 
+    // Check if user is expired.
+    if ((uint64_t)time(0) > user_metadata.exp_utc)
+    {
+        http_send_error(request, 418);
+        goto exit;
+    }
+
     // Check user password.
     if (argon2id_verify(user_metadata.pw, pw_strobj.data, pw_strobj.len) != ARGON2_OK)
     {

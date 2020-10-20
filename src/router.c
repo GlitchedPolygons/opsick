@@ -122,6 +122,10 @@ static void route_request(http_s* request, const uint32_t pathstr_hash)
             opsick_get_user(request);
             break;
         }
+        case OPSICK_USERKEYS_PATH_HASH: {
+            opsick_get_user_keys(request);
+            break;
+        }
         case OPSICK_USERADD_PATH_HASH: {
             opsick_post_useradd(request);
             break;
@@ -130,7 +134,7 @@ static void route_request(http_s* request, const uint32_t pathstr_hash)
             opsick_post_userdel(request);
             break;
         }
-        case OPSICK_USEREXT_PATH_HASH:{
+        case OPSICK_USEREXT_PATH_HASH: {
             opsick_post_userext(request);
             break;
         }

@@ -46,6 +46,7 @@ void opsick_util_init()
     preallocated_string_table[OPSICK_STRPREALLOC_INDEX_BODY_SHA512] = fiobj_str_new("body_sha512", 11);
     preallocated_string_table[OPSICK_STRPREALLOC_INDEX_ACTION] = fiobj_str_new("action", 6);
     preallocated_string_table[OPSICK_STRPREALLOC_INDEX_USER_CREATION_PW] = fiobj_str_new("ucpw", 4);
+    preallocated_string_table[OPSICK_STRPREALLOC_INDEX_WWW_AUTHENTICATE_HEADER] = fiobj_str_new("www-authenticate", 16);
 }
 
 void opsick_util_free()

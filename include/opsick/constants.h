@@ -144,6 +144,11 @@ extern "C" {
  */
 #define OPSICK_STRPREALLOC_INDEX_USER_CREATION_PW 14
 
+/**
+ * Index to pass to #opsick_get_preallocated_string() to receive back the FIOBJ string "www-authenticate".
+ */
+#define OPSICK_STRPREALLOC_INDEX_WWW_AUTHENTICATE_HEADER 15
+
 #pragma endregion
 
 #pragma region HASHES
@@ -231,6 +236,13 @@ extern "C" {
  * </c>
  */
 #define OPSICK_USER2FA_PATH_HASH 2196777087
+
+/**
+ * <c>
+ * murmur3("/users/keys")
+ * </c>
+ */
+#define OPSICK_USERKEYS_PATH_HASH 773720762
 
 /**
  * <c>

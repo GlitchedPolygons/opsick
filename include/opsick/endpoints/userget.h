@@ -42,6 +42,13 @@ void opsick_init_endpoint_userget();
 void opsick_get_user(http_s* request);
 
 /**
+ * GET request to "/users/keys". <p>
+ * Gets a user's encrypted private keys from the server db.
+ * @param request The HTTP request.
+ */
+void opsick_get_user_keys(http_s* request);
+
+/**
  * Frees the "/users" endpoint resources.
  */
 void opsick_free_endpoint_userget();
