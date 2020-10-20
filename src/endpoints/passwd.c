@@ -69,9 +69,11 @@ void opsick_post_passwd(http_s* request)
     const FIOBJ user_id_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_USER_ID));
     const FIOBJ pw_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PW));
     const FIOBJ new_pw_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_NEW_PW));
+    const FIOBJ new_enc_ed25519_key_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PRVKEY_ED25519));
+    const FIOBJ new_enc_curve448_key_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_PRVKEY_CURVE448));
     const FIOBJ totp_obj = fiobj_hash_get(jsonobj, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_TOTP));
 
-    if (!user_id_obj || !pw_obj || !new_pw_obj)
+    if (!user_id_obj || !pw_obj || !new_pw_obj || !new_enc_ed25519_key_obj || !new_enc_curve448_key_obj)
     {
         http_send_error(request, 403);
         goto exit;
@@ -125,6 +127,13 @@ void opsick_post_passwd(http_s* request)
     if (opsick_db_set_user_pw(db, user_id, new_pw_hash) != 0)
     {
         fprintf(stderr, "Failure to write new user pw hash to db.");
+        http_send_error(request, 500);
+        goto exit;
+    }
+
+    if (opsick_db_set_user_keys(db, user_id, user_metadata.public_key_ed25519.hexstring, fiobj_obj2cstr(new_enc_ed25519_key_obj).data, user_metadata.public_key_curve448.hexstring, fiobj_obj2cstr(new_enc_curve448_key_obj).data) != 0)
+    {
+        fprintf(stderr, "Failure to write new user encrypted private keys to db.");
         http_send_error(request, 500);
         goto exit;
     }
