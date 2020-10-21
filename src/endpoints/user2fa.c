@@ -126,7 +126,13 @@ void opsick_post_user2fa(http_s* request)
                 goto exit;
             }
 
+            char sig[128 + 1];
+            opsick_sign(pw_strobj.data, pw_strobj.len, sig);
+
+            http_set_header(request, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_ED25519_SIG), fiobj_str_new(sig, 128));
             http_finish(request);
+
+            mbedtls_platform_zeroize(sig, sizeof(sig));
             goto exit;
         }
         case 1: // Enable 2FA and return the TOTP secret to the user (or return status 400 if 2FA is already enabled).
@@ -163,7 +169,13 @@ void opsick_post_user2fa(http_s* request)
         }
         case 2: // If verifying a TOTP was everything the requesting user wanted, leave immediately.
         {
+            char sig[128 + 1];
+            opsick_sign(pw_strobj.data, pw_strobj.len, sig);
+
+            http_set_header(request, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_ED25519_SIG), fiobj_str_new(sig, 128));
             http_finish(request);
+
+            mbedtls_platform_zeroize(sig, sizeof(sig));
             goto exit;
         }
         default: // Bad client. Very bad.

@@ -138,6 +138,10 @@ void opsick_post_passwd(http_s* request)
         goto exit;
     }
 
+    char sig[128 + 1];
+    opsick_sign(new_pw_strobj.data, new_pw_strobj.len, sig);
+
+    http_set_header(request, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_ED25519_SIG), fiobj_str_new(sig, 128));
     http_finish(request);
 
 exit:

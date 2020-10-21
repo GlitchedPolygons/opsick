@@ -35,14 +35,14 @@ extern "C" {
 void opsick_init_endpoint_userget();
 
 /**
- * GET request to "/users". <p>
+ * POST request to "/users". <p>
  * Gets a user's metadata from the server db.
  * @param request The HTTP request.
  */
 void opsick_get_user(http_s* request);
 
 /**
- * GET request to "/users/keys". <p>
+ * POST request to "/users/keys". <p>
  * Gets a user's encrypted private keys from the server db.
  * @param request The HTTP request.
  */
