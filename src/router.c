@@ -20,20 +20,8 @@
 #include "opsick/util.h"
 #include "opsick/config.h"
 #include "opsick/murmur3.h"
-#include "opsick/constants.h"
-#include "opsick/endpoints/home.h"
-#include "opsick/endpoints/pubkey.h"
-#include "opsick/endpoints/passwd.h"
-#include "opsick/endpoints/userget.h"
-#include "opsick/endpoints/useradd.h"
-#include "opsick/endpoints/userdel.h"
-#include "opsick/endpoints/userext.h"
-#include "opsick/endpoints/user2fa.h"
-#include "opsick/endpoints/userbody.h"
-#include "opsick/endpoints/version.h"
+#include "opsick/endpoints.h"
 
-static void init_all_endpoints();
-static void free_all_endpoints();
 static void route_request(http_s*, uint32_t);
 
 #pragma region INIT, ON_REQUEST AND FREE
@@ -46,7 +34,7 @@ void opsick_router_init()
     opsick_util_init();
 
     // Initialize endpoints.
-    init_all_endpoints();
+    opsick_endpoints_init();
 
     // Start facil.io using the settings provided inside the user config.
     struct opsick_config_hostsettings hostsettings;
@@ -83,8 +71,8 @@ void opsick_on_request(http_s* request)
 void opsick_router_free()
 {
     fio_stop();
-    free_all_endpoints();
     opsick_util_free();
+    opsick_endpoints_free();
     printf("  Goodbye :) \n");
 }
 
@@ -115,35 +103,39 @@ static void route_request(http_s* request, const uint32_t pathstr_hash)
             break;
         }
         case OPSICK_PASSWD_PATH_HASH: {
-            opsick_post_passwd(request);
+            opsick_post_users_passwd(request);
             break;
         }
         case OPSICK_USERGET_PATH_HASH: {
-            opsick_get_user(request);
+            opsick_post_users(request);
             break;
         }
         case OPSICK_USERKEYS_PATH_HASH: {
-            opsick_get_user_keys(request);
+            opsick_post_users_keys(request);
+            break;
+        }
+        case OPSICK_USERKEYS_UPDATE_PATH_HASH: {
+            opsick_post_users_keys_update(request);
             break;
         }
         case OPSICK_USERADD_PATH_HASH: {
-            opsick_post_useradd(request);
+            opsick_post_users_create(request);
             break;
         }
         case OPSICK_USERDEL_PATH_HASH: {
-            opsick_post_userdel(request);
+            opsick_post_users_delete(request);
             break;
         }
         case OPSICK_USEREXT_PATH_HASH: {
-            opsick_post_userext(request);
+            opsick_post_users_extend(request);
             break;
         }
         case OPSICK_USER2FA_PATH_HASH: {
-            opsick_post_user2fa(request);
+            opsick_post_users_2fa(request);
             break;
         }
         case OPSICK_USERBODY_PATH_HASH: {
-            opsick_post_userbody(request);
+            opsick_post_users_body(request);
             break;
         }
         case OPSICK_VERSION_PATH_HASH: {
@@ -151,32 +143,4 @@ static void route_request(http_s* request, const uint32_t pathstr_hash)
             break;
         }
     }
-}
-
-static void init_all_endpoints()
-{
-    opsick_init_endpoint_home();
-    opsick_init_endpoint_pubkey();
-    opsick_init_endpoint_passwd();
-    opsick_init_endpoint_userget();
-    opsick_init_endpoint_useradd();
-    opsick_init_endpoint_userdel();
-    opsick_init_endpoint_userext();
-    opsick_init_endpoint_user2fa();
-    opsick_init_endpoint_userbody();
-    opsick_init_endpoint_version();
-}
-
-static void free_all_endpoints()
-{
-    opsick_free_endpoint_home();
-    opsick_free_endpoint_pubkey();
-    opsick_free_endpoint_passwd();
-    opsick_free_endpoint_userget();
-    opsick_free_endpoint_useradd();
-    opsick_free_endpoint_userdel();
-    opsick_free_endpoint_userext();
-    opsick_free_endpoint_user2fa();
-    opsick_free_endpoint_userbody();
-    opsick_free_endpoint_version();
 }

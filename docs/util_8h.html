@@ -115,6 +115,8 @@ Functions</h2></td></tr>
 <tr class="separator:a7c395e89a7e4a2b5125acb64e04bb82b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9c87d8ccff9130e239f0b030c7cbdb4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#aa9c87d8ccff9130e239f0b030c7cbdb4">opsick_bin2hexstr</a> (const uint8_t *bin, size_t bin_length, char *output, size_t output_size, size_t *output_length, uint8_t uppercase)</td></tr>
 <tr class="separator:aa9c87d8ccff9130e239f0b030c7cbdb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31b3d58ad425317f76ccdc5baa50f043"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a31b3d58ad425317f76ccdc5baa50f043">opsick_strncmpic</a> (const char *str1, const char *str2, size_t n)</td></tr>
+<tr class="separator:a31b3d58ad425317f76ccdc5baa50f043"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ca75762fe8b4adf6bce076a2d3130fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a0ca75762fe8b4adf6bce076a2d3130fb">opsick_sign</a> (const char *string, size_t string_length, char *out)</td></tr>
 <tr class="separator:a0ca75762fe8b4adf6bce076a2d3130fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c4b42109b8445db0b50cb0e03707b1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a6c4b42109b8445db0b50cb0e03707b1b">opsick_sign_and_send</a> (http_s *request, char *body, size_t body_length)</td></tr>
@@ -481,6 +483,49 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a31b3d58ad425317f76ccdc5baa50f043"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31b3d58ad425317f76ccdc5baa50f043">&#9670;&nbsp;</a></span>opsick_strncmpic()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int opsick_strncmpic </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>str1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>str2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>n</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Compares two strings ignoring UPPER vs. lowercase. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str1</td><td>String to compare. </td></tr>
+    <tr><td class="paramname">str2</td><td>String to compare to. </td></tr>
+    <tr><td class="paramname">n</td><td>How many characters of the string should be compared (starting from index 0)? </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>If the strings are equal, <code>0</code> is returned. Otherwise, something else. </dd></dl>
 
 </div>
 </div>

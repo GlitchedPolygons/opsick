@@ -20,6 +20,8 @@
 #include "opsick/config.h"
 
 #include <stdio.h>
+#include <limits.h>
+#include <string.h>
 #include <ed25519.h>
 #include <cecies/decrypt.h>
 #include <mbedtls/platform_util.h>
@@ -133,6 +135,30 @@ int opsick_bin2hexstr(const uint8_t* bin, const size_t bin_length, char* output,
     }
 
     return 0;
+}
+
+int opsick_strncmpic(const char* str1, const char* str2, size_t n)
+{
+    size_t cmp = 0;
+    int ret = INT_MIN;
+
+    if (str1 == NULL || str2 == NULL)
+    {
+        return ret;
+    }
+
+    while ((*str1 || *str2) && cmp < n)
+    {
+        if ((ret = tolower((int)(*str1)) - tolower((int)(*str2))) != 0)
+        {
+            break;
+        }
+        cmp++;
+        str1++;
+        str2++;
+    }
+
+    return ret;
 }
 
 void opsick_sign(const char* string, size_t string_length, char* out)

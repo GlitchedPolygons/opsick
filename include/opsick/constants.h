@@ -246,6 +246,13 @@ extern "C" {
 
 /**
  * <c>
+ * murmur3("/users/keys/update")
+ * </c>
+ */
+#define OPSICK_USERKEYS_UPDATE_PATH_HASH 589266831
+
+/**
+ * <c>
  * murmur3("/version")
  * </c>
  */

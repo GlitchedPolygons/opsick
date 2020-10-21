@@ -35,7 +35,7 @@ endif ()
 
 add_compile_definitions("SQLITE_THREADSAFE=1")
 
-set(${PROJECT_NAME}_HEADERS
+set(${PROJECT_NAME}_SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/lib/sqlite3/sqlite3.h
         ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/blake2/blake2b.c
         ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/argon2.c
@@ -44,7 +44,6 @@ set(${PROJECT_NAME}_HEADERS
         ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/thread.c
         ${${PROJECT_NAME}_ARGON2_IMPL}
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/constants.h
-        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/strncmpic.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/config.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/murmur3.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/keys.h
@@ -54,37 +53,15 @@ set(${PROJECT_NAME}_HEADERS
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/sql/users.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/util.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/user.h
-        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/home.h
-        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/pubkey.h
-        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/passwd.h
-        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/useradd.h
-        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/userdel.h
-        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/userget.h
-        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/user2fa.h
-        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/userext.h
-        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/userbody.h
-        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints/version.h
-        )
-
-set(${PROJECT_NAME}_SOURCES
+        ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints.h
         ${CMAKE_CURRENT_LIST_DIR}/lib/sqlite3/sqlite3.c
         ${CMAKE_CURRENT_LIST_DIR}/src/config.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/strncmpic.c
         ${CMAKE_CURRENT_LIST_DIR}/src/murmur3.c
         ${CMAKE_CURRENT_LIST_DIR}/src/keys.c
         ${CMAKE_CURRENT_LIST_DIR}/src/router.c
         ${CMAKE_CURRENT_LIST_DIR}/src/db.c
         ${CMAKE_CURRENT_LIST_DIR}/src/util.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/home.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/pubkey.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/passwd.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/useradd.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/userdel.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/userget.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/user2fa.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/userext.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/userbody.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/endpoints/version.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/endpoints.c
         )
 
 set(${PROJECT_NAME}_ENTRYPOINT
@@ -116,7 +93,6 @@ configure_file(${CMAKE_CURRENT_LIST_DIR}/src/favicon.ico ${CMAKE_CURRENT_BINARY_
 configure_file(${CMAKE_CURRENT_LIST_DIR}/src/config.toml ${CMAKE_CURRENT_BINARY_DIR}/config.toml COPYONLY)
 
 add_executable(${PROJECT_NAME}
-        ${${PROJECT_NAME}_HEADERS}
         ${${PROJECT_NAME}_SOURCES}
         ${${PROJECT_NAME}_ENTRYPOINT}
         )

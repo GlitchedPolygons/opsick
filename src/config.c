@@ -22,7 +22,6 @@
 
 #include "opsick/util.h"
 #include "opsick/config.h"
-#include "opsick/strncmpic.h"
 
 static struct opsick_config_hostsettings hostsettings;
 static struct opsick_config_adminsettings adminsettings;

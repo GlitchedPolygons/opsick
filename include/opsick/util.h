@@ -86,6 +86,15 @@ int opsick_hexstr2bin(const char* hexstr, size_t hexstr_length, uint8_t* output,
 int opsick_bin2hexstr(const uint8_t* bin, size_t bin_length, char* output, size_t output_size, size_t* output_length, uint8_t uppercase);
 
 /**
+ * Compares two strings ignoring UPPER vs. lowercase.
+ * @param str1 String to compare.
+ * @param str2 String to compare to.
+ * @param n How many characters of the string should be compared (starting from index 0)?
+ * @return If the strings are equal, <code>0</code> is returned. Otherwise, something else.
+ */
+int opsick_strncmpic(const char* str1, const char* str2, size_t n);
+
+/**
  * Signs a string using the opsick server's private signing key.
  * @param string The NUL-terminated string to sign.
  * @param string_length Length of \p string argument (passing <c>0</c> will result in usage of <c>strlen(string)</c>).
