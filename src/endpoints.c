@@ -47,34 +47,32 @@ void opsick_endpoints_init()
 
     opsick_config_get_adminsettings(&adminsettings);
 
-    if (!adminsettings.use_index_html)
+    if (adminsettings.use_index_html)
     {
-        return;
+        FILE* fptr = fopen("index.html", "r");
+        if (fptr == NULL)
+        {
+            perror("ERROR: Couldn't open index.html file! ");
+            // Program should exit if file pointer returned by fopen() is NULL.
+            exit(1);
+        }
+
+        fseek(fptr, 0L, SEEK_END);
+        const long fsize = ftell(fptr);
+
+        html = malloc(fsize + 1);
+        if (html == NULL)
+        {
+            perror("ERROR: Memory allocation failed when attempting to read index.html into memory... Out of memory?");
+            exit(2);
+        }
+
+        fseek(fptr, 0L, SEEK_SET);
+        html_len = fread(html, 1, fsize, fptr);
+
+        html[html_len++] = '\0';
+        fclose(fptr);
     }
-
-    FILE* fptr = fopen("index.html", "r");
-    if (fptr == NULL)
-    {
-        perror("ERROR: Couldn't open index.html file! ");
-        // Program should exit if file pointer returned by fopen() is NULL.
-        exit(1);
-    }
-
-    fseek(fptr, 0L, SEEK_END);
-    const long fsize = ftell(fptr);
-
-    html = malloc(fsize + 1);
-    if (html == NULL)
-    {
-        perror("ERROR: Memory allocation failed when attempting to read index.html into memory... Out of memory?");
-        exit(2);
-    }
-
-    fseek(fptr, 0L, SEEK_SET);
-    html_len = fread(html, 1, fsize, fptr);
-
-    html[html_len++] = '\0';
-    fclose(fptr);
 
     snprintf(version_json, sizeof(version_json), "{\"server_name\":\"opsick\",\"server_version\":\"%s\",\"server_schema_version\":%zu}", OPSICK_SERVER_VERSION_STR, opsick_db_get_schema_version_number());
     version_json_length = strlen(version_json);
