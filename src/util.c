@@ -181,7 +181,8 @@ void opsick_sign_and_send(http_s* request, char* body, size_t body_length)
         return;
 
     char signature[128 + 1];
-    opsick_sign(body, body_length ? body_length : strlen(body), signature);
+    body_length = body_length ? body_length : strlen(body);
+    opsick_sign(body, body_length, signature);
 
     http_set_header(request, opsick_get_preallocated_string(OPSICK_STRPREALLOC_INDEX_ED25519_SIG), fiobj_str_new(signature, sizeof(signature) - 1));
     http_send_body(request, body, body_length);
