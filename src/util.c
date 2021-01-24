@@ -55,7 +55,7 @@ void opsick_util_free()
 {
     mbedtls_platform_zeroize(&adminsettings, sizeof(adminsettings));
 
-    for (unsigned int i = 0; i < sizeof(preallocated_string_table) / sizeof(FIOBJ); i++)
+    for (size_t i = 0; i < sizeof(preallocated_string_table) / sizeof(FIOBJ); ++i)
     {
         FIOBJ ie = preallocated_string_table[i];
         if (ie != FIOBJ_INVALID && !fiobj_type_is(ie, FIOBJ_T_NULL))
@@ -122,7 +122,7 @@ int opsick_bin2hexstr(const uint8_t* bin, const size_t bin_length, char* output,
 
     const char* format = uppercase ? "%02X" : "%02x";
 
-    for (size_t i = 0; i < bin_length; i++)
+    for (size_t i = 0; i < bin_length; ++i)
     {
         sprintf(output + i * 2, format, bin[i]);
     }

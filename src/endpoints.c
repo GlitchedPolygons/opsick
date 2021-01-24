@@ -108,7 +108,7 @@ static inline int valid_pw(struct opsick_user_metadata* user_metadata, const FIO
 
 static inline int is_user_registration_pw_enabled()
 {
-    for (int i = 0; i < sizeof(adminsettings.user_registration_password); ++i)
+    for (size_t i = 0; i < sizeof(adminsettings.user_registration_password); ++i)
     {
         if (adminsettings.user_registration_password[i] != 0x00)
             return 1;
