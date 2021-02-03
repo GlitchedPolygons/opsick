@@ -20,6 +20,7 @@
 #include "opsick/config.h"
 
 #include <stdio.h>
+#include <stddef.h>
 #include <limits.h>
 #include <string.h>
 #include <ed25519.h>
@@ -253,16 +254,10 @@ int opsick_decrypt(http_s* request, char** out)
     cecies_curve448_keypair keypair;
     opsick_keys_get_curve448_keypair(&keypair);
 
-    char* decrypted = malloc(body.len);
+    char* decrypted = NULL;
     size_t decrypted_length = 0;
 
-    if (decrypted == NULL)
-    {
-        r = CECIES_DECRYPT_ERROR_CODE_OUT_OF_MEMORY;
-        goto exit;
-    }
-
-    r = cecies_curve448_decrypt((unsigned char*)body.data, body.len, true, keypair.private_key, (unsigned char*)decrypted, body.len, &decrypted_length);
+    r = cecies_curve448_decrypt((uint8_t*)body.data, body.len, 1, keypair.private_key, (uint8_t**)&decrypted, &decrypted_length);
     if (r != 0)
     {
         goto exit;
