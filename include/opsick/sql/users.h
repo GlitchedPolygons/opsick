@@ -27,6 +27,7 @@ extern "C" {
  * @brief SQL statements for interacting with the Opsick DB's users table (parametrized).
  */
 
+static const char opsick_sql_does_user_id_exist[] = "SELECT count(id) FROM users WHERE id = ?";
 static const char opsick_sql_get_user[] = "SELECT id, pw, totps, iat_utc, exp_utc, lastmod_utc, body_sha512, public_key_ed25519, encrypted_private_key_ed25519, public_key_curve448, encrypted_private_key_curve448 FROM users WHERE id = ?";
 static const char opsick_sql_get_user_body[] = "SELECT body FROM users WHERE id = ?";
 

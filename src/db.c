@@ -162,6 +162,43 @@ uint64_t opsick_db_get_last_db_schema_version_nr_lookup()
     return last_db_schema_version_nr_lookup;
 }
 
+int opsick_db_does_user_id_exist(sqlite3* db, const uint64_t user_id)
+{
+    sqlite3_stmt* stmt = NULL;
+    const char* sql = opsick_sql_does_user_id_exist;
+    const size_t sql_length = sizeof(opsick_sql_does_user_id_exist) - 1;
+
+    int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_does_user_id_exist: Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\".", sql);
+        rc = 0;
+        goto exit;
+    }
+
+    rc = sqlite3_bind_int64(stmt, 1, user_id);
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "opsick_db_does_user_id_exist: Failure to bind \"pw\" value to prepared sqlite3 statement.");
+        rc = 0;
+        goto exit;
+    }
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_ROW)
+    {
+        fprintf(stderr, "opsick_db_does_user_id_exist: Failure during execution of the prepared sqlite3 statement.");
+        rc = 0;
+        goto exit;
+    }
+
+    rc = sqlite3_column_int(stmt, 0);
+exit:
+    last_used_userid = user_id;
+    sqlite3_finalize(stmt);
+    return rc;
+}
+
 int opsick_db_create_user(sqlite3* db, const char* pw, const uint64_t exp_utc, const char* public_key_ed25519, const char* encrypted_private_key_ed25519, const char* public_key_curve448, const char* encrypted_private_key_curve448, uint64_t* out_user_id)
 {
     if (db == NULL || exp_utc < time(0) || public_key_ed25519 == NULL || encrypted_private_key_ed25519 == NULL || public_key_curve448 == NULL || encrypted_private_key_curve448 == NULL || out_user_id == NULL)

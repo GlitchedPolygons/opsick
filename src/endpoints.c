@@ -145,6 +145,40 @@ void opsick_get_pubkey(http_s* request)
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 
+void opsick_post_users_does_id_exist(http_s* request)
+{
+    sqlite3* db = NULL;
+
+    db = opsick_db_connect();
+    if (db == NULL)
+    {
+        http_send_error(request, 500);
+        goto exit;
+    }
+
+    const struct fio_str_info_s body = fiobj_obj2cstr(request->body);
+    if (body.data == NULL || body.len == 0)
+    {
+        http_send_error(request, 500);
+        goto exit;
+    }
+
+    const uint64_t user_id = strtoull(body.data, NULL, 10);
+    if (opsick_db_does_user_id_exist(db, user_id))
+    {
+        http_finish(request);
+    }
+    else
+    {
+        http_send_error(request, 404);
+    }
+
+exit:
+    opsick_db_disconnect(db);
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------------
+
 void opsick_post_users_create(http_s* request)
 {
     sqlite3* db = NULL;

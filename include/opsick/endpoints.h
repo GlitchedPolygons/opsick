@@ -53,6 +53,12 @@ void opsick_get_home(http_s* request);
 void opsick_get_pubkey(http_s* request);
 
 /**
+ * POST request to "/users/check"
+ * @param request The HTTP request.
+ */
+void opsick_post_users_does_id_exist(http_s* request);
+
+/**
  * POST request to "/users/create". <p> <strong>Requires API Key</strong> <p>
  * Creates a new user on the opsick server.
  * The user ID + other parameters should be passed in the request body.

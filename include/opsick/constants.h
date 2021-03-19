@@ -204,6 +204,13 @@ extern "C" {
 
 /**
  * <c>
+ * murmur3("/users/check")
+ * </c>
+ */
+#define OPSICK_USERCHK_PATH_HASH 4075223429
+
+/**
+ * <c>
  * murmur3("/users/create")
  * </c>
  */

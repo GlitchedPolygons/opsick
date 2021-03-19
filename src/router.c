@@ -110,6 +110,10 @@ static void route_request(http_s* request, const uint32_t pathstr_hash)
             opsick_post_users(request);
             break;
         }
+        case OPSICK_USERCHK_PATH_HASH: {
+            opsick_post_users_does_id_exist(request);
+            break;
+        }
         case OPSICK_USERKEYS_PATH_HASH: {
             opsick_post_users_keys(request);
             break;
