@@ -583,7 +583,7 @@ int opsick_db_set_user_body(sqlite3* db, uint64_t user_id, const char* body)
 
     const size_t bodylen = strlen(body);
     unsigned char body_sha512_bytes[64] = { 0x00 };
-    mbedtls_sha512_ret((unsigned char*)body, bodylen, body_sha512_bytes, 0);
+    mbedtls_sha512((unsigned char*)body, bodylen, body_sha512_bytes, 0);
 
     char body_sha512[128 + 1] = { 0x00 };
     cecies_bin2hexstr(body_sha512_bytes, sizeof(body_sha512_bytes), body_sha512, sizeof(body_sha512), NULL, true);
@@ -728,7 +728,7 @@ int opsick_db_set_user_keys(sqlite3* db, uint64_t user_id, const char* new_pubke
 
     unsigned char sha512[64];
 
-    mbedtls_sha512_ret((const unsigned char*)new_pubkey_curve448, new_pubkey_curve448_length, sha512, 0);
+    mbedtls_sha512((const unsigned char*)new_pubkey_curve448, new_pubkey_curve448_length, sha512, 0);
     memcpy(last128B, sha512, 64);
 
     mbedtls_sha512_ret((const unsigned char*)new_pubkey_ed25519, new_pubkey_ed25519_length, sha512, 0);
