@@ -20,6 +20,7 @@
 #include "opsick/config.h"
 
 #include <stdio.h>
+#include <stddef.h>
 #include <limits.h>
 #include <string.h>
 #include <ed25519.h>
@@ -55,7 +56,7 @@ void opsick_util_free()
 {
     mbedtls_platform_zeroize(&adminsettings, sizeof(adminsettings));
 
-    for (unsigned int i = 0; i < sizeof(preallocated_string_table) / sizeof(FIOBJ); i++)
+    for (size_t i = 0; i < sizeof(preallocated_string_table) / sizeof(FIOBJ); ++i)
     {
         FIOBJ ie = preallocated_string_table[i];
         if (ie != FIOBJ_INVALID && !fiobj_type_is(ie, FIOBJ_T_NULL))
@@ -122,7 +123,7 @@ int opsick_bin2hexstr(const uint8_t* bin, const size_t bin_length, char* output,
 
     const char* format = uppercase ? "%02X" : "%02x";
 
-    for (size_t i = 0; i < bin_length; i++)
+    for (size_t i = 0; i < bin_length; ++i)
     {
         sprintf(output + i * 2, format, bin[i]);
     }
@@ -253,16 +254,10 @@ int opsick_decrypt(http_s* request, char** out)
     cecies_curve448_keypair keypair;
     opsick_keys_get_curve448_keypair(&keypair);
 
-    char* decrypted = malloc(body.len);
+    char* decrypted = NULL;
     size_t decrypted_length = 0;
 
-    if (decrypted == NULL)
-    {
-        r = CECIES_DECRYPT_ERROR_CODE_OUT_OF_MEMORY;
-        goto exit;
-    }
-
-    r = cecies_curve448_decrypt((unsigned char*)body.data, body.len, true, keypair.private_key, (unsigned char*)decrypted, body.len, &decrypted_length);
+    r = cecies_curve448_decrypt((uint8_t*)body.data, body.len, 1, keypair.private_key, (uint8_t**)&decrypted, &decrypted_length);
     if (r != 0)
     {
         goto exit;

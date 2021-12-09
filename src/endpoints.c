@@ -22,6 +22,7 @@
 
 #include <tfac.h>
 #include <argon2.h>
+#include <stddef.h>
 #include <cecies/encrypt.h>
 #include <mbedtls/platform_util.h>
 
@@ -108,7 +109,7 @@ static inline int valid_pw(struct opsick_user_metadata* user_metadata, const FIO
 
 static inline int is_user_registration_pw_enabled()
 {
-    for (int i = 0; i < sizeof(adminsettings.user_registration_password); ++i)
+    for (size_t i = 0; i < sizeof(adminsettings.user_registration_password); ++i)
     {
         if (adminsettings.user_registration_password[i] != 0x00)
             return 1;
@@ -140,6 +141,40 @@ void opsick_get_pubkey(http_s* request)
     opsick_sign_and_send(request, json, json_length);
 
     mbedtls_platform_zeroize(json, sizeof(json));
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------------
+
+void opsick_post_users_does_id_exist(http_s* request)
+{
+    sqlite3* db = NULL;
+
+    db = opsick_db_connect();
+    if (db == NULL)
+    {
+        http_send_error(request, 500);
+        goto exit;
+    }
+
+    const struct fio_str_info_s body = fiobj_obj2cstr(request->body);
+    if (body.data == NULL || body.len == 0)
+    {
+        http_send_error(request, 500);
+        goto exit;
+    }
+
+    const uint64_t user_id = strtoull(body.data, NULL, 10);
+    if (opsick_db_does_user_id_exist(db, user_id))
+    {
+        http_finish(request);
+    }
+    else
+    {
+        http_send_error(request, 404);
+    }
+
+exit:
+    opsick_db_disconnect(db);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------
@@ -629,10 +664,10 @@ void opsick_post_users_2fa(http_s* request)
             char out_json[256] = { 0x00 };
             snprintf(out_json, sizeof(out_json), "{\"totps\":\"%s\",\"steps\":%d,\"digits\":%d,\"hash_algo\":\"SHA-1\",\"qr\":\"otpauth://totp/opsick:%zu?secret=%s\"}", totps.secret_key_base32, OPSICK_2FA_STEPS, OPSICK_2FA_DIGITS, user_id, totps.secret_key_base32);
 
-            char out_enc[1024] = { 0x00 };
+            char* out_enc = NULL;
             size_t out_enc_len = 0;
 
-            if (cecies_curve448_encrypt((unsigned char*)out_json, strlen(out_json), user_metadata.public_key_curve448, (unsigned char*)out_enc, sizeof(out_enc), &out_enc_len, true) != 0)
+            if (cecies_curve448_encrypt((uint8_t*)out_json, strlen(out_json), 0, user_metadata.public_key_curve448, (uint8_t**)&out_enc, &out_enc_len, 1) != 0)
             {
                 http_send_error(request, 500);
 
@@ -643,6 +678,7 @@ void opsick_post_users_2fa(http_s* request)
 
             opsick_sign_and_send(request, out_enc, out_enc_len);
 
+            free(out_enc);
             mbedtls_platform_zeroize(&totps, sizeof(totps));
             mbedtls_platform_zeroize(out_json, sizeof(out_json));
             goto exit;
@@ -1065,15 +1101,10 @@ void opsick_post_users(http_s* request)
         size_t out_json_length = 1024 + bodylen + 128;
         char* out_json = malloc(out_json_length);
 
-        size_t out_enc_length = cecies_calc_base64_length(cecies_curve448_calc_output_buffer_needed_size(out_json_length));
-        char* out_enc = malloc(out_enc_length);
-
-        if (out_json == NULL || out_enc == NULL)
+        if (out_json == NULL)
         {
             fprintf(stderr, "OUT OF MEMORY!");
             http_send_error(request, 500);
-            free(out_json);
-            free(out_enc);
             goto exit;
         }
 
@@ -1082,12 +1113,14 @@ void opsick_post_users(http_s* request)
                 user_metadata.id, user_metadata.iat_utc, user_metadata.exp_utc, user_metadata.lastmod_utc, body, user_metadata.body_sha512 //
         );
 
-        if (cecies_curve448_encrypt((unsigned char*)out_json, strlen(out_json), user_metadata.public_key_curve448, (unsigned char*)out_enc, out_enc_length, &out_enc_length, true) != 0)
+        char* out_enc = NULL;
+        size_t out_enc_length = 0;
+
+        if (cecies_curve448_encrypt((uint8_t*)out_json, strlen(out_json), 0, user_metadata.public_key_curve448, (uint8_t**)&out_enc, &out_enc_length, 1) != 0)
         {
             fprintf(stderr, "Curve448 encryption of the HTTP response body failed!");
             http_send_error(request, 500);
             free(out_json);
-            free(out_enc);
             goto exit;
         }
 
@@ -1105,10 +1138,10 @@ void opsick_post_users(http_s* request)
                 user_metadata.id, user_metadata.iat_utc, user_metadata.exp_utc, user_metadata.lastmod_utc //
         );
 
+        char* out_enc = NULL;
         size_t out_enc_len = 0;
-        char out_enc[2048];
 
-        if (cecies_curve448_encrypt((unsigned char*)out_json, strlen(out_json), user_metadata.public_key_curve448, (unsigned char*)out_enc, sizeof(out_enc), &out_enc_len, true) != 0)
+        if (cecies_curve448_encrypt((uint8_t*)out_json, strlen(out_json), 0, user_metadata.public_key_curve448, (uint8_t**)&out_enc, &out_enc_len, 1) != 0)
         {
             mbedtls_platform_zeroize(out_json, sizeof(out_json));
             http_send_error(request, 500);
@@ -1118,6 +1151,7 @@ void opsick_post_users(http_s* request)
         opsick_sign_and_send(request, out_enc, out_enc_len);
 
         mbedtls_platform_zeroize(out_json, sizeof(out_json));
+        free(out_enc);
     }
 
 exit:

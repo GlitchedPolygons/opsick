@@ -76,6 +76,13 @@ void opsick_db_last_128_bytes_of_ciphertext(uint8_t out[128]);
 uint64_t opsick_db_get_last_db_schema_version_nr_lookup();
 
 /**
+ * Checks whether a given user id exists or not.
+ * @param user_id The user id to check.
+ * @return \c 0 if the user does not exist in the db; \c 1 if it does exist.
+ */
+int opsick_db_does_user_id_exist(sqlite3* db, uint64_t user_id);
+
+/**
  * Adds a new user to the DB.
  * @param pw The user's password (hashed).
  * @param exp_utc When the user expires (UTC).
