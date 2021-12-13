@@ -106,7 +106,7 @@ target_link_libraries(${PROJECT_NAME}
         )
 
 if (UNIX AND NOT ANDROID)
-    target_link_libraries(${PROJECT_NAME} PRIVATE -lpthread)
+    target_link_libraries(${PROJECT_NAME} PRIVATE -lpthread -ldl)
 endif ()
 
 target_include_directories(${PROJECT_NAME}
