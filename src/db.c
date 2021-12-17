@@ -731,7 +731,7 @@ int opsick_db_set_user_keys(sqlite3* db, uint64_t user_id, const char* new_pubke
     mbedtls_sha512((const unsigned char*)new_pubkey_curve448, new_pubkey_curve448_length, sha512, 0);
     memcpy(last128B, sha512, 64);
 
-    mbedtls_sha512_ret((const unsigned char*)new_pubkey_ed25519, new_pubkey_ed25519_length, sha512, 0);
+    mbedtls_sha512((const unsigned char*)new_pubkey_ed25519, new_pubkey_ed25519_length, sha512, 0);
     memcpy(last128B + 64, sha512, 64);
 
     rc = 0;
