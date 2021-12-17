@@ -28,6 +28,15 @@ extern "C" {
  */
 
 /**
+ * @mainpage Opsick
+ * @section intro Introduction
+ * Welcome to the API Documentation for Opsick. <br>
+ * Opsick is an open-source password manager written entirely in C.
+ * @section install Dependencies, installation and all that...
+ * See the git repository's [README.md](https://github.com/GlitchedPolygons/opsick) for more instructions.
+ */
+
+/**
  * Opsick current version number.
  */
 #define OPSICK_SERVER_VERSION 100
