@@ -22,6 +22,22 @@
 
 int main(void)
 {
+    PGconn* conn = PQconnectdb("hostaddr=127.0.0.1 port=5432 user=opsick_db_user password=kj775td-SnyYhKj8-7UqUC.8tC4nD dbname=opsick_db ");
+
+    if (PQstatus(conn) == CONNECTION_BAD)
+    {
+
+        fprintf(stderr, "Connection to database failed: %s\n", PQerrorMessage(conn));
+        return -1;
+    }
+
+    int ver = PQserverVersion(conn);
+
+    printf("Server version: %d\n", ver);
+
+    PQfinish(conn);
+    return 0;
+
     if (!opsick_config_load())
     {
         fprintf(stderr, "ERROR: Opsick failed to open, read or parse the config file.");

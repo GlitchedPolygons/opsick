@@ -24,6 +24,7 @@ extern "C" {
 #include <stddef.h>
 #include <stdint.h>
 #include <sqlite3.h>
+#include <libpq-fe.h>
 
 #include "user.h"
 
