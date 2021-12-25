@@ -16,77 +16,39 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <tomlc99/toml.h>
 #include <mbedtls/platform_util.h>
 
+#include "opsick/db.h"
 #include "opsick/util.h"
 #include "opsick/config.h"
 
 static struct opsick_config_hostsettings hostsettings;
 static struct opsick_config_adminsettings adminsettings;
 
-static inline void parse_toml_int(toml_table_t* toml_table, const char* setting, int64_t* out)
-{
-    const char* value = toml_raw_in(toml_table, setting);
-    if (value != NULL && toml_rtoi(value, out) != 0)
-    {
-        fprintf(stderr, "ERROR: Failed to parse \"%s\" setting inside config - \"%s\" is not a valid integer!", setting, value);
-    }
-}
-
-static inline void parse_toml_uint(toml_table_t* toml_table, const char* setting, uint64_t* out)
-{
-    const char* value = toml_raw_in(toml_table, setting);
-    if (value != NULL && toml_rtou(value, out) != 0)
-    {
-        fprintf(stderr, "ERROR: Failed to parse \"%s\" setting inside config - \"%s\" is not a valid unsigned integer!", setting, value);
-    }
-}
-
-static inline void tablerr(const char* tablename)
-{
-    fprintf(stderr, "ERROR: The loaded opsick config file \"%s\" does not contain the mandatory \"[%s]\" section!", OPSICK_CONFIG_FILE_PATH, tablename);
-}
-
 static inline void init()
 {
-    memset(&hostsettings, '\0', sizeof(hostsettings));
-    memset(&adminsettings, '\0', sizeof(adminsettings));
+    memset(&hostsettings, 0x00, sizeof(hostsettings));
+    memset(&adminsettings, 0x00, sizeof(adminsettings));
 
-    hostsettings.log = false;
     hostsettings.port = 6677;
     hostsettings.threads = 2;
     hostsettings.max_clients = 0;
     hostsettings.max_header_size = 1024 * 16;
     hostsettings.max_body_size = 1024 * 1024 * 16;
-    strcpy(hostsettings.db_file, "opsick.db");
 
     adminsettings.max_users = 0;
-    adminsettings.use_index_html = true;
+    adminsettings.use_index_html = 1;
     adminsettings.key_refresh_interval_hours = 72;
     adminsettings.api_key_algo = 0;
     adminsettings.argon2_time_cost = 16;
     adminsettings.argon2_memory_cost = 65536;
     adminsettings.argon2_parallelism = 2;
-    strcpy(adminsettings.api_key_public_hexstr, "9a074e6abb4d7cca97842d6e43704bafcc71c39f7394d65a7d6eba95909b4ec6");
-    strcpy(adminsettings.user_registration_password, "opsick_registration_password");
+    strcpy(adminsettings.api_key_public_hexstr, "F407F5E089CE64002EB417FB683A7302287BE84108BB8E62FD8ED647DC62805C");
+    strcpy(adminsettings.user_registration_password, "$argon2id$v=19$m=65536,t=16,p=2$U2pkM195MjMtUTksVw$4K9trCcn0vOyLRvFCK3Srwlzbr+5N6gIcS3omQoMFg0"); // Default user registration password is "opsick_registration_password".
 }
 
-static bool load_hostsettings(toml_table_t* conf)
+static int load_hostsettings(PGconn* dbconn)
 {
-    toml_table_t* table;
-    const char tablename[] = "host";
-
-    table = toml_table_in(conf, tablename);
-    if (table == NULL)
-    {
-        tablerr(tablename);
-        return false;
-    }
-
-    hostsettings.log = opsick_strncmpic(toml_raw_in(table, "log"), "true", 4) == 0;
-
     uint64_t port = -1;
     parse_toml_uint(table, "port", &port);
     if (port > 0 && port <= 65535)
@@ -95,7 +57,7 @@ static bool load_hostsettings(toml_table_t* conf)
     }
     else
     {
-        fprintf(stderr, "ERROR: The parsed port number \"%zu\" is not within the range of valid port numbers [0; 65535] - using default value of \"%d\" instead...", port, hostsettings.port);
+        fprintf(stderr, "ERROR: The parsed port number \"%zu\" is not within the range of valid port numbers [0; 65535] - using default value of \"%d\" instead... \n", port, hostsettings.port);
     }
 
     uint64_t threads = -1;
@@ -106,38 +68,18 @@ static bool load_hostsettings(toml_table_t* conf)
     }
     else
     {
-        fprintf(stderr, "ERROR: The parsed maximum thread count setting \"%zu\" is not within the range of recommended thread count limits [1; 64] - using default thread count of \"%d\" instead...", threads, hostsettings.threads);
+        fprintf(stderr, "ERROR: The parsed maximum thread count setting \"%zu\" is not within the range of recommended thread count limits [1; 64] - using default thread count of \"%d\" instead... \n", threads, hostsettings.threads);
     }
 
     parse_toml_uint(table, "max_clients", &hostsettings.max_clients);
     parse_toml_uint(table, "max_header_size", &hostsettings.max_header_size);
     parse_toml_uint(table, "max_body_size", &hostsettings.max_body_size);
 
-    char* db_file = NULL;
-    if (toml_rtos(toml_raw_in(table, "db_file"), &db_file))
-    {
-        fprintf(stderr, "ERROR: Failed to parse \"db_file\" setting string from the opsick user config file \"%s\".", OPSICK_CONFIG_FILE_PATH);
-    }
-    else
-    {
-        strncpy(hostsettings.db_file, db_file, sizeof(hostsettings.db_file));
-    }
-    free(db_file);
-
-    return true;
+    return 1;
 }
 
-static bool load_adminsettings(toml_table_t* conf)
+static int load_adminsettings(PGconn* dbconn)
 {
-    const char tablename[] = "admin";
-
-    toml_table_t* table = toml_table_in(conf, tablename);
-    if (table == NULL)
-    {
-        tablerr(tablename);
-        return false;
-    }
-
     parse_toml_uint(table, "max_users", &adminsettings.max_users);
     parse_toml_uint(table, "key_refresh_interval_hours", &adminsettings.key_refresh_interval_hours);
 
@@ -180,13 +122,13 @@ static bool load_adminsettings(toml_table_t* conf)
     }
     else
     {
-        fprintf(stderr, "ERROR: The parsed algo id setting \"%zu\" is not within the range of valid algo IDs [0;255]", algo);
+        fprintf(stderr, "ERROR: The parsed algo id setting \"%zu\" is not within the range of valid algo IDs [0;255] \n", algo);
     }
 
     char* api_key_public_hexstr = NULL;
     if (toml_rtos(toml_raw_in(table, "api_key_public_hexstr"), &api_key_public_hexstr))
     {
-        fprintf(stderr, "ERROR: Failed to parse \"api_key_public\" setting string from the opsick user config file \"%s\".", OPSICK_CONFIG_FILE_PATH);
+        fprintf(stderr, "ERROR: Failed to parse \"api_key_public\" setting string from the opsick user config file \"%s\". \n", OPSICK_CONFIG_FILE_PATH);
     }
     else
     {
@@ -195,72 +137,59 @@ static bool load_adminsettings(toml_table_t* conf)
     }
     free(api_key_public_hexstr);
 
-    return true;
+    return 1;
 }
 
-bool opsick_config_load()
+int opsick_config_load()
 {
     init();
 
-    bool r;
-    FILE* fp;
-    toml_table_t* conf;
-    char errbuf[1024];
-    memset(errbuf, '\0', sizeof(errbuf));
+    int r = 0;
 
-    r = false;
+    PGconn* dbconn = opsick_db_connect();
 
-    fp = fopen(OPSICK_CONFIG_FILE_PATH, "r");
-    if (fp == NULL)
-    {
-        fprintf(stderr, "ERROR: Opsick failed to open the user config TOML file \"%s\". Invalid/inexistent file path?", OPSICK_CONFIG_FILE_PATH);
-        return false;
-    }
-
-    conf = toml_parse_file(fp, errbuf, sizeof(errbuf));
-    fclose(fp);
-
-    if (conf == NULL)
-    {
-        fprintf(stderr, "ERROR: Opsick failed to parse the user config TOML file \"%s\" - error buffer: %s", OPSICK_CONFIG_FILE_PATH, errbuf);
-        return false;
-    }
-
-    if (!load_hostsettings(conf))
+    if (dbconn == NULL)
     {
         goto exit;
     }
 
-    if (!load_adminsettings(conf))
+    if (!load_hostsettings(dbconn))
     {
         goto exit;
     }
 
-    r = true;
+    if (!load_adminsettings(dbconn))
+    {
+        goto exit;
+    }
+
+    r = 1;
 
 exit:
-    toml_free(conf);
+    opsick_db_disconnect(dbconn);
     return r;
 }
 
-bool opsick_config_get_hostsettings(struct opsick_config_hostsettings* out)
+int opsick_config_get_hostsettings(struct opsick_config_hostsettings* out)
 {
     if (out == NULL)
     {
-        return false;
+        return 0;
     }
+
     struct opsick_config_hostsettings t = hostsettings;
     *out = t;
-    return true;
+    return 1;
 }
 
-bool opsick_config_get_adminsettings(struct opsick_config_adminsettings* out)
+int opsick_config_get_adminsettings(struct opsick_config_adminsettings* out)
 {
     if (out == NULL)
     {
-        return false;
+        return 0;
     }
+
     struct opsick_config_adminsettings t = adminsettings;
     *out = t;
-    return true;
+    return 1;
 }

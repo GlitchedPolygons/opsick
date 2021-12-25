@@ -20,33 +20,27 @@
 #include "opsick/keys.h"
 #include "opsick/db.h"
 
-int main(void)
+int main(const int argc, const char* argv[])
 {
-    PGconn* conn = PQconnectdb("hostaddr=127.0.0.1 port=5432 user=opsick_db_user password=kj775td-SnyYhKj8-7UqUC.8tC4nD dbname=opsick_db ");
+    char opsick_db_connection_string_filepath[1024] = { 0x00 };
+    strncpy(opsick_db_connection_string_filepath, (argc > 1 ? argv[1] : OPSICK_DEFAULT_DBCONN_FILE), sizeof(opsick_db_connection_string_filepath));
 
-    if (PQstatus(conn) == CONNECTION_BAD)
+    if (!opsick_db_init(opsick_db_connection_string_filepath))
     {
-
-        fprintf(stderr, "Connection to database failed: %s\n", PQerrorMessage(conn));
+        fprintf(stderr, "ERROR: Opsick failed to initialize the db connection. \n");
         return -1;
     }
 
-    int ver = PQserverVersion(conn);
-
-    printf("Server version: %d\n", ver);
-
-    PQfinish(conn);
-    return 0;
-
     if (!opsick_config_load())
     {
-        fprintf(stderr, "ERROR: Opsick failed to open, read or parse the config file.");
-        return EXIT_FAILURE;
+        fprintf(stderr, "ERROR: Opsick failed to load the config from db. \n");
+        return -2;
     }
 
-    opsick_db_init();
     opsick_keys_init();
     opsick_router_init();
+
+    // ===================
 
     opsick_router_free();
     opsick_keys_free();

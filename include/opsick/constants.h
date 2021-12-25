@@ -48,11 +48,6 @@ extern "C" {
 #define OPSICK_SERVER_VERSION_STR "1.0.0"
 
 /**
- * The user config file path (must be a <c>.toml</c> file!).
- */
-#define OPSICK_CONFIG_FILE_PATH "config.toml"
-
-/**
  * The maximum length of the instance's user creation endpoint password hash.
  */
 #define OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH 256
@@ -76,6 +71,14 @@ extern "C" {
  * Standard 2FA token HMAC hash algo SHA-1.
  */
 #define OPSICK_2FA_HASH_ALGO 0
+
+#if defined(_WIN32)
+#define OPSICK_DEFAULT_DBCONN_FILE "C:\\opsick\\dbconn"
+#elif defined(__APPLE__)
+#define OPSICK_DEFAULT_DBCONN_FILE "/usr/local/share/opsick/dbconn"
+#else
+#define OPSICK_DEFAULT_DBCONN_FILE "/var/opt/opsick/dbconn"
+#endif
 
 #pragma region STRING PRE - ALLOCATION IDs
 

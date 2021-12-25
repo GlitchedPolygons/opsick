@@ -48,7 +48,7 @@ uint32_t murmur3(const char* string, uint32_t string_length, uint32_t seed)
     const uint32_t* chunks = (const uint32_t*)(d + l * 4);
     const uint8_t* tail = (const uint8_t*)(d + l * 4);
 
-    for (int i = -l; i != 0; ++i)
+    for (int i = (int)(-l); i != 0; ++i)
     {
         k = chunks[i];
 

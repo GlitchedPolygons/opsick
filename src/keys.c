@@ -18,12 +18,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <sha512.h>
+#include <cecies/guid.h>
+#include <mbedtls/platform_util.h>
+
 #include "opsick/db.h"
 #include "opsick/util.h"
 #include "opsick/keys.h"
 #include "opsick/config.h"
-#include <cecies/guid.h>
-#include <mbedtls/platform_util.h>
 
 static char firstgen = 1;
 static time_t last_key_refresh = 0;
@@ -45,23 +46,20 @@ static void keyregen()
         opsick_config_get_adminsettings(&adminsettings);
     }
 
-    if (hostsettings.log)
-        printf("Regenerating opsick keypair - time for a pair of fresh keys!\n");
-
     uint8_t sick_randomness[128];
     opsick_db_last_128_bytes_of_ciphertext(sick_randomness);
 
-    unsigned char additional_entropy[512];
+    uint8_t additional_entropy[512];
     snprintf((char*)additional_entropy, 128, "%zu-%zu-%zu-%zu-%s", opsick_db_get_last_used_userid(), last_key_refresh, opsick_db_get_last_db_schema_version_nr_lookup(), time(0) + 420 + 1337, cecies_new_guid(true, true).string);
     memcpy(additional_entropy + 128, sick_randomness, 128);
     cecies_dev_urandom(additional_entropy + 256, 256);
 
     sha512(additional_entropy, sizeof(additional_entropy), additional_entropy);
 
-    unsigned char seed[32];
+    uint8_t seed[32];
     ed25519_create_seed(seed);
-    ed25519_create_keypair((unsigned char*)ed25519_keypair.public_key, (unsigned char*)ed25519_keypair.private_key, seed);
-    ed25519_add_scalar((unsigned char*)ed25519_keypair.public_key, (unsigned char*)ed25519_keypair.private_key, additional_entropy);
+    ed25519_create_keypair((unsigned char*)ed25519_keypair.public_key, (unsigned char*)ed25519_keypair.private_key, (unsigned char*)seed);
+    ed25519_add_scalar((unsigned char*)ed25519_keypair.public_key, (unsigned char*)ed25519_keypair.private_key, (unsigned char*)additional_entropy);
 
     cecies_generate_curve448_keypair(&curve448_keypair, (unsigned char*)additional_entropy, sizeof(additional_entropy));
 

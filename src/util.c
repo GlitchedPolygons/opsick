@@ -154,9 +154,9 @@ int opsick_strncmpic(const char* str1, const char* str2, size_t n)
         {
             break;
         }
-        cmp++;
-        str1++;
-        str2++;
+        ++cmp;
+        ++str1;
+        ++str2;
     }
 
     return ret;
@@ -179,7 +179,9 @@ void opsick_sign(const char* string, size_t string_length, char* out)
 void opsick_sign_and_send(http_s* request, char* body, size_t body_length)
 {
     if (request == NULL || body == NULL)
+    {
         return;
+    }
 
     char signature[128 + 1];
     body_length = body_length ? body_length : strlen(body);

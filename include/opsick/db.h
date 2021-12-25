@@ -23,7 +23,6 @@ extern "C" {
 
 #include <stddef.h>
 #include <stdint.h>
-#include <sqlite3.h>
 #include <libpq-fe.h>
 
 #include "user.h"
@@ -35,21 +34,24 @@ extern "C" {
  */
 
 /**
- * Initializes the db client, connecting to sqlite and setting up everything that's needed to query the database. This terminates opsick with a status code of <c>-1</c> in case of a failure!
+ * Initializes the db client, connecting to sqlite and setting up everything that's needed to query the database. <p>
+ * This terminates opsick with a status code of <c>-1</c> in case of a failure!
+ * @param dbconn_filepath The full path to the (hopefully well-protected) text file containing the postgres connection string to use for Opsick. Ideally, you'd \c chown this to the Opsick process owner and \c chmod this to \c 400 (read-only, and only by the file owner and no one else).
+ * @return \c 1 if the db initialization succeeded; \c 0 if it failed (e.g. bad connection).
  */
-void opsick_db_init();
+int opsick_db_init(const char* dbconn_filepath);
 
 /**
  * Connects to the opsick db.
- * @return <c>NULL</c> if connection couldn't be established; the #sqlite3 reference otherwise.
+ * @return <c>NULL</c> if connection couldn't be established; the postgres connection reference otherwise.
  */
-sqlite3* opsick_db_connect();
+PGconn* opsick_db_connect();
 
 /**
  * Disconnects from the opsick db.
- * @param db The #sqlite3 handle to disconnect.
+ * @param dbconn The postgres connection handle to disconnect.
  */
-void opsick_db_disconnect(sqlite3* db);
+void opsick_db_disconnect(PGconn* dbconn);
 
 /**
  * Gets the current DB schema version number (via a SELECT statement). <p>
@@ -78,13 +80,15 @@ uint64_t opsick_db_get_last_db_schema_version_nr_lookup();
 
 /**
  * Checks whether a given user id exists or not.
+ * @param dbconn Postgres db connection reference to use for the query.
  * @param user_id The user id to check.
  * @return \c 0 if the user does not exist in the db; \c 1 if it does exist.
  */
-int opsick_db_does_user_id_exist(sqlite3* db, uint64_t user_id);
+int opsick_db_does_user_id_exist(PGconn* dbconn, uint64_t user_id);
 
 /**
  * Adds a new user to the DB.
+ * @param dbconn Postgres db connection reference to use for the query.
  * @param pw The user's password (hashed).
  * @param exp_utc When the user expires (UTC).
  * @param public_key_ed25519 The user's public Ed25519 key.
@@ -94,66 +98,74 @@ int opsick_db_does_user_id_exist(sqlite3* db, uint64_t user_id);
  * @param out_user_id Where to write the ID of the freshly created user into.
  * @return <c>0</c> on success; error code in case of a failure.
  */
-int opsick_db_create_user(sqlite3* db, const char* pw, uint64_t exp_utc, const char* public_key_ed25519, const char* encrypted_private_key_ed25519, const char* public_key_curve448, const char* encrypted_private_key_curve448, uint64_t* out_user_id);
+int opsick_db_create_user(PGconn* dbconn, const char* pw, uint64_t exp_utc, const char* public_key_ed25519, const char* encrypted_private_key_ed25519, const char* public_key_curve448, const char* encrypted_private_key_curve448, uint64_t* out_user_id);
 
 /**
  * Deletes a user from the DB.
+ * @param dbconn Postgres db connection reference to use for the query.
  * @param user_id The user ID.
  * @return <c>0</c> on success; <c>1</c> if the user was not found or deletion from db failed for some other unknown reason.
  */
-int opsick_db_delete_user(sqlite3* db, uint64_t user_id);
+int opsick_db_delete_user(PGconn* dbconn, uint64_t user_id);
 
 /**
  * Retrieves a user's metadata from the db.
+ * @param db Postgres db connection reference to use for the query.
  * @param user_id The user ID.
  * @param out_user_metadata Where to write the found metadata into (this will be left alone if the user wasn't found)
  * @return <c>0</c> on success; <c>1</c> if the user was not found or fetch from db failed for some other unknown reason.
  */
-int opsick_db_get_user_metadata(sqlite3* db, uint64_t user_id, struct opsick_user_metadata* out_user_metadata);
+int opsick_db_get_user_metadata(PGconn* db, uint64_t user_id, struct opsick_user_metadata* out_user_metadata);
 
 /**
  * Changes a user's password in the db.
+ * @param dbconn Postgres db connection reference to use for the query.
  * @param user_id User ID whose password you want to change.
  * @param new_pw The new pw hash.
  * @return <c>0</c> on success; <c>1</c> on failure.
  */
-int opsick_db_set_user_pw(sqlite3* db, uint64_t user_id, const char* new_pw);
+int opsick_db_set_user_pw(PGconn* dbconn, uint64_t user_id, const char* new_pw);
 
 /**
  * Changes a user's TOTPS (TOTP secret for 2FA) in the db.
+ * @param dbconn Postgres db connection reference to use for the query.
  * @param user_id User ID whose TOTPS you want to change.
  * @param new_pw The new TOTPS (base32 encoded).
  * @return <c>0</c> on success; <c>1</c> on failure.
  */
-int opsick_db_set_user_totps(sqlite3* db, uint64_t user_id, const char* new_totps);
+int opsick_db_set_user_totps(PGconn* dbconn, uint64_t user_id, const char* new_totps);
 
 /**
  * Retrieves a user's body from the db.
+ * @param dbconn Postgres db connection reference to use for the query.
  * @param user_id User id.
  * @param out_body Pointer to an output body string that will contain the retrieved user body (will be left untouched if the user couldn't be found). This will be malloc'ed on success, so don't forget to free()!
  * @param out_body_length [OPTIONAL] Where to write the output body length into (can be <c>NULL</c> if you don't need it).
  * @return <c>0</c> on success; <c>1</c> if the user was not found or fetch from db failed.
  */
-int opsick_db_get_user_body(sqlite3* db, uint64_t user_id, char** out_body, size_t* out_body_length);
+int opsick_db_get_user_body(PGconn* dbconn, uint64_t user_id, char** out_body, size_t* out_body_length);
 
 /**
  * Updates a user's body in the db.
+ * @param dbconn Postgres db connection reference to use for the query.
  * @param user_id User id.
  * @param body The new body to write into the db.
  * @return <c>0</c> on success; non-zero on failure.
  */
-int opsick_db_set_user_body(sqlite3* db, uint64_t user_id, const char* body);
+int opsick_db_set_user_body(PGconn* dbconn, uint64_t user_id, const char* body);
 
 /**
  * Sets a new expiration datetime (UTC) to a user in the db.
+ * @param dbconn Postgres db connection reference to use for the query.
  * @param user_id ID of the user whose expiration date needs to be changed.
  * @param new_exp The new UTC timestamp of when the user account will become read-only.
  * @return <c>0</c> on success; non-zero on failure.
  */
-int opsick_db_set_user_exp(sqlite3* db, uint64_t user_id, uint64_t new_exp);
+int opsick_db_set_user_exp(PGconn* dbconn, uint64_t user_id, uint64_t new_exp);
 
 /**
  * Updates a user's key pairs in the db.
+ * @param dbconn Postgres db connection reference to use for the query.
  * @param user_id User id.
  * @param new_pubkey_ed25519 The new ed25519 public key (NUL-terminated C-string).
  * @param new_prvkey_ed25519 The new ed25519 encrypted private key (NUL-terminated C-string).
@@ -161,7 +173,7 @@ int opsick_db_set_user_exp(sqlite3* db, uint64_t user_id, uint64_t new_exp);
  * @param new_prvkey_curve448 The new curve448 encrypted private key (NUL-terminated C-string).
  * @return <c>0</c> on success; non-zero on failure.
  */
-int opsick_db_set_user_keys(sqlite3* db, uint64_t user_id, const char* new_pubkey_ed25519, const char* new_prvkey_ed25519, const char* new_pubkey_curve448, const char* new_prvkey_curve448);
+int opsick_db_set_user_keys(PGconn* dbconn, uint64_t user_id, const char* new_pubkey_ed25519, const char* new_prvkey_ed25519, const char* new_pubkey_curve448, const char* new_prvkey_curve448);
 
 /**
  * This frees all the related resources.

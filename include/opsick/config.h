@@ -22,7 +22,6 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <stdbool.h>
 #include "opsick/constants.h"
 
 /**
@@ -32,24 +31,18 @@ extern "C" {
  */
 
 /**
- * Opens the opsick config file,
+ * Opens the opsick config table,
  * reads the user-defined preferences/settings in it
  * and loads them into memory.
- * @return Whether loading the opsick config from disk succeeded or not.
+ * @return Whether loading the opsick config from db succeeded ( \c 1 ) or not ( \c 0 ).
  */
-bool opsick_config_load();
+int opsick_config_load();
 
 /**
  * The host section of the opsick config file (port number, max. HTTP header size, etc...).
  */
 struct opsick_config_hostsettings
 {
-    /**
-     * Should HTTP requests be logged? <p>
-     * [DEFAULT] <c>false</c>
-     */
-    bool log;
-
     /**
      * The port number on which opsick should listen for requests. <p>
      * [DEFAULT] <c>6677</c>
@@ -79,20 +72,14 @@ struct opsick_config_hostsettings
      * [DEFAULT] <c>16MB</c> (<c>1024 * 1024 * 16 B</c>).
      */
     uint64_t max_body_size;
-
-    /**
-     * The file path to the Opsick SQL db. <p>
-     * [DEFAULT] <c>opsick.db</c> (local to where the opsick executable resides).
-     */
-    char db_file[4096];
 };
 
 /**
  * Gets the current host settings from the <c>[host]</c> section inside the opsick config file (as a copy, so it's read-only).
  * @param out An opsick_config_hostsettings instance into which to write the parsed config values. If retrieval fails in any way, this is left untouched!
- * @return <c>true</c> if retrieval succeeded; <c>false</c> if retrieval failed due to invalid arguments (e.g. <c>NULL</c>).
+ * @return \c 1 if retrieval succeeded; \c 0 if retrieval failed due to invalid arguments (e.g. <c>NULL</c>).
  */
-bool opsick_config_get_hostsettings(struct opsick_config_hostsettings* out);
+int opsick_config_get_hostsettings(struct opsick_config_hostsettings* out);
 
 // ---------------------------------------------------------------------------------------------------
 
@@ -109,15 +96,15 @@ struct opsick_config_adminsettings
     uint64_t max_users;
 
     /**
-     * Set this to <c>true</c> if you want to let the home endpoint (reachable under "/")
+     * Set this to a non-zero value if you want to let the home endpoint (reachable under "/")
      * serve the index.html file that's located inside the directory where the opsick executable resides. <p>
-     * You could for example modify that index.html file and customize it to your needs,
+     * You could for example modify that \c index.html file and customize it to your needs,
      * add some sort of welcome screen to your users and basically do whatever you like with it. <p>
-     * If set to <c>false</c>, the "/" endpoint just returns a plain HTTP status code 200 ("OK").
+     * If set to <c>0</c>, the \c "/" endpoint just returns a plain HTTP status code 200 ("OK").
      * In that case, the whole opsick instance would act as a plain Web API without any visual feedback/interface. <p>
-     * [DEFAULT] <c>true</c>
+     * [DEFAULT] \c 1
      */
-    bool use_index_html;
+    uint8_t use_index_html;
 
     /**
      * Define the interval (in hours) at which the opsick server keys are auto-replaced with freshly generated ones. <p>
@@ -128,8 +115,8 @@ struct opsick_config_adminsettings
     uint64_t key_refresh_interval_hours;
 
     /**
-     * Define a password that is needed in order to register a new user. <p>
-     * [DEFAULT] <c>opsick_registration_password</c>
+     * The user registration password is an Argon2 encoded hash of the password that the API master needs to additionally pass to the opsick server as a request parameter when trying to create a new user. <p>
+     * [DEFAULT] <code>argon2id("opsick_registration_password")</code>
      */
     char user_registration_password[OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH];
 
@@ -156,12 +143,14 @@ struct opsick_config_adminsettings
     /**
      * The public key to use for verifying requests that come from the API master,
      * who signs the requests using this key's private counterpart. <p>
-     * The API master is the "admin" user who is allowed to create and modify opsick users, extend them, etc...
+     * The API master is whoever has the private key for signing requests to this backend to create and extend users. It's kinda like an admin.
      */
     uint8_t api_key_public[32];
 
     /**
-     * The hex-encoded #api_key_public string (NUL-terminated).
+     * The hex-encoded #api_key_public string (NUL-terminated). <p>
+     * It's the hex-encoded Ed25519 key with which to verify API requests
+     * such as user creation and user extension (the API master needs to sign his request's body with the private counterpart of that key).
      */
     char api_key_public_hexstr[64 + 1];
 };
@@ -169,42 +158,9 @@ struct opsick_config_adminsettings
 /**
  * Gets the current admin settings from the <c>[admin]</c> section inside the opsick config file (as a copy, so it's read-only).
  * @param out An opsick_config_adminsettings instance into which to write the parsed config values. If retrieval fails in any way, this is left untouched!
- * @return <c>true</c> if retrieval succeeded; <c>false</c> if retrieval failed due to invalid arguments (e.g. <c>NULL</c>).
+ * @return <c>1</c> if retrieval succeeded; <c>0</c> if retrieval failed due to invalid arguments (e.g. <c>NULL</c>).
  */
-bool opsick_config_get_adminsettings(struct opsick_config_adminsettings* out);
-
-// ---------------------------------------------------------------------------------------------------
-
-/**
- * Gets an integer setting from the user config.
- * @param name The name of the numeric setting you're trying to retrieve.
- * @param out Where to write the found integer value into. If retrieval fails in any way, this is left untouched!
- * @return 1 if retrieval succeeded; 0 if retrieval failed due to the setting not being found; -1 if due to a parsing failure; -2 if due to invalid arguments (e.g. <c>NULL</c>).
- */
-int opsick_config_get_integer(const char* name, int64_t* out);
-
-/**
- * Gets a floating point setting from the user config.
- * @param name The name of the numeric setting you're trying to retrieve.
- * @param out Where to write the found floating point number into. If retrieval fails in any way, this is left untouched!
- * @return 1 if retrieval succeeded; 0 if retrieval failed due to the setting not being found; -1 if due to a parsing failure; -2 if due to invalid arguments (e.g. <c>NULL</c>).
- */
-int opsick_config_get_number(const char* name, double* out);
-
-/**
- * Gets a boolean setting from the config.
- * @param name The name of the boolean setting you're trying to retrieve.
- * @param out Where to write the found boolean into. If retrieval fails in any way, this is left untouched!
- * @return 1 if retrieval succeeded; 0 if retrieval failed due to the setting not being found; -1 if due to a parsing failure; -2 if due to invalid arguments (e.g. <c>NULL</c>).
- */
-int opsick_config_get_boolean(const char* name, bool* out);
-
-/**
- * Gets a setting from the opsick user config.
- * @param name The name/key of the setting to retrieve.
- * @return The found setting's string value; <c>NULL</c> if no such setting was found inside the config (or if the name parameter was <c>NULL</c>).
- */
-const char* opsick_config_get_string(const char* name);
+int opsick_config_get_adminsettings(struct opsick_config_adminsettings* out);
 
 #ifdef __cplusplus
 } // extern "C"

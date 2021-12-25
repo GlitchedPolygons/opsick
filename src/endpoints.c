@@ -147,10 +147,8 @@ void opsick_get_pubkey(http_s* request)
 
 void opsick_post_users_does_id_exist(http_s* request)
 {
-    sqlite3* db = NULL;
-
-    db = opsick_db_connect();
-    if (db == NULL)
+    PGconn* dbconn = opsick_db_connect();
+    if (dbconn == NULL)
     {
         http_send_error(request, 500);
         goto exit;
@@ -164,7 +162,7 @@ void opsick_post_users_does_id_exist(http_s* request)
     }
 
     const uint64_t user_id = strtoull(body.data, NULL, 10);
-    if (opsick_db_does_user_id_exist(db, user_id))
+    if (opsick_db_does_user_id_exist(dbconn, user_id))
     {
         http_finish(request);
     }
@@ -174,14 +172,14 @@ void opsick_post_users_does_id_exist(http_s* request)
     }
 
 exit:
-    opsick_db_disconnect(db);
+    opsick_db_disconnect(dbconn);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 
 void opsick_post_users_create(http_s* request)
 {
-    sqlite3* db = NULL;
+    PGconn* dbconn = NULL;
     char* json = NULL;
     size_t json_length = 0;
     FIOBJ jsonobj = FIOBJ_INVALID;
@@ -249,7 +247,7 @@ void opsick_post_users_create(http_s* request)
 
     if (userpubkey_ed25519.len != 64 || userpubkey_curve448.len != 112)
     {
-        fprintf(stderr, "Invalid public key length");
+        fprintf(stderr, "ERROR: Invalid public key length. \n");
         http_send_error(request, 403);
         goto exit;
     }
@@ -263,23 +261,23 @@ void opsick_post_users_create(http_s* request)
     int r = argon2id_hash_encoded(adminsettings.argon2_time_cost, adminsettings.argon2_memory_cost, adminsettings.argon2_parallelism, pw.data, pw.len, salt, sizeof(salt), 64, pw_hash, sizeof(pw_hash) - 1);
     if (r != ARGON2_OK)
     {
-        fprintf(stderr, "Failure to hash user's password server-side using \"argon2id_hash_encoded()\". Returned error code: %d", r);
+        fprintf(stderr, "ERROR: Failure to hash user's password server-side using \"argon2id_hash_encoded()\". Returned error code: %d \n", r);
         http_send_error(request, 403);
         goto exit;
     }
 
-    db = opsick_db_connect();
-    if (db == NULL)
+    dbconn = opsick_db_connect();
+    if (dbconn == NULL)
     {
         http_send_error(request, 500);
         goto exit;
     }
 
     uint64_t user_id = 0;
-    r = opsick_db_create_user(db, pw_hash, (uint64_t)strtoull(fiobj_obj2cstr(exp_utc_obj).data, NULL, 10), userpubkey_ed25519.data, fiobj_obj2cstr(encrypted_private_key_ed25519_obj).data, userpubkey_curve448.data, fiobj_obj2cstr(encrypted_private_key_curve448_obj).data, &user_id);
+    r = opsick_db_create_user(dbconn, pw_hash, (uint64_t)strtoull(fiobj_obj2cstr(exp_utc_obj).data, NULL, 10), userpubkey_ed25519.data, fiobj_obj2cstr(encrypted_private_key_ed25519_obj).data, userpubkey_curve448.data, fiobj_obj2cstr(encrypted_private_key_curve448_obj).data, &user_id);
     if (r != 0)
     {
-        fprintf(stderr, "Failure to create new user server-side using \"opsick_db_create_user()\". Returned error code: %d", r);
+        fprintf(stderr, "ERROR: Failure to create new user server-side using \"opsick_db_create_user()\". Returned error code: %d \n", r);
         http_send_error(request, 403);
         goto exit;
     }
@@ -305,7 +303,7 @@ exit:
     }
 
     fiobj_free(jsonobj);
-    opsick_db_disconnect(db);
+    opsick_db_disconnect(dbconn);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------
@@ -315,7 +313,7 @@ void opsick_post_users_body(http_s* request)
     char* json = NULL;
     size_t json_length = 0;
     FIOBJ jsonobj = FIOBJ_INVALID;
-    sqlite3* db = NULL;
+    PGconn* dbconn = NULL;
     struct opsick_user_metadata user_metadata = { 0x00 };
 
     if (!opsick_request_has_signature(request))
@@ -352,15 +350,15 @@ void opsick_post_users_body(http_s* request)
     const uint64_t user_id = (uint64_t)strtoull(fiobj_obj2cstr(user_id_obj).data, NULL, 10);
     const struct fio_str_info_s pw_strobj = fiobj_obj2cstr(pw_obj);
 
-    db = opsick_db_connect();
-    if (db == NULL)
+    dbconn = opsick_db_connect();
+    if (dbconn == NULL)
     {
         http_send_error(request, 500);
         goto exit;
     }
 
     // Fetch user metadata from db.
-    if (opsick_db_get_user_metadata(db, user_id, &user_metadata) != 0)
+    if (opsick_db_get_user_metadata(dbconn, user_id, &user_metadata) != 0)
     {
         http_send_error(request, 403);
         goto exit;
@@ -395,7 +393,7 @@ void opsick_post_users_body(http_s* request)
     }
 
     // Write new body into db.
-    if (opsick_db_set_user_body(db, user_id, fiobj_obj2cstr(body_obj).data) != 0)
+    if (opsick_db_set_user_body(dbconn, user_id, fiobj_obj2cstr(body_obj).data) != 0)
     {
         http_send_error(request, 500);
         goto exit;
@@ -418,7 +416,7 @@ exit:
     }
 
     fiobj_free(jsonobj);
-    opsick_db_disconnect(db);
+    opsick_db_disconnect(dbconn);
     mbedtls_platform_zeroize(&user_metadata, sizeof(user_metadata));
 }
 
@@ -429,7 +427,7 @@ void opsick_post_users_passwd(http_s* request)
     char* json = NULL;
     size_t json_length = 0;
     FIOBJ jsonobj = FIOBJ_INVALID;
-    sqlite3* db = NULL;
+    PGconn* dbconn = NULL;
     struct opsick_user_metadata user_metadata = { 0x00 };
 
     if (!opsick_request_has_signature(request))
@@ -467,14 +465,14 @@ void opsick_post_users_passwd(http_s* request)
 
     const uint64_t user_id = (uint64_t)strtoull(fiobj_obj2cstr(user_id_obj).data, NULL, 10);
 
-    db = opsick_db_connect();
-    if (db == NULL)
+    dbconn = opsick_db_connect();
+    if (dbconn == NULL)
     {
         http_send_error(request, 500);
         goto exit;
     }
 
-    if (opsick_db_get_user_metadata(db, user_id, &user_metadata) != 0)
+    if (opsick_db_get_user_metadata(dbconn, user_id, &user_metadata) != 0)
     {
         http_send_error(request, 403);
         goto exit;
@@ -507,22 +505,22 @@ void opsick_post_users_passwd(http_s* request)
     int r = argon2id_hash_encoded(adminsettings.argon2_time_cost, adminsettings.argon2_memory_cost, adminsettings.argon2_parallelism, new_pw_strobj.data, new_pw_strobj.len, salt, sizeof(salt), 64, new_pw_hash, sizeof(new_pw_hash) - 1);
     if (r != ARGON2_OK)
     {
-        fprintf(stderr, "Failure to hash user's password server-side using \"argon2id_hash_encoded()\". Returned error code: %d", r);
+        fprintf(stderr, "ERROR: Failure to hash user's password server-side using \"argon2id_hash_encoded()\". Returned error code: %d \n", r);
         http_send_error(request, 500);
         goto exit;
     }
 
-    if (opsick_db_set_user_pw(db, user_id, new_pw_hash) != 0)
+    if (opsick_db_set_user_pw(dbconn, user_id, new_pw_hash) != 0)
     {
-        fprintf(stderr, "Failure to write new user pw hash to db.");
+        fprintf(stderr, "ERROR: Failure to write new user pw hash to db. \n");
         http_send_error(request, 500);
         goto exit;
     }
 
     // Changing the password requires users to re-encrypt their private keys using the new pw.
-    if (opsick_db_set_user_keys(db, user_id, user_metadata.public_key_ed25519.hexstring, fiobj_obj2cstr(new_enc_ed25519_key_obj).data, user_metadata.public_key_curve448.hexstring, fiobj_obj2cstr(new_enc_curve448_key_obj).data) != 0)
+    if (opsick_db_set_user_keys(dbconn, user_id, user_metadata.public_key_ed25519.hexstring, fiobj_obj2cstr(new_enc_ed25519_key_obj).data, user_metadata.public_key_curve448.hexstring, fiobj_obj2cstr(new_enc_curve448_key_obj).data) != 0)
     {
-        fprintf(stderr, "Failure to write new user encrypted private keys to db.");
+        fprintf(stderr, "ERROR: Failure to write new user encrypted private keys to db. \n");
         http_send_error(request, 500);
         goto exit;
     }
@@ -544,7 +542,7 @@ exit:
     }
 
     fiobj_free(jsonobj);
-    opsick_db_disconnect(db);
+    opsick_db_disconnect(dbconn);
     mbedtls_platform_zeroize(&user_metadata, sizeof(user_metadata));
 }
 
@@ -555,7 +553,7 @@ void opsick_post_users_2fa(http_s* request)
     char* json = NULL;
     size_t json_length = 0;
     FIOBJ jsonobj = FIOBJ_INVALID;
-    sqlite3* db = NULL;
+    PGconn* dbconn = NULL;
     struct opsick_user_metadata user_metadata = { 0x00 };
 
     if (!opsick_request_has_signature(request))
@@ -593,14 +591,14 @@ void opsick_post_users_2fa(http_s* request)
     const struct fio_str_info_s pw_strobj = fiobj_obj2cstr(pw_obj);
     const int action = (int)fiobj_obj2num(action_obj); // 0 == disable; 1 == enable; 2 == verify
 
-    db = opsick_db_connect();
-    if (db == NULL)
+    dbconn = opsick_db_connect();
+    if (dbconn == NULL)
     {
         http_send_error(request, 500);
         goto exit;
     }
 
-    if (opsick_db_get_user_metadata(db, user_id, &user_metadata) != 0)
+    if (opsick_db_get_user_metadata(dbconn, user_id, &user_metadata) != 0)
     {
         http_send_error(request, 403);
         goto exit;
@@ -635,7 +633,7 @@ void opsick_post_users_2fa(http_s* request)
                 goto exit;
             }
 
-            if (opsick_db_set_user_totps(db, user_id, NULL) != 0)
+            if (opsick_db_set_user_totps(dbconn, user_id, NULL) != 0)
             {
                 http_send_error(request, 500);
                 goto exit;
@@ -659,7 +657,7 @@ void opsick_post_users_2fa(http_s* request)
             }
 
             struct tfac_secret totps = tfac_generate_secret();
-            opsick_db_set_user_totps(db, user_id, totps.secret_key_base32);
+            opsick_db_set_user_totps(dbconn, user_id, totps.secret_key_base32);
 
             char out_json[256] = { 0x00 };
             snprintf(out_json, sizeof(out_json), "{\"totps\":\"%s\",\"steps\":%d,\"digits\":%d,\"hash_algo\":\"SHA-1\",\"qr\":\"otpauth://totp/opsick:%zu?secret=%s\"}", totps.secret_key_base32, OPSICK_2FA_STEPS, OPSICK_2FA_DIGITS, user_id, totps.secret_key_base32);
@@ -712,7 +710,7 @@ exit:
     }
 
     fiobj_free(jsonobj);
-    opsick_db_disconnect(db);
+    opsick_db_disconnect(dbconn);
     mbedtls_platform_zeroize(&user_metadata, sizeof(user_metadata));
 }
 
@@ -723,7 +721,7 @@ void opsick_post_users_delete(http_s* request)
     char* json = NULL;
     size_t json_length = 0;
     FIOBJ jsonobj = FIOBJ_INVALID;
-    sqlite3* db = NULL;
+    PGconn* dbconn = NULL;
     struct opsick_user_metadata user_metadata = { 0x00 };
 
     if (!opsick_request_has_signature(request))
@@ -759,14 +757,14 @@ void opsick_post_users_delete(http_s* request)
     const uint64_t user_id = (uint64_t)strtoull(fiobj_obj2cstr(user_id_obj).data, NULL, 10);
     const struct fio_str_info_s pw_strobj = fiobj_obj2cstr(pw_obj);
 
-    db = opsick_db_connect();
-    if (db == NULL)
+    dbconn = opsick_db_connect();
+    if (dbconn == NULL)
     {
         http_send_error(request, 500);
         goto exit;
     }
 
-    if (opsick_db_get_user_metadata(db, user_id, &user_metadata) != 0)
+    if (opsick_db_get_user_metadata(dbconn, user_id, &user_metadata) != 0)
     {
         http_send_error(request, 403);
         goto exit;
@@ -790,7 +788,7 @@ void opsick_post_users_delete(http_s* request)
         goto exit;
     }
 
-    if (opsick_db_delete_user(db, user_id) != 0)
+    if (opsick_db_delete_user(dbconn, user_id) != 0)
     {
         http_send_error(request, 500);
         goto exit;
@@ -813,7 +811,7 @@ exit:
     }
 
     fiobj_free(jsonobj);
-    opsick_db_disconnect(db);
+    opsick_db_disconnect(dbconn);
     mbedtls_platform_zeroize(&user_metadata, sizeof(user_metadata));
 }
 
@@ -821,7 +819,7 @@ exit:
 
 void opsick_post_users_extend(http_s* request)
 {
-    sqlite3* db = NULL;
+    PGconn* dbconn = NULL;
     char* json = NULL;
     size_t json_length = 0;
     FIOBJ jsonobj = FIOBJ_INVALID;
@@ -869,19 +867,19 @@ void opsick_post_users_extend(http_s* request)
 
     if (ext < 3600 * 48)
     {
-        fprintf(stderr, "API Master tried to extend a user's account by less than the minimum account extension period of 48h...");
+        fprintf(stderr, "ERROR: API Master tried to extend a user's account by less than the minimum account extension period of 48h... \n");
         http_send_error(request, 400);
         goto exit;
     }
 
-    db = opsick_db_connect();
-    if (db == NULL)
+    dbconn = opsick_db_connect();
+    if (dbconn == NULL)
     {
         http_send_error(request, 500);
         goto exit;
     }
 
-    if (opsick_db_get_user_metadata(db, user_id, &user_metadata) != 0)
+    if (opsick_db_get_user_metadata(dbconn, user_id, &user_metadata) != 0)
     {
         http_send_error(request, 403);
         goto exit;
@@ -896,7 +894,7 @@ void opsick_post_users_extend(http_s* request)
 
     user_metadata.exp_utc += ext;
 
-    if (opsick_db_set_user_exp(db, user_id, user_metadata.exp_utc) != 0)
+    if (opsick_db_set_user_exp(dbconn, user_id, user_metadata.exp_utc) != 0)
     {
         http_send_error(request, 500);
         goto exit;
@@ -920,7 +918,7 @@ exit:
     }
 
     fiobj_free(jsonobj);
-    opsick_db_disconnect(db);
+    opsick_db_disconnect(dbconn);
     mbedtls_platform_zeroize(&user_metadata, sizeof(user_metadata));
 }
 
@@ -931,7 +929,7 @@ void opsick_post_users_keys(http_s* request)
     char* json = NULL;
     size_t json_length = 0;
     FIOBJ jsonobj = FIOBJ_INVALID;
-    sqlite3* db = NULL;
+    PGconn* dbconn = NULL;
     struct opsick_user_metadata user_metadata = { 0x00 };
 
     if (!opsick_request_has_signature(request))
@@ -966,14 +964,14 @@ void opsick_post_users_keys(http_s* request)
 
     const uint64_t user_id = (uint64_t)strtoull(fiobj_obj2cstr(user_id_obj).data, NULL, 10);
 
-    db = opsick_db_connect();
-    if (db == NULL)
+    dbconn = opsick_db_connect();
+    if (dbconn == NULL)
     {
         http_send_error(request, 500);
         goto exit;
     }
 
-    if (opsick_db_get_user_metadata(db, user_id, &user_metadata) != 0)
+    if (opsick_db_get_user_metadata(dbconn, user_id, &user_metadata) != 0)
     {
         http_send_error(request, 403);
         goto exit;
@@ -1009,7 +1007,7 @@ exit:
     }
 
     fiobj_free(jsonobj);
-    opsick_db_disconnect(db);
+    opsick_db_disconnect(dbconn);
     mbedtls_platform_zeroize(&user_metadata, sizeof(user_metadata));
 }
 
@@ -1021,7 +1019,7 @@ void opsick_post_users(http_s* request)
     char* json = NULL;
     size_t json_length = 0;
     FIOBJ jsonobj = FIOBJ_INVALID;
-    sqlite3* db = NULL;
+    PGconn* dbconn = NULL;
     struct opsick_user_metadata user_metadata = { 0x00 };
 
     if (!opsick_request_has_signature(request))
@@ -1057,14 +1055,14 @@ void opsick_post_users(http_s* request)
 
     const uint64_t user_id = (uint64_t)strtoull(fiobj_obj2cstr(user_id_obj).data, NULL, 10);
 
-    db = opsick_db_connect();
-    if (db == NULL)
+    dbconn = opsick_db_connect();
+    if (dbconn == NULL)
     {
         http_send_error(request, 500);
         goto exit;
     }
 
-    if (opsick_db_get_user_metadata(db, user_id, &user_metadata) != 0)
+    if (opsick_db_get_user_metadata(dbconn, user_id, &user_metadata) != 0)
     {
         http_send_error(request, 403);
         goto exit;
@@ -1092,7 +1090,7 @@ void opsick_post_users(http_s* request)
     if (opsick_strncmpic(user_metadata.body_sha512, body_sha512_obj ? fiobj_obj2cstr(body_sha512_obj).data : "", 128) != 0)
     {
         size_t bodylen = 0;
-        if (opsick_db_get_user_body(db, user_id, &body, &bodylen) != 0)
+        if (opsick_db_get_user_body(dbconn, user_id, &body, &bodylen) != 0)
         {
             http_send_error(request, 403);
             goto exit;
@@ -1103,7 +1101,7 @@ void opsick_post_users(http_s* request)
 
         if (out_json == NULL)
         {
-            fprintf(stderr, "OUT OF MEMORY!");
+            fprintf(stderr, "OUT OF MEMORY! \n");
             http_send_error(request, 500);
             goto exit;
         }
@@ -1118,7 +1116,7 @@ void opsick_post_users(http_s* request)
 
         if (cecies_curve448_encrypt((uint8_t*)out_json, strlen(out_json), 0, user_metadata.public_key_curve448, (uint8_t**)&out_enc, &out_enc_length, 1) != 0)
         {
-            fprintf(stderr, "Curve448 encryption of the HTTP response body failed!");
+            fprintf(stderr, "Curve448 encryption of the HTTP response body failed! \n");
             http_send_error(request, 500);
             free(out_json);
             goto exit;
@@ -1166,7 +1164,7 @@ exit:
 
     free(body);
     fiobj_free(jsonobj);
-    opsick_db_disconnect(db);
+    opsick_db_disconnect(dbconn);
     mbedtls_platform_zeroize(&user_metadata, sizeof(user_metadata));
 }
 
@@ -1177,7 +1175,7 @@ void opsick_post_users_keys_update(http_s* request)
     char* json = NULL;
     size_t json_length = 0;
     FIOBJ jsonobj = FIOBJ_INVALID;
-    sqlite3* db = NULL;
+    PGconn* dbconn = NULL;
     struct opsick_user_metadata user_metadata = { 0x00 };
 
     if (!opsick_request_has_signature(request))
@@ -1217,14 +1215,14 @@ void opsick_post_users_keys_update(http_s* request)
     const uint64_t user_id = (uint64_t)strtoull(fiobj_obj2cstr(user_id_obj).data, NULL, 10);
     const struct fio_str_info_s pw_strobj = fiobj_obj2cstr(pw_obj);
 
-    db = opsick_db_connect();
-    if (db == NULL)
+    dbconn = opsick_db_connect();
+    if (dbconn == NULL)
     {
         http_send_error(request, 500);
         goto exit;
     }
 
-    if (opsick_db_get_user_metadata(db, user_id, &user_metadata) != 0)
+    if (opsick_db_get_user_metadata(dbconn, user_id, &user_metadata) != 0)
     {
         http_send_error(request, 403);
         goto exit;
@@ -1248,9 +1246,9 @@ void opsick_post_users_keys_update(http_s* request)
         goto exit;
     }
 
-    if (opsick_db_set_user_keys(db, user_id, fiobj_obj2cstr(new_pub_ed25519_key_obj).data, fiobj_obj2cstr(new_enc_prv_ed25519_key_obj).data, fiobj_obj2cstr(new_pub_curve448_key_obj).data, fiobj_obj2cstr(new_enc_prv_curve448_key_obj).data) != 0)
+    if (opsick_db_set_user_keys(dbconn, user_id, fiobj_obj2cstr(new_pub_ed25519_key_obj).data, fiobj_obj2cstr(new_enc_prv_ed25519_key_obj).data, fiobj_obj2cstr(new_pub_curve448_key_obj).data, fiobj_obj2cstr(new_enc_prv_curve448_key_obj).data) != 0)
     {
-        fprintf(stderr, "Failure to write new user encrypted private keys to db.");
+        fprintf(stderr, "ERROR: Failure to write new user encrypted private keys to db. \n");
         http_send_error(request, 500);
         goto exit;
     }
@@ -1272,7 +1270,7 @@ exit:
     }
 
     fiobj_free(jsonobj);
-    opsick_db_disconnect(db);
+    opsick_db_disconnect(dbconn);
     mbedtls_platform_zeroize(&user_metadata, sizeof(user_metadata));
 }
 
