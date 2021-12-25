@@ -92,7 +92,7 @@ int opsick_hexstr2bin(const char* hexstr, const size_t hexstr_length, uint8_t* o
         return 3;
     }
 
-    for (size_t i = 0, ii = 0; ii < final_length; i += 2, ii++)
+    for (size_t i = 0, ii = 0; ii < final_length; i += 2, ++ii)
     {
         output[ii] = (hexstr[i] % 32 + 9) % 25 * 16 + (hexstr[i + 1] % 32 + 9) % 25;
     }

@@ -95,9 +95,10 @@ static const char SQL_MIGRATION_0000000[] = "CREATE FUNCTION UTC_NOW()  \n"
                                             "CREATE TRIGGER SINGLE_ROW_GUARDIAN_SCHEMA_VERSION   \n"
                                             "BEFORE INSERT   \n"
                                             "ON SCHEMA_VERSION   \n"
-                                            "FOR EACH ROW EXECUTE PROCEDURE ENFORCE_SINGLE_ROW_SCHEMA_VERSION();  \n"
-                                            "  \n"
-                                            "CREATE TABLE   \n"
+                                            "FOR EACH ROW EXECUTE PROCEDURE ENFORCE_SINGLE_ROW_SCHEMA_VERSION();  \n";
+
+/** @private */
+static const char SQL_MIGRATION_0000001[] = "CREATE TABLE   \n"
                                             "USERS  \n"
                                             "(  \n"
                                             "  ID BIGSERIAL PRIMARY KEY,   \n"
@@ -113,15 +114,14 @@ static const char SQL_MIGRATION_0000000[] = "CREATE FUNCTION UTC_NOW()  \n"
                                             "  PUBLIC_KEY_CURVE448 TEXT NOT NULL,   \n"
                                             "  ENCRYPTED_PRIVATE_KEY_CURVE448 TEXT NOT NULL  \n"
                                             ");  \n"
-                                            "  \n";
-
-/** @private */
-static const char SQL_MIGRATION_0000001[] = "SELECT INCREASE_SCHEMA_VERSION();  \n"; // INCREMENT SCHEMA VERSION NUMBER - ALWAYS DO THIS FOR ALL SQL MIGRATIONS!
+                                            "  \n"
+                                            "SELECT INCREASE_SCHEMA_VERSION();  \n"; // INCREMENT SCHEMA VERSION NUMBER - ALWAYS DO THIS AT THE END OF ALL SQL MIGRATIONS!
 
 /**
  * All SQL migrations.
  */
-static const char* SQL_MIGRATIONS[] = { //
+static const char* SQL_MIGRATIONS[] = {
+    //
     SQL_MIGRATION_0000000, //
     SQL_MIGRATION_0000001, //
 };

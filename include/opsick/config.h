@@ -44,6 +44,13 @@ int opsick_config_load();
 struct opsick_config_hostsettings
 {
     /**
+     * Whether or not to log HTTP requests. <p>
+     * Set this to \c 1 to log all HTTP requests. <p>
+     * [DEFAULT] \c 0
+     */
+    uint8_t log;
+
+    /**
      * The port number on which opsick should listen for requests. <p>
      * [DEFAULT] <c>6677</c>
      */

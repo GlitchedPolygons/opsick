@@ -30,6 +30,7 @@ static inline void init()
     memset(&hostsettings, 0x00, sizeof(hostsettings));
     memset(&adminsettings, 0x00, sizeof(adminsettings));
 
+    hostsettings.log = 0;
     hostsettings.port = 6677;
     hostsettings.threads = 2;
     hostsettings.max_clients = 0;
@@ -49,6 +50,9 @@ static inline void init()
 
 static int load_hostsettings(PGconn* dbconn)
 {
+    return 1;
+
+    /* TODO
     uint64_t port = -1;
     parse_toml_uint(table, "port", &port);
     if (port > 0 && port <= 65535)
@@ -76,10 +80,14 @@ static int load_hostsettings(PGconn* dbconn)
     parse_toml_uint(table, "max_body_size", &hostsettings.max_body_size);
 
     return 1;
+    */
 }
 
 static int load_adminsettings(PGconn* dbconn)
 {
+    return 1;
+
+    /* TODO
     parse_toml_uint(table, "max_users", &adminsettings.max_users);
     parse_toml_uint(table, "key_refresh_interval_hours", &adminsettings.key_refresh_interval_hours);
 
@@ -138,6 +146,7 @@ static int load_adminsettings(PGconn* dbconn)
     free(api_key_public_hexstr);
 
     return 1;
+    */
 }
 
 int opsick_config_load()

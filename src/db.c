@@ -178,122 +178,86 @@ uint64_t opsick_db_get_last_db_schema_version_nr_lookup()
 
 int opsick_db_does_user_id_exist(PGconn* dbconn, const uint64_t user_id)
 {
-    sqlite3_stmt* stmt = NULL;
+    int exists = 0;
     const char* sql = opsick_sql_does_user_id_exist;
-    const size_t sql_length = sizeof(opsick_sql_does_user_id_exist) - 1;
 
-    int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
-    if (rc != SQLITE_OK)
+    const char* paramValues[1];
+    int paramLengths[1];
+    int paramFormats[1];
+
+    paramValues[0] = (const char*)&user_id;
+    paramLengths[0] = sizeof(user_id);
+    paramFormats[0] = 1;
+
+    PGresult* pr = PQexecParams(dbconn, sql, 1, NULL, paramValues, paramLengths, paramFormats, 0);
+
+    if (PQresultStatus(pr) != PGRES_TUPLES_OK)
     {
-        fprintf(stderr, "opsick_db_does_user_id_exist: Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\". \n", sql);
-        rc = 0;
+        fprintf(stderr, "opsick_db_does_user_id_exist: Failure during execution of the SQL statement \"%s\". Error message: %s \n", sql, PQerrorMessage(dbconn));
         goto exit;
     }
 
-    rc = sqlite3_bind_int64(stmt, 1, user_id);
-    if (rc != SQLITE_OK)
-    {
-        fprintf(stderr, "opsick_db_does_user_id_exist: Failure to bind \"pw\" value to prepared sqlite3 statement. \n");
-        rc = 0;
-        goto exit;
-    }
-
-    rc = sqlite3_step(stmt);
-    if (rc != SQLITE_ROW)
-    {
-        fprintf(stderr, "opsick_db_does_user_id_exist: Failure during execution of the prepared sqlite3 statement. \n");
-        rc = 0;
-        goto exit;
-    }
-
-    rc = sqlite3_column_int(stmt, 0);
+    exists = strtol(PQgetvalue(pr, 0, 0), NULL, 10) != 0;
 exit:
     last_used_userid = user_id;
-    sqlite3_finalize(stmt);
-    return rc;
+    PQclear(pr);
+    return exists;
 }
 
 int opsick_db_create_user(PGconn* dbconn, const char* pw, const uint64_t exp_utc, const char* public_key_ed25519, const char* encrypted_private_key_ed25519, const char* public_key_curve448, const char* encrypted_private_key_curve448, uint64_t* out_user_id)
 {
-    if (db == NULL || exp_utc < time(0) || public_key_ed25519 == NULL || encrypted_private_key_ed25519 == NULL || public_key_curve448 == NULL || encrypted_private_key_curve448 == NULL || out_user_id == NULL)
+    if (dbconn == NULL || exp_utc < time(0) || public_key_ed25519 == NULL || encrypted_private_key_ed25519 == NULL || public_key_curve448 == NULL || encrypted_private_key_curve448 == NULL || out_user_id == NULL)
     {
         return 1;
     }
 
-    sqlite3_stmt* stmt = NULL;
+    int rc = 1;
     const char* sql = opsick_sql_create_user;
-    const size_t sql_length = sizeof(opsick_sql_create_user) - 1;
 
     const size_t encrypted_private_key_ed25519_len = strlen(encrypted_private_key_ed25519);
     const size_t encrypted_private_key_curve448_len = strlen(encrypted_private_key_curve448);
 
-    int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
-    if (rc != SQLITE_OK)
-    {
-        fprintf(stderr, "opsick_db_create_user: Failure during execution of \"sqlite3_prepare_v2\" on the SQL statement \"%s\". \n", sql);
-        goto exit;
-    }
+    const char* paramValues[8] = { 0x00 };
+    int paramLengths[8] = { 0x00 };
+    int paramFormats[8] = { 0x00 };
 
-    rc = sqlite3_bind_text(stmt, 1, pw, -1, 0);
-    if (rc != SQLITE_OK)
-    {
-        fprintf(stderr, "opsick_db_create_user: Failure to bind \"pw\" value to prepared sqlite3 statement. \n");
-        goto exit;
-    }
+    paramValues[0] = pw;
+    paramLengths[0] = 0;
+    paramFormats[0] = 0;
 
-    rc = sqlite3_bind_int64(stmt, 2, exp_utc);
-    if (rc != SQLITE_OK)
-    {
-        fprintf(stderr, "opsick_db_create_user: Failure to bind \"exp_utc\" value to prepared sqlite3 statement. \n");
-        goto exit;
-    }
+    paramValues[1] = (char*)&exp_utc;
+    paramLengths[1] = sizeof(exp_utc);
+    paramFormats[1] = 1;
 
-    rc = sqlite3_bind_text(stmt, 3, "NULL", 4, 0);
-    if (rc != SQLITE_OK)
-    {
-        fprintf(stderr, "opsick_db_create_user: Failure to bind \"body\" value to prepared sqlite3 statement. \n");
-        goto exit;
-    }
+    paramValues[2] = "NULL";
+    paramLengths[2] = 0;
+    paramFormats[2] = 0;
 
-    rc = sqlite3_bind_text(stmt, 4, "13a7ce3df1606794d001bcc735023f391e42d0ae3add627ab14535492647e9525c4fc583bf21856e322568d70cc6105580e2203331d80e59f0c9db73393dc8b9", 128, 0);
-    if (rc != SQLITE_OK)
-    {
-        fprintf(stderr, "opsick_db_create_user: Failure to bind \"body_sha512\" value to prepared sqlite3 statement. \n");
-        goto exit;
-    }
+    paramValues[3] = "13a7ce3df1606794d001bcc735023f391e42d0ae3add627ab14535492647e9525c4fc583bf21856e322568d70cc6105580e2203331d80e59f0c9db73393dc8b9";
+    paramLengths[3] = 0;
+    paramFormats[3] = 0;
 
-    rc = sqlite3_bind_text(stmt, 5, public_key_ed25519, -1, 0);
-    if (rc != SQLITE_OK)
-    {
-        fprintf(stderr, "opsick_db_create_user: Failure to bind \"public_key_ed25519\" value to prepared sqlite3 statement. \n");
-        goto exit;
-    }
+    paramValues[4] = public_key_ed25519;
+    paramLengths[4] = 0;
+    paramFormats[4] = 0;
 
-    rc = sqlite3_bind_text(stmt, 6, encrypted_private_key_ed25519, encrypted_private_key_ed25519_len, 0);
-    if (rc != SQLITE_OK)
-    {
-        fprintf(stderr, "opsick_db_create_user: Failure to bind \"encrypted_private_key_ed25519\" value to prepared sqlite3 statement. \n");
-        goto exit;
-    }
+    paramValues[5] = encrypted_private_key_ed25519;
+    paramLengths[5] = 0;
+    paramFormats[5] = 0;
 
-    rc = sqlite3_bind_text(stmt, 7, public_key_curve448, -1, 0);
-    if (rc != SQLITE_OK)
-    {
-        fprintf(stderr, "opsick_db_create_user: Failure to bind \"public_key_curve448\" value to prepared sqlite3 statement. \n");
-        goto exit;
-    }
+    paramValues[6] = public_key_curve448;
+    paramLengths[6] = 0;
+    paramFormats[6] = 0;
 
-    rc = sqlite3_bind_text(stmt, 8, encrypted_private_key_curve448, encrypted_private_key_curve448_len, 0);
-    if (rc != SQLITE_OK)
-    {
-        fprintf(stderr, "opsick_db_create_user: Failure to bind \"encrypted_private_key_curve448\" value to prepared sqlite3 statement. \n");
-        goto exit;
-    }
+    paramValues[7] = encrypted_private_key_curve448;
+    paramLengths[7] = 0;
+    paramFormats[7] = 0;
 
-    rc = sqlite3_step(stmt);
-    if (rc != SQLITE_DONE)
+    PGresult* pr = PQexecParams(dbconn, sql, 1, NULL, paramValues, paramLengths, paramFormats, 0);
+
+    if (PQresultStatus(pr) != PGRES_TUPLES_OK)
     {
-        fprintf(stderr, "opsick_db_create_user: Failure during execution of the prepared sqlite3 statement. \n");
+        fprintf(stderr, "opsick_db_create_user: Failure during execution of the SQL statement \"%s\". Error message: %s \n", sql, PQerrorMessage(dbconn));
         goto exit;
     }
 
@@ -304,21 +268,20 @@ int opsick_db_create_user(PGconn* dbconn, const char* pw, const uint64_t exp_utc
 
     rc = 0;
 exit:
-    sqlite3_finalize(stmt);
+    PQclear(pr);
     return rc;
 }
 
 int opsick_db_delete_user(PGconn* dbconn, uint64_t user_id)
 {
-    if (db == NULL)
+    if (dbconn == NULL)
     {
         return 1;
     }
 
+    int rc = 1;
     const char* sql = opsick_sql_delete_user;
-    const size_t sql_length = sizeof(opsick_sql_delete_user) - 1;
 
-    sqlite3_stmt* stmt = NULL;
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
     {
@@ -343,21 +306,20 @@ int opsick_db_delete_user(PGconn* dbconn, uint64_t user_id)
     rc = 0;
 exit:
     last_used_userid = user_id;
-    sqlite3_finalize(stmt);
+
     return rc;
 }
 
 int opsick_db_get_user_metadata(PGconn* dbconn, uint64_t user_id, struct opsick_user_metadata* out_user_metadata)
 {
-    if (db == NULL || out_user_metadata == NULL)
+    if (dbconn == NULL || out_user_metadata == NULL)
     {
         return 1;
     }
 
+    int rc = 1;
     const char* sql = opsick_sql_get_user;
-    const size_t sql_length = sizeof(opsick_sql_get_user) - 1;
 
-    sqlite3_stmt* stmt = NULL;
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
     {
@@ -418,20 +380,19 @@ int opsick_db_get_user_metadata(PGconn* dbconn, uint64_t user_id, struct opsick_
     rc = 0;
 exit:
     last_used_userid = user_id;
-    sqlite3_finalize(stmt);
+
     return rc;
 }
 
 int opsick_db_set_user_pw(PGconn* dbconn, uint64_t user_id, const char* new_pw)
 {
-    if (db == NULL || new_pw == NULL)
+    if (dbconn == NULL || new_pw == NULL)
     {
         return 1;
     }
 
-    sqlite3_stmt* stmt = NULL;
+    int rc = 1;
     const char* sql = opsick_sql_set_user_pw;
-    const size_t sql_length = sizeof(opsick_sql_set_user_pw) - 1;
 
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
@@ -464,20 +425,19 @@ int opsick_db_set_user_pw(PGconn* dbconn, uint64_t user_id, const char* new_pw)
     rc = 0;
 exit:
     last_used_userid = user_id;
-    sqlite3_finalize(stmt);
+
     return rc;
 }
 
 int opsick_db_set_user_totps(PGconn* dbconn, uint64_t user_id, const char* new_totps)
 {
-    if (db == NULL)
+    if (dbconn == NULL)
     {
         return 1;
     }
 
-    sqlite3_stmt* stmt = NULL;
+    int rc = 1;
     const char* sql = opsick_sql_set_user_totps;
-    const size_t sql_length = sizeof(opsick_sql_set_user_totps) - 1;
 
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
@@ -510,20 +470,19 @@ int opsick_db_set_user_totps(PGconn* dbconn, uint64_t user_id, const char* new_t
     rc = 0;
 exit:
     last_used_userid = user_id;
-    sqlite3_finalize(stmt);
+
     return rc;
 }
 
 int opsick_db_get_user_body(PGconn* dbconn, uint64_t user_id, char** out_body, size_t* out_body_length)
 {
-    if (db == NULL || out_body == NULL)
+    if (dbconn == NULL || out_body == NULL)
     {
         return 1;
     }
 
-    sqlite3_stmt* stmt = NULL;
+    int rc = 1;
     const char* sql = opsick_sql_get_user_body;
-    const size_t sql_length = sizeof(opsick_sql_get_user_body) - 1;
 
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
@@ -566,20 +525,19 @@ int opsick_db_get_user_body(PGconn* dbconn, uint64_t user_id, char** out_body, s
     rc = 0;
 exit:
     last_used_userid = user_id;
-    sqlite3_finalize(stmt);
+
     return rc;
 }
 
 int opsick_db_set_user_body(PGconn* dbconn, uint64_t user_id, const char* body)
 {
-    if (db == NULL || body == NULL)
+    if (dbconn == NULL || body == NULL)
     {
         return 1;
     }
 
-    sqlite3_stmt* stmt = NULL;
+    int rc = 1;
     const char* sql = opsick_sql_set_user_body;
-    const size_t sql_length = sizeof(opsick_sql_set_user_body) - 1;
 
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
@@ -628,20 +586,19 @@ int opsick_db_set_user_body(PGconn* dbconn, uint64_t user_id, const char* body)
     memcpy(last128B + 64, body, OPSICK_MIN(bodylen, 64));
 exit:
     last_used_userid = user_id;
-    sqlite3_finalize(stmt);
+
     return rc;
 }
 
 int opsick_db_set_user_exp(PGconn* dbconn, uint64_t user_id, const uint64_t new_exp)
 {
-    if (db == NULL)
+    if (dbconn == NULL)
     {
         return 1;
     }
 
-    sqlite3_stmt* stmt = NULL;
+    int rc = 1;
     const char* sql = opsick_sql_set_user_exp;
-    const size_t sql_length = sizeof(opsick_sql_set_user_exp) - 1;
 
     int rc = sqlite3_prepare_v2(db, sql, sql_length, &stmt, NULL);
     if (rc != SQLITE_OK)
@@ -674,20 +631,19 @@ int opsick_db_set_user_exp(PGconn* dbconn, uint64_t user_id, const uint64_t new_
     rc = 0;
 exit:
     last_used_userid = user_id;
-    sqlite3_finalize(stmt);
+
     return rc;
 }
 
 int opsick_db_set_user_keys(PGconn* dbconn, uint64_t user_id, const char* new_pubkey_ed25519, const char* new_prvkey_ed25519, const char* new_pubkey_curve448, const char* new_prvkey_curve448)
 {
-    if (db == NULL || new_pubkey_ed25519 == NULL || new_prvkey_ed25519 == NULL || new_pubkey_curve448 == NULL || new_prvkey_curve448 == NULL)
+    if (dbconn == NULL || new_pubkey_ed25519 == NULL || new_prvkey_ed25519 == NULL || new_pubkey_curve448 == NULL || new_prvkey_curve448 == NULL)
     {
         return 1;
     }
 
-    sqlite3_stmt* stmt = NULL;
+    int rc = 1;
     const char* sql = opsick_sql_set_user_keys;
-    const size_t sql_length = sizeof(opsick_sql_set_user_keys) - 1;
     const size_t new_pubkey_ed25519_length = strlen(new_pubkey_ed25519);
     const size_t new_pubkey_curve448_length = strlen(new_pubkey_curve448);
 
@@ -751,6 +707,6 @@ int opsick_db_set_user_keys(PGconn* dbconn, uint64_t user_id, const char* new_pu
     rc = 0;
 exit:
     last_used_userid = user_id;
-    sqlite3_finalize(stmt);
+
     return rc;
 }
