@@ -20,7 +20,8 @@ These you can install using the following commands;
       - Debian/*buntu:       sudo apt-get install uuid-dev postgresql-server-dev-all postgresql-client-common postgresql-common
       - CentOS/Fedora/RHEL:  sudo dnf install uuid-devel libpq-devel
 #### FreeBSD:
-      - (UUID already included in OS)
+      - (UUID lib already included in OS)
+      - (install any postgres client library package that contains libpq - e.g. from FreeBSD ports)  
 #### Windows:
       - Uninstall Windows
       - Proceed with one of the variants above...
