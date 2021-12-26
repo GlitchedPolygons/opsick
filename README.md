@@ -58,6 +58,8 @@ By default, opsick listens to port `6677` by the way..
 
 Check out the `config.h` file for more infos about what can be customized.
 
+> Note: please keep in mind that any changes to the config values inside the above-mentioned `settings` table require opsick to be restarted for them to kick in, because the host and admin settings are read only once and loaded into memory on start.
+
 Opsick needs to know how to connect to the opsick postgres database: it looks for a read-only text file at the following path:
 
 * Linux
