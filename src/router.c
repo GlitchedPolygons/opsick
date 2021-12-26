@@ -50,6 +50,8 @@ void opsick_router_init()
         exit(EXIT_FAILURE);
     }
 
+    fprintf(stdout, "Starting opsick on port '%s' using %d threads...", port, hostsettings.threads);
+
     fio_start(.threads = hostsettings.threads);
 }
 
