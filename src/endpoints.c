@@ -290,7 +290,7 @@ void opsick_post_users_create(http_s* request)
         goto exit;
     }
 
-    char out_json[256];
+    char out_json[256] = { 0x00 };
     snprintf(out_json, sizeof(out_json), "{\"user_id\":%zu}", user_id);
 
     opsick_sign_and_send(request, out_json, strlen(out_json));
@@ -908,7 +908,7 @@ void opsick_post_users_extend(http_s* request)
         goto exit;
     }
 
-    char out_json[128];
+    char out_json[128] = { 0x00 };
     snprintf(out_json, sizeof(out_json), "{\"user_id\":%zu,\"new_exp_utc\":%zu}", user_id, user_metadata.exp_utc);
 
     opsick_sign_and_send(request, out_json, 0);
@@ -1138,7 +1138,7 @@ void opsick_post_users(http_s* request)
     }
     else // User already has the newest body, only return the metadata
     {
-        char out_json[256];
+        char out_json[256] = { 0x00 };
         snprintf(out_json, sizeof(out_json),
                 "{\"id\":%zu,\"iat_utc\":%zu,\"exp_utc\":%zu,\"lastmod_utc\":%zu}", //
                 user_metadata.id, user_metadata.iat_utc, user_metadata.exp_utc, user_metadata.lastmod_utc //
