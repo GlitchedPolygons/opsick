@@ -11,13 +11,14 @@ This right here is as lightweight and as performant as it can possibly get, and 
 
 ### Dependencies
 * LibUUID
+* LibPQ
 
 These you can install using the following commands;
 
 #### Linux:
-      - Arch:                sudo pacman -S uuid-devel
-      - Debian/*buntu:       sudo apt-get install uuid-dev
-      - CentOS/Fedora/RHEL:  sudo dnf install uuid-devel
+      - Arch:                sudo pacman -S uuid-devel postgresql-libs
+      - Debian/*buntu:       sudo apt-get install uuid-dev postgresql-server-dev-all postgresql-client-common postgresql-common
+      - CentOS/Fedora/RHEL:  sudo dnf install uuid-devel libpq-devel
 #### FreeBSD:
       - (UUID already included in OS)
 #### Windows:
@@ -49,10 +50,21 @@ make
 
 ### How to configure
 
-Whether you built from sauce or grabbed pre-built binaries: it doesn't matter in terms of configuration. To configure your opsick instance, you need to open the `config.toml` file inside the directory where the opsick executable resides.
+Whether you built from sauce or grabbed pre-built binaries: it doesn't matter in terms of configuration. All user-configurable settings reside in the opsick db (postgres) inside the "settings" table (as key-value pairs). 
 
-Inside that file, you can customize your instance-specific user settings to whatever you need/want them to be (e.g. defining a user creation password, changing port numbers, etc...).
+You can customize your instance-specific user settings to whatever you need/want them to be (e.g. defining a user creation password, changing port numbers, etc...).
 By default, opsick listens to port `6677` by the way..
+
+Check out the `config.h` file for more infos about what can be customized.
+
+Opsick needs to know how to connect to the opsick postgres database: it looks for a read-only text file at the following path:
+
+* Linux
+* * `/var/opt/opsick/dbconn`
+* macOS
+* * `/usr/local/share/opsick/dbconn`
+
+In that text file you must have a valid `libpq` connection string. Check out the [postgres documentation](https://www.postgresql.org/docs/8.1/libpq.html#LIBPQ-CONNECT) for more information.
 
 ### API Documentation
 

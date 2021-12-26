@@ -117,6 +117,8 @@ Functions</h2></td></tr>
 <tr class="separator:a6a6ff591b819d0078f3756ef15a71295"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4cc3b5fd838601aec0802103b14015e7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a4cc3b5fd838601aec0802103b14015e7">opsick_db_delete_user</a> (PGconn *dbconn, uint64_t user_id)</td></tr>
 <tr class="separator:a4cc3b5fd838601aec0802103b14015e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1db3517aa45c308401f6b3d6920198dc"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a1db3517aa45c308401f6b3d6920198dc">opsick_db_count_users</a> (PGconn *dbconn)</td></tr>
+<tr class="separator:a1db3517aa45c308401f6b3d6920198dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5c6c66449827a78fb3d1e5e7d4fa4a6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#ab5c6c66449827a78fb3d1e5e7d4fa4a6">opsick_db_get_user_metadata</a> (PGconn *db, uint64_t user_id, struct <a class="el" href="structopsick__user__metadata.html">opsick_user_metadata</a> *out_user_metadata)</td></tr>
 <tr class="separator:ab5c6c66449827a78fb3d1e5e7d4fa4a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0685b43b7aded3ea41992aed6dd1022"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#ae0685b43b7aded3ea41992aed6dd1022">opsick_db_set_user_pw</a> (PGconn *dbconn, uint64_t user_id, const char *new_pw)</td></tr>
@@ -153,6 +155,31 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p >Connects to the opsick db. </p><dl class="section return"><dt>Returns</dt><dd><code>NULL</code> if connection couldn't be established; the postgres connection reference otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a1db3517aa45c308401f6b3d6920198dc" name="a1db3517aa45c308401f6b3d6920198dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1db3517aa45c308401f6b3d6920198dc">&#9670;&nbsp;</a></span>opsick_db_count_users()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t opsick_db_count_users </td>
+          <td>(</td>
+          <td class="paramtype">PGconn *&#160;</td>
+          <td class="paramname"><em>dbconn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Counts the total amount of users stored in the db. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dbconn</td><td>Postgres db connection reference to use for the query. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The total number of users currently in the db. </dd></dl>
 
 </div>
 </div>
