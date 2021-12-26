@@ -34,7 +34,7 @@ static const char opsick_sql_get_user_body[] = "SELECT body FROM users WHERE id 
 static const char opsick_sql_create_user[] = "INSERT INTO users (pw, exp_utc, body, body_sha512, public_key_ed25519, encrypted_private_key_ed25519, public_key_curve448, encrypted_private_key_curve448) VALUES ($1::text, $2::bigint, $3::text, $4::text, $5::text, $6::text, $7::text, $8::text) RETURNING id";
 static const char opsick_sql_delete_user[] = "DELETE FROM users WHERE id = $1::bigint";
 
-static const char opsick_sql_set_user_pw[] = "UPDATE users SET pw = $1::text, lastmod_utc = (SELECT UTC_NOW()) WHERE id = $1::bigint";
+static const char opsick_sql_set_user_pw[] = "UPDATE users SET pw = $1::text, lastmod_utc = (SELECT UTC_NOW()) WHERE id = $2::bigint";
 static const char opsick_sql_set_user_body[] = "UPDATE users SET body = $1::text, body_sha512 = $2::text, lastmod_utc = (SELECT UTC_NOW()) WHERE id = $3::bigint";
 static const char opsick_sql_set_user_exp[] = "UPDATE users SET exp_utc = $1::bigint, lastmod_utc = (SELECT UTC_NOW()) WHERE id = $2::bigint";
 static const char opsick_sql_set_user_totps[] = "UPDATE users SET totps = $1::text, lastmod_utc = (SELECT UTC_NOW()) WHERE id = $2::bigint";

@@ -234,7 +234,8 @@ void opsick_post_users_create(http_s* request)
 
         const struct fio_str_info_s ucpw = fiobj_obj2cstr(ucpw_obj);
 
-        if (argon2id_verify(adminsettings.user_registration_password, ucpw.data, ucpw.len) != ARGON2_OK)
+        int rot = argon2id_verify(adminsettings.user_registration_password, ucpw.data, ucpw.len);
+        if (rot != ARGON2_OK)
         {
             http_send_error(request, 403);
             goto exit;

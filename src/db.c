@@ -183,9 +183,11 @@ int opsick_db_does_user_id_exist(PGconn* dbconn, const uint64_t user_id)
     int paramLengths[1];
     int paramFormats[1];
 
-    paramValues[0] = (const char*)&user_id;
-    paramLengths[0] = sizeof(user_id);
-    paramFormats[0] = 1;
+    char user_id_str[256] = { 0x00 };
+    snprintf(user_id_str, sizeof(user_id_str), "%zu", user_id);
+    paramValues[0] = user_id_str;
+    paramLengths[0] = 0;
+    paramFormats[0] = 0;
 
     PGresult* pr = PQexecParams(dbconn, sql, 1, NULL, paramValues, paramLengths, paramFormats, 0);
 
@@ -220,9 +222,11 @@ int opsick_db_create_user(PGconn* dbconn, const char* pw, const uint64_t exp_utc
     paramLengths[0] = 0;
     paramFormats[0] = 0;
 
-    paramValues[1] = (char*)&exp_utc;
-    paramLengths[1] = sizeof(exp_utc);
-    paramFormats[1] = 1;
+    char exp_utc_str[256] = { 0x00 };
+    snprintf(exp_utc_str, sizeof(exp_utc_str), "%zu", exp_utc);
+    paramValues[1] = exp_utc_str;
+    paramLengths[1] = 0;
+    paramFormats[1] = 0;
 
     paramValues[2] = "NULL";
     paramLengths[2] = 0;
@@ -248,7 +252,7 @@ int opsick_db_create_user(PGconn* dbconn, const char* pw, const uint64_t exp_utc
     paramLengths[7] = 0;
     paramFormats[7] = 0;
 
-    PGresult* pr = PQexecParams(dbconn, sql, 1, NULL, paramValues, paramLengths, paramFormats, 0);
+    PGresult* pr = PQexecParams(dbconn, sql, 8, NULL, paramValues, paramLengths, paramFormats, 0);
 
     if (PQresultStatus(pr) != PGRES_TUPLES_OK)
     {
@@ -281,9 +285,11 @@ int opsick_db_delete_user(PGconn* dbconn, uint64_t user_id)
     int paramLengths[1];
     int paramFormats[1];
 
-    paramValues[0] = (char*)&user_id;
-    paramLengths[0] = sizeof(user_id);
-    paramFormats[0] = 1;
+    char user_id_str[256] = { 0x00 };
+    snprintf(user_id_str, sizeof(user_id_str), "%zu", user_id);
+    paramValues[0] = user_id_str;
+    paramLengths[0] = 0;
+    paramFormats[0] = 0;
 
     PGresult* pr = PQexecParams(dbconn, sql, 1, NULL, paramValues, paramLengths, paramFormats, 1);
 
@@ -314,9 +320,11 @@ int opsick_db_get_user_metadata(PGconn* dbconn, uint64_t user_id, struct opsick_
     int paramLengths[1];
     int paramFormats[1];
 
-    paramValues[0] = (char*)&user_id;
-    paramLengths[0] = sizeof(user_id);
-    paramFormats[0] = 1;
+    char user_id_str[256] = { 0x00 };
+    snprintf(user_id_str, sizeof(user_id_str), "%zu", user_id);
+    paramValues[0] = user_id_str;
+    paramLengths[0] = 0;
+    paramFormats[0] = 0;
 
     PGresult* pr = PQexecParams(dbconn, sql, 1, NULL, paramValues, paramLengths, paramFormats, 0);
 
@@ -387,11 +395,13 @@ int opsick_db_set_user_pw(PGconn* dbconn, uint64_t user_id, const char* new_pw)
     paramLengths[0] = 0;
     paramFormats[0] = 0;
 
-    paramValues[1] = (char*)&user_id;
-    paramLengths[1] = sizeof(user_id);
-    paramFormats[1] = 1;
+    char user_id_str[256] = { 0x00 };
+    snprintf(user_id_str, sizeof(user_id_str), "%zu", user_id);
+    paramValues[1] = user_id_str;
+    paramLengths[1] = 0;
+    paramFormats[1] = 0;
 
-    PGresult* pr = PQexecParams(dbconn, sql, 1, NULL, paramValues, paramLengths, paramFormats, 1);
+    PGresult* pr = PQexecParams(dbconn, sql, 2, NULL, paramValues, paramLengths, paramFormats, 1);
 
     if (PQresultStatus(pr) != PGRES_COMMAND_OK)
     {
@@ -424,11 +434,13 @@ int opsick_db_set_user_totps(PGconn* dbconn, uint64_t user_id, const char* new_t
     paramLengths[0] = 0;
     paramFormats[0] = 0;
 
-    paramValues[1] = (char*)&user_id;
-    paramLengths[1] = sizeof(user_id);
-    paramFormats[1] = 1;
+    char user_id_str[256] = { 0x00 };
+    snprintf(user_id_str, sizeof(user_id_str), "%zu", user_id);
+    paramValues[1] = user_id_str;
+    paramLengths[1] = 0;
+    paramFormats[1] = 0;
 
-    PGresult* pr = PQexecParams(dbconn, sql, 1, NULL, paramValues, paramLengths, paramFormats, 1);
+    PGresult* pr = PQexecParams(dbconn, sql, 2, NULL, paramValues, paramLengths, paramFormats, 1);
 
     if (PQresultStatus(pr) != PGRES_COMMAND_OK)
     {
@@ -457,9 +469,11 @@ int opsick_db_get_user_body(PGconn* dbconn, uint64_t user_id, char** out_body, s
     int paramLengths[1];
     int paramFormats[1];
 
-    paramValues[0] = (char*)&user_id;
-    paramLengths[0] = sizeof(user_id);
-    paramFormats[0] = 1;
+    char user_id_str[256] = { 0x00 };
+    snprintf(user_id_str, sizeof(user_id_str), "%zu", user_id);
+    paramValues[0] = user_id_str;
+    paramLengths[0] = 0;
+    paramFormats[0] = 0;
 
     PGresult* pr = PQexecParams(dbconn, sql, 1, NULL, paramValues, paramLengths, paramFormats, 0);
 
@@ -523,11 +537,13 @@ int opsick_db_set_user_body(PGconn* dbconn, uint64_t user_id, const char* body)
     paramLengths[1] = 0;
     paramFormats[1] = 0;
 
-    paramValues[2] = (char*)&user_id;
-    paramLengths[2] = sizeof(user_id);
-    paramFormats[2] = 1;
+    char user_id_str[256] = { 0x00 };
+    snprintf(user_id_str, sizeof(user_id_str), "%zu", user_id);
+    paramValues[2] = user_id_str;
+    paramLengths[2] = 0;
+    paramFormats[2] = 0;
 
-    PGresult* pr = PQexecParams(dbconn, sql, 1, NULL, paramValues, paramLengths, paramFormats, 1);
+    PGresult* pr = PQexecParams(dbconn, sql, 3, NULL, paramValues, paramLengths, paramFormats, 1);
 
     if (PQresultStatus(pr) != PGRES_COMMAND_OK)
     {
@@ -558,15 +574,19 @@ int opsick_db_set_user_exp(PGconn* dbconn, uint64_t user_id, const uint64_t new_
     int paramLengths[2];
     int paramFormats[2];
 
-    paramValues[0] = (char*)&new_exp;
-    paramLengths[0] = sizeof(new_exp);
-    paramFormats[0] = 1;
+    char new_exp_str[256] = { 0x00 };
+    snprintf(new_exp_str, sizeof(new_exp_str), "%zu", new_exp);
+    paramValues[0] = new_exp_str;
+    paramLengths[0] = 0;
+    paramFormats[0] = 0;
 
-    paramValues[1] = (char*)&user_id;
-    paramLengths[1] = sizeof(user_id);
-    paramFormats[1] = 1;
+    char user_id_str[256] = { 0x00 };
+    snprintf(user_id_str, sizeof(user_id_str), "%zu", user_id);
+    paramValues[1] = user_id_str;
+    paramLengths[1] = 0;
+    paramFormats[1] = 0;
 
-    PGresult* pr = PQexecParams(dbconn, sql, 1, NULL, paramValues, paramLengths, paramFormats, 1);
+    PGresult* pr = PQexecParams(dbconn, sql, 2, NULL, paramValues, paramLengths, paramFormats, 1);
 
     if (PQresultStatus(pr) != PGRES_COMMAND_OK)
     {
@@ -613,11 +633,13 @@ int opsick_db_set_user_keys(PGconn* dbconn, uint64_t user_id, const char* new_pu
     paramLengths[3] = 0;
     paramFormats[3] = 0;
 
-    paramValues[4] = (char*)&user_id;
-    paramLengths[4] = sizeof(user_id);
-    paramFormats[4] = 1;
+    char user_id_str[256] = { 0x00 };
+    snprintf(user_id_str, sizeof(user_id_str), "%zu", user_id);
+    paramValues[4] = user_id_str;
+    paramLengths[4] = 0;
+    paramFormats[4] = 0;
 
-    PGresult* pr = PQexecParams(dbconn, sql, 1, NULL, paramValues, paramLengths, paramFormats, 1);
+    PGresult* pr = PQexecParams(dbconn, sql, 5, NULL, paramValues, paramLengths, paramFormats, 1);
 
     if (PQresultStatus(pr) != PGRES_COMMAND_OK)
     {
