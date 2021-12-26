@@ -46,7 +46,7 @@ void opsick_router_init()
 
     if (-1 == http_listen(port, NULL, .on_request = opsick_on_request, .max_header_size = hostsettings.max_header_size, .max_body_size = hostsettings.max_body_size, .max_clients = hostsettings.max_clients, .log = hostsettings.log))
     {
-        fprintf(stderr, "Failure to start opsick on the given port '%s': perhaps the port is already in use?", port);
+        fprintf(stderr, "ERROR: Failure to start opsick on the given port '%s': perhaps the port is already in use? \n", port);
         exit(EXIT_FAILURE);
     }
 

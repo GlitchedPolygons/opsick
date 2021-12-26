@@ -20,17 +20,27 @@
 #include "opsick/keys.h"
 #include "opsick/db.h"
 
-int main(void)
+int main(const int argc, const char* argv[])
 {
-    if (!opsick_config_load())
+    char opsick_db_connection_string_filepath[1024] = { 0x00 };
+    strncpy(opsick_db_connection_string_filepath, (argc > 1 ? argv[1] : OPSICK_DEFAULT_DBCONN_FILE), sizeof(opsick_db_connection_string_filepath));
+
+    if (!opsick_db_init(opsick_db_connection_string_filepath))
     {
-        fprintf(stderr, "ERROR: Opsick failed to open, read or parse the config file.");
-        return EXIT_FAILURE;
+        fprintf(stderr, "ERROR: Opsick failed to initialize the db connection. \n");
+        return -1;
     }
 
-    opsick_db_init();
+    if (!opsick_config_load())
+    {
+        fprintf(stderr, "ERROR: Opsick failed to load the config from db. \n");
+        return -2;
+    }
+
     opsick_keys_init();
     opsick_router_init();
+
+    // ===================
 
     opsick_router_free();
     opsick_keys_free();

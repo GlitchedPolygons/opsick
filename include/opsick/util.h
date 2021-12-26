@@ -31,7 +31,6 @@ extern "C" {
 #include <stddef.h>
 #include <stdbool.h>
 #include <http.h>
-#include <sqlite3.h>
 
 /**
  * <c>x < y ? x : y</c>

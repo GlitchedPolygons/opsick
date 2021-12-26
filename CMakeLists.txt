@@ -23,6 +23,8 @@ option(OPSICK_ENABLE_TESTS "Build OPSICK tests." OFF)
 option(ENABLE_TESTING "Build MbedTLS tests." OFF)
 option(ENABLE_PROGRAMS "Build MbedTLS example programs." OFF)
 
+find_package(PostgreSQL REQUIRED)
+
 set(${PROJECT_NAME}_INCLUDE_DIR
         ${CMAKE_CURRENT_LIST_DIR}/include
         )
@@ -36,7 +38,6 @@ endif ()
 add_compile_definitions("SQLITE_THREADSAFE=1")
 
 set(${PROJECT_NAME}_SOURCES
-        ${CMAKE_CURRENT_LIST_DIR}/lib/sqlite3/sqlite3.h
         ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/blake2/blake2b.c
         ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/argon2.c
         ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/src/core.c
@@ -54,7 +55,6 @@ set(${PROJECT_NAME}_SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/util.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/user.h
         ${CMAKE_CURRENT_LIST_DIR}/include/opsick/endpoints.h
-        ${CMAKE_CURRENT_LIST_DIR}/lib/sqlite3/sqlite3.c
         ${CMAKE_CURRENT_LIST_DIR}/src/config.c
         ${CMAKE_CURRENT_LIST_DIR}/src/murmur3.c
         ${CMAKE_CURRENT_LIST_DIR}/src/keys.c
@@ -72,10 +72,6 @@ if (NOT TARGET facil.io)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/facil.io facil.io)
 endif ()
 
-if (NOT TARGET tomlc99)
-    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/tomlc99 tomlc99)
-endif ()
-
 if (NOT TARGET cecies)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/cecies cecies)
 endif ()
@@ -90,7 +86,6 @@ endif ()
 
 configure_file(${CMAKE_CURRENT_LIST_DIR}/src/index.html ${CMAKE_CURRENT_BINARY_DIR}/index.html COPYONLY)
 configure_file(${CMAKE_CURRENT_LIST_DIR}/src/favicon.ico ${CMAKE_CURRENT_BINARY_DIR}/favicon.ico COPYONLY)
-configure_file(${CMAKE_CURRENT_LIST_DIR}/src/config.toml ${CMAKE_CURRENT_BINARY_DIR}/config.toml COPYONLY)
 
 add_executable(${PROJECT_NAME}
         ${${PROJECT_NAME}_SOURCES}
@@ -100,10 +95,11 @@ add_executable(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
         PUBLIC facil.io
         PUBLIC cecies
-        PUBLIC tomlc99
         PUBLIC TFAC
         PUBLIC orlp-ed25519
         )
+
+target_link_libraries(${PROJECT_NAME} PRIVATE PostgreSQL::PostgreSQL)
 
 if (UNIX AND NOT ANDROID)
     target_link_libraries(${PROJECT_NAME} PRIVATE -lpthread -ldl)
@@ -111,7 +107,6 @@ endif ()
 
 target_include_directories(${PROJECT_NAME}
         PUBLIC ${${PROJECT_NAME}_INCLUDE_DIR}
-        PRIVATE ${CMAKE_CURRENT_LIST_DIR}/lib/sqlite3
         PRIVATE ${CMAKE_CURRENT_LIST_DIR}/lib/ed25519/src
         PRIVATE ${CMAKE_CURRENT_LIST_DIR}/lib/argon2/include
         )
