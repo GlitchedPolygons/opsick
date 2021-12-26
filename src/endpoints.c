@@ -274,6 +274,13 @@ void opsick_post_users_create(http_s* request)
         goto exit;
     }
 
+    if (opsick_db_count_users(dbconn) > adminsettings.max_users)
+    {
+        fprintf(stderr, "ERROR: Failure to create new user server-side using \"opsick_db_create_user()\". The maximum amount of users allowed on the server has been reached! \n");
+        http_send_error(request, 403);
+        goto exit;
+    }
+
     uint64_t user_id = 0;
     r = opsick_db_create_user(dbconn, pw_hash, (uint64_t)strtoull(fiobj_obj2cstr(exp_utc_obj).data, NULL, 10), userpubkey_ed25519.data, fiobj_obj2cstr(encrypted_private_key_ed25519_obj).data, userpubkey_curve448.data, fiobj_obj2cstr(encrypted_private_key_curve448_obj).data, &user_id);
     if (r != 0)
@@ -283,7 +290,7 @@ void opsick_post_users_create(http_s* request)
         goto exit;
     }
 
-    char out_json[64];
+    char out_json[256];
     snprintf(out_json, sizeof(out_json), "{\"user_id\":%zu}", user_id);
 
     opsick_sign_and_send(request, out_json, strlen(out_json));

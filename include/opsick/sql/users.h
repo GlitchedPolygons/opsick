@@ -31,6 +31,7 @@ static const char opsick_sql_does_user_id_exist[] = "SELECT count(id) FROM users
 static const char opsick_sql_get_user[] = "SELECT id, pw, totps, iat_utc, exp_utc, lastmod_utc, body_sha512, public_key_ed25519, encrypted_private_key_ed25519, public_key_curve448, encrypted_private_key_curve448 FROM users WHERE id = $1::bigint";
 static const char opsick_sql_get_user_body[] = "SELECT body FROM users WHERE id = $1::bigint";
 
+static const char opsick_sql_count_users[] = "SELECT count(id) FROM users";
 static const char opsick_sql_create_user[] = "INSERT INTO users (pw, exp_utc, body, body_sha512, public_key_ed25519, encrypted_private_key_ed25519, public_key_curve448, encrypted_private_key_curve448) VALUES ($1::text, $2::bigint, $3::text, $4::text, $5::text, $6::text, $7::text, $8::text) RETURNING id";
 static const char opsick_sql_delete_user[] = "DELETE FROM users WHERE id = $1::bigint";
 

@@ -35,6 +35,13 @@ static uint64_t cached_db_schema_version_nr = 0;
 static uint64_t last_db_schema_version_nr_lookup = 0;
 static char connection_string[1024] = { 0x00 };
 
+#define OPSICK_PQASSERT(pr, sql, dbconn, r)                                                                                                                                                                                                                                                                                                                                                                                                                                                                        \
+    if (PQresultStatus(pr) != (r))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 \
+    {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              \
+        fprintf(stderr, "%s: Failure during execution of the SQL statement \"%s\". Error message: %s \n", __func__, sql, PQerrorMessage(dbconn));                                                                                                                                                                                                                                                                                                                                                                  \
+        goto exit;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 \
+    }
+
 #pragma region CONNECT AND DISCONNECT
 
 PGconn* opsick_db_connect()
@@ -190,12 +197,7 @@ int opsick_db_does_user_id_exist(PGconn* dbconn, const uint64_t user_id)
     paramFormats[0] = 0;
 
     PGresult* pr = PQexecParams(dbconn, sql, 1, NULL, paramValues, paramLengths, paramFormats, 0);
-
-    if (PQresultStatus(pr) != PGRES_TUPLES_OK)
-    {
-        fprintf(stderr, "%s: Failure during execution of the SQL statement \"%s\". Error message: %s \n", __func__, sql, PQerrorMessage(dbconn));
-        goto exit;
-    }
+    OPSICK_PQASSERT(pr, sql, dbconn, PGRES_TUPLES_OK);
 
     exists = strtol(PQgetvalue(pr, 0, 0), NULL, 10) != 0;
 exit:
@@ -253,12 +255,7 @@ int opsick_db_create_user(PGconn* dbconn, const char* pw, const uint64_t exp_utc
     paramFormats[7] = 0;
 
     PGresult* pr = PQexecParams(dbconn, sql, 8, NULL, paramValues, paramLengths, paramFormats, 0);
-
-    if (PQresultStatus(pr) != PGRES_TUPLES_OK)
-    {
-        fprintf(stderr, "%s: Failure during execution of the SQL statement \"%s\". Error message: %s \n", __func__, sql, PQerrorMessage(dbconn));
-        goto exit;
-    }
+    OPSICK_PQASSERT(pr, sql, dbconn, PGRES_TUPLES_OK);
 
     *out_user_id = last_used_userid = (uint64_t)strtoull(PQgetvalue(pr, 0, 0), NULL, 10);
 
@@ -292,18 +289,32 @@ int opsick_db_delete_user(PGconn* dbconn, uint64_t user_id)
     paramFormats[0] = 0;
 
     PGresult* pr = PQexecParams(dbconn, sql, 1, NULL, paramValues, paramLengths, paramFormats, 1);
-
-    if (PQresultStatus(pr) != PGRES_COMMAND_OK)
-    {
-        fprintf(stderr, "%s: Failure during execution of the SQL statement \"%s\". Error message: %s \n", __func__, sql, PQerrorMessage(dbconn));
-        goto exit;
-    }
+    OPSICK_PQASSERT(pr, sql, dbconn, PGRES_COMMAND_OK);
 
     rc = 0;
 exit:
     last_used_userid = user_id;
     PQclear(pr);
     return rc;
+}
+
+uint64_t opsick_db_count_users(PGconn* dbconn)
+{
+    if (dbconn == NULL)
+    {
+        return 0;
+    }
+
+    uint64_t r = 0;
+    const char* sql = opsick_sql_count_users;
+    PGresult* pr = PQexec(dbconn, sql);
+    OPSICK_PQASSERT(pr, sql, dbconn, PGRES_TUPLES_OK);
+
+    r = (uint64_t)strtoull(PQgetvalue(pr, 0, 0), NULL, 10);
+
+exit:
+    PQclear(pr);
+    return r;
 }
 
 int opsick_db_get_user_metadata(PGconn* dbconn, uint64_t user_id, struct opsick_user_metadata* out_user_metadata)
@@ -327,12 +338,7 @@ int opsick_db_get_user_metadata(PGconn* dbconn, uint64_t user_id, struct opsick_
     paramFormats[0] = 0;
 
     PGresult* pr = PQexecParams(dbconn, sql, 1, NULL, paramValues, paramLengths, paramFormats, 0);
-
-    if (PQresultStatus(pr) != PGRES_TUPLES_OK)
-    {
-        fprintf(stderr, "%s: Failure during execution of the SQL statement \"%s\". Error message: %s \n", __func__, sql, PQerrorMessage(dbconn));
-        goto exit;
-    }
+    OPSICK_PQASSERT(pr, sql, dbconn, PGRES_TUPLES_OK);
 
     out_user_metadata->id = (uint64_t)strtoull(PQgetvalue(pr, 0, 0), NULL, 10);
     out_user_metadata->iat_utc = (uint64_t)strtoull(PQgetvalue(pr, 0, 3), NULL, 10);
@@ -402,12 +408,7 @@ int opsick_db_set_user_pw(PGconn* dbconn, uint64_t user_id, const char* new_pw)
     paramFormats[1] = 0;
 
     PGresult* pr = PQexecParams(dbconn, sql, 2, NULL, paramValues, paramLengths, paramFormats, 1);
-
-    if (PQresultStatus(pr) != PGRES_COMMAND_OK)
-    {
-        fprintf(stderr, "%s: Failure during execution of the SQL statement \"%s\". Error message: %s \n", __func__, sql, PQerrorMessage(dbconn));
-        goto exit;
-    }
+    OPSICK_PQASSERT(pr, sql, dbconn, PGRES_COMMAND_OK);
 
     rc = 0;
 exit:
@@ -441,12 +442,7 @@ int opsick_db_set_user_totps(PGconn* dbconn, uint64_t user_id, const char* new_t
     paramFormats[1] = 0;
 
     PGresult* pr = PQexecParams(dbconn, sql, 2, NULL, paramValues, paramLengths, paramFormats, 1);
-
-    if (PQresultStatus(pr) != PGRES_COMMAND_OK)
-    {
-        fprintf(stderr, "%s: Failure during execution of the SQL statement \"%s\". Error message: %s \n", __func__, sql, PQerrorMessage(dbconn));
-        goto exit;
-    }
+    OPSICK_PQASSERT(pr, sql, dbconn, PGRES_COMMAND_OK);
 
     rc = 0;
 exit:
@@ -476,12 +472,7 @@ int opsick_db_get_user_body(PGconn* dbconn, uint64_t user_id, char** out_body, s
     paramFormats[0] = 0;
 
     PGresult* pr = PQexecParams(dbconn, sql, 1, NULL, paramValues, paramLengths, paramFormats, 0);
-
-    if (PQresultStatus(pr) != PGRES_TUPLES_OK)
-    {
-        fprintf(stderr, "%s: Failure during execution of the SQL statement \"%s\". Error message: %s \n", __func__, sql, PQerrorMessage(dbconn));
-        goto exit;
-    }
+    OPSICK_PQASSERT(pr, sql, dbconn, PGRES_TUPLES_OK);
 
     const char* body = PQgetvalue(pr, 0, 0);
     const size_t bodylen = strlen(body);
@@ -544,12 +535,7 @@ int opsick_db_set_user_body(PGconn* dbconn, uint64_t user_id, const char* body)
     paramFormats[2] = 0;
 
     PGresult* pr = PQexecParams(dbconn, sql, 3, NULL, paramValues, paramLengths, paramFormats, 1);
-
-    if (PQresultStatus(pr) != PGRES_COMMAND_OK)
-    {
-        fprintf(stderr, "opsick_db_create_user: Failure during execution of the SQL statement \"%s\". Error message: %s \n", sql, PQerrorMessage(dbconn));
-        goto exit;
-    }
+    OPSICK_PQASSERT(pr, sql, dbconn, PGRES_COMMAND_OK);
 
     rc = 0;
     memcpy(last128B, body_sha512_bytes, 64);
@@ -587,12 +573,7 @@ int opsick_db_set_user_exp(PGconn* dbconn, uint64_t user_id, const uint64_t new_
     paramFormats[1] = 0;
 
     PGresult* pr = PQexecParams(dbconn, sql, 2, NULL, paramValues, paramLengths, paramFormats, 1);
-
-    if (PQresultStatus(pr) != PGRES_COMMAND_OK)
-    {
-        fprintf(stderr, "opsick_db_create_user: Failure during execution of the SQL statement \"%s\". Error message: %s \n", sql, PQerrorMessage(dbconn));
-        goto exit;
-    }
+    OPSICK_PQASSERT(pr, sql, dbconn, PGRES_COMMAND_OK);
 
     rc = 0;
 exit:
@@ -640,12 +621,7 @@ int opsick_db_set_user_keys(PGconn* dbconn, uint64_t user_id, const char* new_pu
     paramFormats[4] = 0;
 
     PGresult* pr = PQexecParams(dbconn, sql, 5, NULL, paramValues, paramLengths, paramFormats, 1);
-
-    if (PQresultStatus(pr) != PGRES_COMMAND_OK)
-    {
-        fprintf(stderr, "opsick_db_create_user: Failure during execution of the SQL statement \"%s\". Error message: %s \n", sql, PQerrorMessage(dbconn));
-        goto exit;
-    }
+    OPSICK_PQASSERT(pr, sql, dbconn, PGRES_COMMAND_OK);
 
     unsigned char sha512[64];
 
@@ -661,3 +637,5 @@ exit:
     PQclear(pr);
     return rc;
 }
+
+#undef OPSICK_PQASSERT

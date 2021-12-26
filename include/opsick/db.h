@@ -109,6 +109,13 @@ int opsick_db_create_user(PGconn* dbconn, const char* pw, uint64_t exp_utc, cons
 int opsick_db_delete_user(PGconn* dbconn, uint64_t user_id);
 
 /**
+ * Counts the total amount of users stored in the db.
+ * @param dbconn Postgres db connection reference to use for the query.
+ * @return The total number of users currently in the db.
+ */
+uint64_t opsick_db_count_users(PGconn* dbconn);
+
+/**
  * Retrieves a user's metadata from the db.
  * @param db Postgres db connection reference to use for the query.
  * @param user_id The user ID.
