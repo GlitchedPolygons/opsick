@@ -258,7 +258,7 @@ void opsick_post_users_create(http_s* request)
     char pw_hash[256];
     mbedtls_platform_zeroize(pw_hash, sizeof(pw_hash));
 
-    int r = argon2id_hash_encoded(adminsettings.argon2_time_cost, adminsettings.argon2_memory_cost, adminsettings.argon2_parallelism, pw.data, pw.len, salt, sizeof(salt), 64, pw_hash, sizeof(pw_hash) - 1);
+    int r = argon2id_hash_encoded(adminsettings.argon2_time_cost, adminsettings.argon2_memory_cost_kib, adminsettings.argon2_parallelism, pw.data, pw.len, salt, sizeof(salt), 64, pw_hash, sizeof(pw_hash) - 1);
     if (r != ARGON2_OK)
     {
         fprintf(stderr, "ERROR: Failure to hash user's password server-side using \"argon2id_hash_encoded()\". Returned error code: %d \n", r);
@@ -502,7 +502,7 @@ void opsick_post_users_passwd(http_s* request)
     char new_pw_hash[256] = { 0x00 };
     const struct fio_str_info_s new_pw_strobj = fiobj_obj2cstr(new_pw_obj);
 
-    int r = argon2id_hash_encoded(adminsettings.argon2_time_cost, adminsettings.argon2_memory_cost, adminsettings.argon2_parallelism, new_pw_strobj.data, new_pw_strobj.len, salt, sizeof(salt), 64, new_pw_hash, sizeof(new_pw_hash) - 1);
+    int r = argon2id_hash_encoded(adminsettings.argon2_time_cost, adminsettings.argon2_memory_cost_kib, adminsettings.argon2_parallelism, new_pw_strobj.data, new_pw_strobj.len, salt, sizeof(salt), 64, new_pw_hash, sizeof(new_pw_hash) - 1);
     if (r != ARGON2_OK)
     {
         fprintf(stderr, "ERROR: Failure to hash user's password server-side using \"argon2id_hash_encoded()\". Returned error code: %d \n", r);

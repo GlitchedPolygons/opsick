@@ -72,6 +72,86 @@ extern "C" {
  */
 #define OPSICK_2FA_HASH_ALGO 0
 
+#pragma region DEFAULT CONFIG VALUES
+
+/**
+ * Boolean setting that determines whether or not Opsick should log all HTTP-requests by default. <p>
+ * \c 0 means \c false and any non-zero value means \c true
+ */
+#define OPSICK_DEFAULT_LOG 0
+
+/**
+ * Default port to which Opsick should listen to.
+ */
+#define OPSICK_DEFAULT_PORT 6677
+
+/**
+ * Default amount of threads that the Opsick instance should use to serve its endpoints.
+ */
+#define OPSICK_DEFAULT_THREADS 2
+
+/**
+ * Default max client count limit. \c 0 means unlimited.
+ */
+#define OPSICK_DEFAULT_MAX_CLIENTS 0
+
+/**
+ * Default header size limit in bytes for all endpoints.
+ */
+#define OPSICK_DEFAULT_MAX_HEADER_SIZE (1024 * 16)
+
+/**
+ * Default body size limit in bytes for all endpoints.
+ */
+#define OPSICK_DEFAULT_MAX_BODY_SIZE (1024 * 1024 * 16)
+
+/**
+ * Default maximum users limit for the Opsick instance (\c 0 means unlimited users).
+ */
+#define OPSICK_DEFAULT_MAX_USERS 0
+
+/**
+ * Default API key algo ( currently \c 0 which is \c ed25519 ).
+ */
+#define OPSICK_DEFAULT_API_KEY_ALGO 0
+
+/**
+ * Boolean setting for whether or not Opsick should serve the \c index.html file by default.
+ */
+#define OPSICK_DEFAULT_USE_INDEX_HTML 1
+
+/**
+ * Default Argon2 time cost parameter (iterations).
+ */
+#define OPSICK_DEFAULT_ARGON2_TIME_COST 16
+
+/**
+ * Default Argon2 memory cost parameter (in KiB).
+ */
+#define OPSICK_DEFAULT_ARGON2_MEMORY_COST_KiB (1024 * 64)
+
+/**
+ * Default Argon2 parallelism setting.
+ */
+#define OPSICK_DEFAULT_ARGON2_PARALLELISM 2
+
+/**
+ * Default key regeneration interval in hours.
+ */
+#define OPSICK_DEFAULT_KEY_REFRESH_INTERVAL_HOURS 72
+
+/**
+ * Default API Key (public ed25519 key as hex-encoded string).
+ */
+#define OPSICK_DEFAULT_API_KEY_PUBLIC_HEXSTR "F407F5E089CE64002EB417FB683A7302287BE84108BB8E62FD8ED647DC62805C"
+
+/**
+ * Default user registration password is \c "opsick_registration_password".
+ */
+#define OPSICK_DEFAULT_USER_CREATION_PASSWORD_ARGON2_HASH "$argon2id$v=19$m=65536,t=16,p=2$U2pkM195MjMtUTksVw$4K9trCcn0vOyLRvFCK3Srwlzbr+5N6gIcS3omQoMFg0"
+
+#pragma endregion
+
 #if defined(_WIN32)
 #define OPSICK_DEFAULT_DBCONN_FILE "C:\\opsick\\dbconn"
 #elif defined(__APPLE__)

@@ -135,7 +135,7 @@ struct opsick_config_adminsettings
     /**
      * Memory cost parameter for the Argon2 hashing (higher == slower == safer).
      */
-    uint32_t argon2_memory_cost;
+    uint32_t argon2_memory_cost_kib;
 
     /**
      * Amount of threads to use for the Argon2 hashing.

@@ -27,126 +27,293 @@ static struct opsick_config_adminsettings adminsettings;
 
 static inline void init()
 {
-    memset(&hostsettings, 0x00, sizeof(hostsettings));
-    memset(&adminsettings, 0x00, sizeof(adminsettings));
+    mbedtls_platform_zeroize(&hostsettings, sizeof(hostsettings));
+    mbedtls_platform_zeroize(&adminsettings, sizeof(adminsettings));
 
-    hostsettings.log = 0;
-    hostsettings.port = 6677;
-    hostsettings.threads = 2;
-    hostsettings.max_clients = 0;
-    hostsettings.max_header_size = 1024 * 16;
-    hostsettings.max_body_size = 1024 * 1024 * 16;
+    hostsettings.log = OPSICK_DEFAULT_LOG;
+    hostsettings.port = OPSICK_DEFAULT_PORT;
+    hostsettings.threads = OPSICK_DEFAULT_THREADS;
+    hostsettings.max_clients = OPSICK_DEFAULT_MAX_CLIENTS;
+    hostsettings.max_header_size = OPSICK_DEFAULT_MAX_HEADER_SIZE;
+    hostsettings.max_body_size = OPSICK_DEFAULT_MAX_BODY_SIZE;
 
-    adminsettings.max_users = 0;
-    adminsettings.use_index_html = 1;
-    adminsettings.key_refresh_interval_hours = 72;
-    adminsettings.api_key_algo = 0;
-    adminsettings.argon2_time_cost = 16;
-    adminsettings.argon2_memory_cost = 65536;
-    adminsettings.argon2_parallelism = 2;
-    strcpy(adminsettings.api_key_public_hexstr, "F407F5E089CE64002EB417FB683A7302287BE84108BB8E62FD8ED647DC62805C");
-    strcpy(adminsettings.user_registration_password, "$argon2id$v=19$m=65536,t=16,p=2$U2pkM195MjMtUTksVw$4K9trCcn0vOyLRvFCK3Srwlzbr+5N6gIcS3omQoMFg0"); // Default user registration password is "opsick_registration_password".
+    adminsettings.max_users = OPSICK_DEFAULT_MAX_USERS;
+    adminsettings.api_key_algo = OPSICK_DEFAULT_API_KEY_ALGO;
+    adminsettings.use_index_html = OPSICK_DEFAULT_USE_INDEX_HTML;
+    adminsettings.argon2_time_cost = OPSICK_DEFAULT_ARGON2_TIME_COST;
+    adminsettings.argon2_parallelism = OPSICK_DEFAULT_ARGON2_PARALLELISM;
+    adminsettings.argon2_memory_cost_kib = OPSICK_DEFAULT_ARGON2_MEMORY_COST_KiB;
+    adminsettings.key_refresh_interval_hours = OPSICK_DEFAULT_KEY_REFRESH_INTERVAL_HOURS;
+    strcpy(adminsettings.api_key_public_hexstr, OPSICK_DEFAULT_API_KEY_PUBLIC_HEXSTR);
+    strcpy(adminsettings.user_registration_password, OPSICK_DEFAULT_USER_CREATION_PASSWORD_ARGON2_HASH); // Default user registration password is "opsick_registration_password".
 }
+
+#define OPSICK_PQASSERT(pr, sql, dbconn)                                                                                                                                                                                                                                                                                                                                                                                                                                                                           \
+    if (PQresultStatus(pr) != PGRES_TUPLES_OK)                                                                                                                                                                                                                                                                                                                                                                                                                                                                     \
+    {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              \
+        fprintf(stderr, "%s: Failure during execution of the SQL statement \"%s\". Error message: %s \n", __func__, sql, PQerrorMessage(dbconn));                                                                                                                                                                                                                                                                                                                                                                  \
+        goto exit;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 \
+    }
 
 static int load_hostsettings(PGconn* dbconn)
 {
-    return 1;
+    int r = 0;
+    char* sql;
+    PGresult* pr;
 
-    /* TODO
-    uint64_t port = -1;
-    parse_toml_uint(table, "port", &port);
-    if (port > 0 && port <= 65535)
-    {
-        hostsettings.port = (uint16_t)port;
-    }
-    else
-    {
-        fprintf(stderr, "ERROR: The parsed port number \"%zu\" is not within the range of valid port numbers [0; 65535] - using default value of \"%d\" instead... \n", port, hostsettings.port);
-    }
+    // Load setting from config that determines whether all HTTP-requests should be logged:
 
-    uint64_t threads = -1;
-    parse_toml_uint(table, "threads", &threads);
-    if (threads > 0 && threads <= 64)
+    sql = "SELECT value FROM settings WHERE id = 'log'";
+    pr = PQexec(dbconn, sql);
+    OPSICK_PQASSERT(pr, sql, dbconn);
+
+    if (PQntuples(pr) != 0)
     {
-        hostsettings.threads = (uint8_t)threads;
-    }
-    else
-    {
-        fprintf(stderr, "ERROR: The parsed maximum thread count setting \"%zu\" is not within the range of recommended thread count limits [1; 64] - using default thread count of \"%d\" instead... \n", threads, hostsettings.threads);
+        hostsettings.log = *PQgetvalue(pr, 0, 0) != '0';
     }
 
-    parse_toml_uint(table, "max_clients", &hostsettings.max_clients);
-    parse_toml_uint(table, "max_header_size", &hostsettings.max_header_size);
-    parse_toml_uint(table, "max_body_size", &hostsettings.max_body_size);
+    // Load port setting from db:
 
-    return 1;
-    */
+    sql = "SELECT value FROM settings WHERE id = 'port'";
+    pr = PQexec(dbconn, sql);
+    OPSICK_PQASSERT(pr, sql, dbconn);
+
+    if (PQntuples(pr) != 0)
+    {
+        const unsigned long port = strtoul(PQgetvalue(pr, 0, 0), NULL, 10);
+
+        if (port > 0 && port <= 65535)
+        {
+            hostsettings.port = (uint16_t)port;
+        }
+        else
+        {
+            fprintf(stderr, "ERROR: The parsed port number \"%zu\" is not within the range of valid port numbers [0; 65535] - using default value of \"%d\" instead... \n", port, hostsettings.port);
+        }
+    }
+
+    // Load thread count setting from config:
+
+    sql = "SELECT value FROM settings WHERE id = 'threads'";
+    pr = PQexec(dbconn, sql);
+    OPSICK_PQASSERT(pr, sql, dbconn);
+
+    if (PQntuples(pr) != 0)
+    {
+        const unsigned long threads = strtoul(PQgetvalue(pr, 0, 0), NULL, 10);
+
+        if (threads > 0 && threads <= 64)
+        {
+            hostsettings.threads = (uint8_t)threads;
+        }
+        else
+        {
+            fprintf(stderr, "ERROR: The parsed maximum thread count setting \"%zu\" is not within the range of recommended thread count limits [1; 64] - using default thread count of \"%d\" instead... \n", threads, hostsettings.threads);
+        }
+    }
+
+    // Load max clients setting from config:
+
+    sql = "SELECT value FROM settings WHERE id = 'max_clients'";
+    pr = PQexec(dbconn, sql);
+    OPSICK_PQASSERT(pr, sql, dbconn);
+
+    if (PQntuples(pr) != 0)
+    {
+        hostsettings.max_clients = (uint64_t)strtoull(PQgetvalue(pr, 0, 0), NULL, 10);
+    }
+
+    // Load max header size setting (in bytes) from config:
+
+    sql = "SELECT value FROM settings WHERE id = 'max_header_size'";
+    pr = PQexec(dbconn, sql);
+    OPSICK_PQASSERT(pr, sql, dbconn);
+
+    if (PQntuples(pr) != 0)
+    {
+        hostsettings.max_header_size = (uint64_t)strtoull(PQgetvalue(pr, 0, 0), NULL, 10);
+    }
+
+    // Load max body size setting (in bytes) from config:
+
+    sql = "SELECT value FROM settings WHERE id = 'max_body_size'";
+    pr = PQexec(dbconn, sql);
+    OPSICK_PQASSERT(pr, sql, dbconn);
+
+    if (PQntuples(pr) != 0)
+    {
+        hostsettings.max_body_size = (uint64_t)strtoull(PQgetvalue(pr, 0, 0), NULL, 10);
+    }
+
+    r = 1;
+
+exit:
+    PQclear(pr);
+    return r;
 }
 
 static int load_adminsettings(PGconn* dbconn)
 {
-    return 1;
+    int r = 0;
+    char* sql;
+    PGresult* pr;
 
-    /* TODO
-    parse_toml_uint(table, "max_users", &adminsettings.max_users);
-    parse_toml_uint(table, "key_refresh_interval_hours", &adminsettings.key_refresh_interval_hours);
+    // Load API key algo ID setting from config:
 
-    uint64_t argon2_time_cost, argon2_memory_cost, argon2_parallelism;
-    parse_toml_uint(table, "argon2_time_cost", &argon2_time_cost);
-    parse_toml_uint(table, "argon2_memory_cost_kib", &argon2_memory_cost);
-    parse_toml_uint(table, "argon2_parallelism", &argon2_parallelism);
+    sql = "SELECT value FROM settings WHERE id = 'api_key_algo'";
+    pr = PQexec(dbconn, sql);
+    OPSICK_PQASSERT(pr, sql, dbconn);
+
+    if (PQntuples(pr) != 0)
+    {
+        const unsigned long algo = strtoul(PQgetvalue(pr, 0, 0), NULL, 10);
+
+        if (algo >= 0 && algo <= UINT8_MAX)
+        {
+            adminsettings.api_key_algo = (uint8_t)algo;
+        }
+        else
+        {
+            fprintf(stderr, "%s: ERROR: The parsed algo id setting \"%zu\" is not within the range of valid algo IDs [0;255] \n", __func__, algo);
+            goto exit;
+        }
+    }
+
+    // Load max users limit from config:
+
+    sql = "SELECT value FROM settings WHERE id = 'max_users'";
+    pr = PQexec(dbconn, sql);
+    OPSICK_PQASSERT(pr, sql, dbconn);
+
+    if (PQntuples(pr) != 0)
+    {
+        adminsettings.max_users = (uint64_t)strtoull(PQgetvalue(pr, 0, 0), NULL, 10);
+    }
+
+    // Load key regeneration interval (in hours) from config:
+
+    sql = "SELECT value FROM settings WHERE id = 'key_refresh_interval_hours'";
+    pr = PQexec(dbconn, sql);
+    OPSICK_PQASSERT(pr, sql, dbconn);
+
+    if (PQntuples(pr) != 0)
+    {
+        adminsettings.key_refresh_interval_hours = (uint64_t)strtoull(PQgetvalue(pr, 0, 0), NULL, 10);
+    }
+
+    // Load Argon2 time cost parameter (iterations) from config:
+
+    uint64_t argon2_time_cost = OPSICK_DEFAULT_ARGON2_TIME_COST;
+    uint64_t argon2_memory_cost_kib = OPSICK_DEFAULT_ARGON2_MEMORY_COST_KiB;
+    uint64_t argon2_parallelism = OPSICK_DEFAULT_ARGON2_PARALLELISM;
+
+    sql = "SELECT value FROM settings WHERE id = 'argon2_time_cost'";
+    pr = PQexec(dbconn, sql);
+    OPSICK_PQASSERT(pr, sql, dbconn);
+
+    if (PQntuples(pr) != 0)
+    {
+        argon2_time_cost = (uint64_t)strtoull(PQgetvalue(pr, 0, 0), NULL, 10);
+    }
+
+    // Load Argon2 memory cost parameter (in KiB) from config:
+
+    sql = "SELECT value FROM settings WHERE id = 'argon2_memory_cost_kib'";
+    pr = PQexec(dbconn, sql);
+    OPSICK_PQASSERT(pr, sql, dbconn);
+
+    if (PQntuples(pr) != 0)
+    {
+        argon2_memory_cost_kib = (uint64_t)strtoull(PQgetvalue(pr, 0, 0), NULL, 10);
+    }
+
+    // Load Argon2 parallelism parameter from config:
+
+    sql = "SELECT value FROM settings WHERE id = 'argon2_parallelism'";
+    pr = PQexec(dbconn, sql);
+    OPSICK_PQASSERT(pr, sql, dbconn);
+
+    if (PQntuples(pr) != 0)
+    {
+        argon2_parallelism = (uint64_t)strtoull(PQgetvalue(pr, 0, 0), NULL, 10);
+    }
 
     if (argon2_time_cost > UINT32_MAX)
         argon2_time_cost = UINT32_MAX;
 
-    if (argon2_memory_cost > UINT32_MAX)
-        argon2_memory_cost = UINT32_MAX;
+    if (argon2_memory_cost_kib > UINT32_MAX)
+        argon2_memory_cost_kib = UINT32_MAX;
 
     if (argon2_parallelism > OPSICK_MAX_ARGON2_PARALLELISM)
         argon2_parallelism = OPSICK_MAX_ARGON2_PARALLELISM;
 
     adminsettings.argon2_time_cost = argon2_time_cost;
-    adminsettings.argon2_memory_cost = argon2_memory_cost;
+    adminsettings.argon2_memory_cost_kib = argon2_memory_cost_kib;
     adminsettings.argon2_parallelism = argon2_parallelism;
 
-    adminsettings.use_index_html = opsick_strncmpic(toml_raw_in(table, "use_index_html"), "true", 4) == 0;
+    // Load the setting that determines whether or not Opsick should serve the index.html file on its home path ("/") from config:
 
-    char* user_registration_password = NULL;
-    if (toml_rtos(toml_raw_in(table, "user_registration_password"), &user_registration_password) == 0)
-    {
-        strncpy(adminsettings.user_registration_password, user_registration_password, sizeof(adminsettings.user_registration_password));
-    }
-    else
-    {
-        mbedtls_platform_zeroize(adminsettings.user_registration_password, sizeof(adminsettings.user_registration_password));
-    }
-    free(user_registration_password);
+    sql = "SELECT value FROM settings WHERE id = 'use_index_html'";
+    pr = PQexec(dbconn, sql);
+    OPSICK_PQASSERT(pr, sql, dbconn);
 
-    uint64_t algo = 0;
-    parse_toml_uint(table, "api_key_algo", &algo);
-    if (algo >= 0 && algo <= UINT8_MAX)
+    if (PQntuples(pr) != 0)
     {
-        adminsettings.api_key_algo = (uint8_t)algo;
-    }
-    else
-    {
-        fprintf(stderr, "ERROR: The parsed algo id setting \"%zu\" is not within the range of valid algo IDs [0;255] \n", algo);
+        adminsettings.use_index_html = *PQgetvalue(pr, 0, 0) != '0';
     }
 
-    char* api_key_public_hexstr = NULL;
-    if (toml_rtos(toml_raw_in(table, "api_key_public_hexstr"), &api_key_public_hexstr))
-    {
-        fprintf(stderr, "ERROR: Failed to parse \"api_key_public\" setting string from the opsick user config file \"%s\". \n", OPSICK_CONFIG_FILE_PATH);
-    }
-    else
-    {
-        strncpy(adminsettings.api_key_public_hexstr, api_key_public_hexstr, sizeof(adminsettings.api_key_public_hexstr));
-        opsick_hexstr2bin(api_key_public_hexstr, strlen(api_key_public_hexstr), adminsettings.api_key_public, sizeof(adminsettings.api_key_public), NULL);
-    }
-    free(api_key_public_hexstr);
+    // Load the user creation password from config:
 
-    return 1;
-    */
+    sql = "SELECT value FROM settings WHERE id = 'user_registration_password'";
+    pr = PQexec(dbconn, sql);
+    OPSICK_PQASSERT(pr, sql, dbconn);
+
+    if (PQntuples(pr) != 0)
+    {
+        char* user_registration_password = PQgetvalue(pr, 0, 0);
+
+        if (strlen(user_registration_password) > 0)
+        {
+            if (strstr(user_registration_password, "$argon2id") != user_registration_password)
+            {
+                fprintf(stderr, "%s: Invalid opsick config value. If a user registration password is desired, it MUST be in the Argon2id encoded hash format!", __func__);
+                goto exit;
+            }
+
+            strncpy(adminsettings.user_registration_password, user_registration_password, sizeof(adminsettings.user_registration_password));
+        }
+        else
+        {
+            mbedtls_platform_zeroize(adminsettings.user_registration_password, sizeof(adminsettings.user_registration_password));
+        }
+    }
+
+    // Load the API key's public ed25519 key (hex-encoded string) from config:
+
+    sql = "SELECT value FROM settings WHERE id = 'api_key_public_hexstr'";
+    pr = PQexec(dbconn, sql);
+    OPSICK_PQASSERT(pr, sql, dbconn);
+
+    if (PQntuples(pr) != 0)
+    {
+        char* api_key_public_hexstr = PQgetvalue(pr, 0, 0);
+        const size_t api_key_public_hexstr_length = strlen(api_key_public_hexstr);
+
+        if (api_key_public_hexstr_length == 0 || *api_key_public_hexstr == '\0')
+        {
+            fprintf(stderr, "%s: ERROR: Failed to parse \"api_key_public\" setting string from the opsick DB's user config table. \n", __func__);
+        }
+        else
+        {
+            strncpy(adminsettings.api_key_public_hexstr, api_key_public_hexstr, sizeof(adminsettings.api_key_public_hexstr));
+            opsick_hexstr2bin(api_key_public_hexstr, api_key_public_hexstr_length, adminsettings.api_key_public, sizeof(adminsettings.api_key_public), NULL);
+        }
+    }
+
+    r = 1;
+exit:
+    PQclear(pr);
+    return r;
 }
 
 int opsick_config_load()
@@ -202,3 +369,5 @@ int opsick_config_get_adminsettings(struct opsick_config_adminsettings* out)
     *out = t;
     return 1;
 }
+
+#undef OPSICK_PQASSERT
