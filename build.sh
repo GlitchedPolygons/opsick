@@ -37,7 +37,7 @@ mkdir -p "$REPO"/build && cd "$REPO"/build || exit
 cmake -DBUILD_SHARED_LIBS=Off -DUSE_SHARED_MBEDTLS_LIBRARY=Off -DCMAKE_BUILD_TYPE=Release .. || exit
 cmake --build . --config Release || exit
 
-tar -czvf opsick.tar.gz opsick config.toml
+tar -czvf opsick.tar.gz opsick
 
 export CC="$PREVCC"
 export CXX="$PREVCXX"
