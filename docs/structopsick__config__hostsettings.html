@@ -74,8 +74,8 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a4375508c3fa5d689ad80be4993eb0550"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__hostsettings.html#a4375508c3fa5d689ad80be4993eb0550">log</a></td></tr>
-<tr class="separator:a4375508c3fa5d689ad80be4993eb0550"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19dcda9c24ca343fc08ebf577eacde2e"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__hostsettings.html#a19dcda9c24ca343fc08ebf577eacde2e">log</a></td></tr>
+<tr class="separator:a19dcda9c24ca343fc08ebf577eacde2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3848646aca3c1d392f792a7a1bd0232"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__hostsettings.html#aa3848646aca3c1d392f792a7a1bd0232">port</a></td></tr>
 <tr class="separator:aa3848646aca3c1d392f792a7a1bd0232"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6512e2c8379ec114e56b09b332131ff3"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__hostsettings.html#a6512e2c8379ec114e56b09b332131ff3">threads</a></td></tr>
@@ -86,41 +86,24 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a6a7af65ef47dd939ff55e89a0dbfe8dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa82a5f78fe94d7be4a789cae5896c4cd"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__hostsettings.html#aa82a5f78fe94d7be4a789cae5896c4cd">max_body_size</a></td></tr>
 <tr class="separator:aa82a5f78fe94d7be4a789cae5896c4cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a819902fae99c2754660afc61bea73b22"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__hostsettings.html#a819902fae99c2754660afc61bea73b22">db_file</a> [4096]</td></tr>
-<tr class="separator:a819902fae99c2754660afc61bea73b22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >The host section of the opsick config file (port number, max. HTTP header size, etc...). </p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
-<a id="a819902fae99c2754660afc61bea73b22" name="a819902fae99c2754660afc61bea73b22"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a819902fae99c2754660afc61bea73b22">&#9670;&nbsp;</a></span>db_file</h2>
+<a id="a19dcda9c24ca343fc08ebf577eacde2e" name="a19dcda9c24ca343fc08ebf577eacde2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19dcda9c24ca343fc08ebf577eacde2e">&#9670;&nbsp;</a></span>log</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char opsick_config_hostsettings::db_file[4096]</td>
+          <td class="memname">uint8_t opsick_config_hostsettings::log</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >The file path to the Opsick SQL db. </p>
-<p >[DEFAULT] <code>opsick.db</code> (local to where the opsick executable resides). </p>
-
-</div>
-</div>
-<a id="a4375508c3fa5d689ad80be4993eb0550" name="a4375508c3fa5d689ad80be4993eb0550"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4375508c3fa5d689ad80be4993eb0550">&#9670;&nbsp;</a></span>log</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool opsick_config_hostsettings::log</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p >Should HTTP requests be logged? </p>
-<p >[DEFAULT] <code>false</code> </p>
+<p >Whether or not to log HTTP requests. </p>
+<p >Set this to <code>1</code> to log all HTTP requests. </p>
+<p >[DEFAULT] <code>0</code> </p>
 
 </div>
 </div>

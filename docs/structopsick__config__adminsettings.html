@@ -76,16 +76,16 @@ $(function() {
 Public Attributes</h2></td></tr>
 <tr class="memitem:a3e0e62ffcefaa7b6fcb011d743809352"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#a3e0e62ffcefaa7b6fcb011d743809352">max_users</a></td></tr>
 <tr class="separator:a3e0e62ffcefaa7b6fcb011d743809352"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa584b21614d4c832bc3729027bcee0c1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#aa584b21614d4c832bc3729027bcee0c1">use_index_html</a></td></tr>
-<tr class="separator:aa584b21614d4c832bc3729027bcee0c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d2c6dff6977298bcde8ded9761d27cf"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#a0d2c6dff6977298bcde8ded9761d27cf">use_index_html</a></td></tr>
+<tr class="separator:a0d2c6dff6977298bcde8ded9761d27cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af50d5091f653c8c0c921d7ecac21d037"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#af50d5091f653c8c0c921d7ecac21d037">key_refresh_interval_hours</a></td></tr>
 <tr class="separator:af50d5091f653c8c0c921d7ecac21d037"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1783f73efebb68636cdbc3693657c219"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#a1783f73efebb68636cdbc3693657c219">user_registration_password</a> [<a class="el" href="constants_8h.html#ac2f9866951bb70337fd33c7489876323">OPSICK_MAX_USER_CREATION_PASSWORD_LENGTH</a>]</td></tr>
 <tr class="separator:a1783f73efebb68636cdbc3693657c219"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3c031f2235d721adaccfd9abeb68f3e"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#af3c031f2235d721adaccfd9abeb68f3e">argon2_time_cost</a></td></tr>
 <tr class="separator:af3c031f2235d721adaccfd9abeb68f3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61d1866e36b7b2896d7b4bc5e920d981"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#a61d1866e36b7b2896d7b4bc5e920d981">argon2_memory_cost_kib</a></td></tr>
-<tr class="separator:a61d1866e36b7b2896d7b4bc5e920d981"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab134a2c067c1158d1c2673244a038d8"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#aab134a2c067c1158d1c2673244a038d8">argon2_memory_cost_kib</a></td></tr>
+<tr class="separator:aab134a2c067c1158d1c2673244a038d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a489579e0742edd0508896863b24a564a"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#a489579e0742edd0508896863b24a564a">argon2_parallelism</a></td></tr>
 <tr class="separator:a489579e0742edd0508896863b24a564a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c6a102ad5127040719f801242d29e59"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structopsick__config__adminsettings.html#a1c6a102ad5127040719f801242d29e59">api_key_algo</a></td></tr>
@@ -125,7 +125,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p >The public key to use for verifying requests that come from the API master, who signs the requests using this key's private counterpart. </p>
-<p >The API master is the "admin" user who is allowed to create and modify opsick users, extend them, etc... </p>
+<p >The API master is whoever has the private key for signing requests to this backend to create and extend users. It's kinda like an admin. </p>
 
 </div>
 </div>
@@ -141,11 +141,12 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p >The hex-encoded <a class="el" href="structopsick__config__adminsettings.html#a5f032e52b322c0b3f9c12db788ab13d9">api_key_public</a> string (NUL-terminated). </p>
+<p >It's the hex-encoded Ed25519 key with which to verify API requests such as user creation and user extension (the API master needs to sign his request's body with the private counterpart of that key). </p>
 
 </div>
 </div>
-<a id="a61d1866e36b7b2896d7b4bc5e920d981" name="a61d1866e36b7b2896d7b4bc5e920d981"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a61d1866e36b7b2896d7b4bc5e920d981">&#9670;&nbsp;</a></span>argon2_memory_cost_kib</h2>
+<a id="aab134a2c067c1158d1c2673244a038d8" name="aab134a2c067c1158d1c2673244a038d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab134a2c067c1158d1c2673244a038d8">&#9670;&nbsp;</a></span>argon2_memory_cost_kib</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -222,21 +223,21 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aa584b21614d4c832bc3729027bcee0c1" name="aa584b21614d4c832bc3729027bcee0c1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa584b21614d4c832bc3729027bcee0c1">&#9670;&nbsp;</a></span>use_index_html</h2>
+<a id="a0d2c6dff6977298bcde8ded9761d27cf" name="a0d2c6dff6977298bcde8ded9761d27cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d2c6dff6977298bcde8ded9761d27cf">&#9670;&nbsp;</a></span>use_index_html</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool opsick_config_adminsettings::use_index_html</td>
+          <td class="memname">uint8_t opsick_config_adminsettings::use_index_html</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Set this to <code>true</code> if you want to let the home endpoint (reachable under "/") serve the index.html file that's located inside the directory where the opsick executable resides. </p>
-<p >You could for example modify that index.html file and customize it to your needs, add some sort of welcome screen to your users and basically do whatever you like with it. </p>
-<p >If set to <code>false</code>, the "/" endpoint just returns a plain HTTP status code 200 ("OK"). In that case, the whole opsick instance would act as a plain Web API without any visual feedback/interface. </p>
-<p >[DEFAULT] <code>true</code> </p>
+<p >Set this to a non-zero value if you want to let the home endpoint (reachable under "/") serve the index.html file that's located inside the directory where the opsick executable resides. </p>
+<p >You could for example modify that <code>index.html</code> file and customize it to your needs, add some sort of welcome screen to your users and basically do whatever you like with it. </p>
+<p >If set to <code>0</code>, the <code>"/"</code> endpoint just returns a plain HTTP status code 200 ("OK"). In that case, the whole opsick instance would act as a plain Web API without any visual feedback/interface. </p>
+<p >[DEFAULT] <code>1</code> </p>
 
 </div>
 </div>
@@ -251,8 +252,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Define a password that is needed in order to register a new user. </p>
-<p >[DEFAULT] <code>opsick_registration_password</code> </p>
+<p >The user registration password is an Argon2 encoded hash of the password that the API master needs to additionally pass to the opsick server as a request parameter when trying to create a new user. </p>
+<p >[DEFAULT] <code>argon2id("opsick_registration_password")</code> </p>
 
 </div>
 </div>

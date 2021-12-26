@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['max_5fbody_5fsize_0',['max_body_size',['../structopsick__config__hostsettings.html#aa82a5f78fe94d7be4a789cae5896c4cd',1,'opsick_config_hostsettings']]],
-  ['max_5fclients_1',['max_clients',['../structopsick__config__hostsettings.html#a1082aeb629ea9027bd62807ee749f2f0',1,'opsick_config_hostsettings']]],
-  ['max_5fheader_5fsize_2',['max_header_size',['../structopsick__config__hostsettings.html#a6a7af65ef47dd939ff55e89a0dbfe8dc',1,'opsick_config_hostsettings']]],
-  ['max_5fusers_3',['max_users',['../structopsick__config__adminsettings.html#a3e0e62ffcefaa7b6fcb011d743809352',1,'opsick_config_adminsettings']]]
+  ['port_0',['port',['../structopsick__config__hostsettings.html#aa3848646aca3c1d392f792a7a1bd0232',1,'opsick_config_hostsettings']]],
+  ['public_5fkey_5fcurve448_1',['public_key_curve448',['../structopsick__user__metadata.html#afca568d83e246810c9ae71a7a7d73b22',1,'opsick_user_metadata']]],
+  ['public_5fkey_5fed25519_2',['public_key_ed25519',['../structopsick__user__metadata.html#a171d2069c1fa09dd8f589dfa917c597b',1,'opsick_user_metadata']]],
+  ['pw_3',['pw',['../structopsick__user__metadata.html#a82babebe21ac0a57eb1b98b8c12abfaa',1,'opsick_user_metadata']]]
 ];

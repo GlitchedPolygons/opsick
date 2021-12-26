@@ -77,19 +77,19 @@ $(function() {
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stddef.h&gt;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
-<code>#include &lt;sqlite3.h&gt;</code><br />
+<code>#include &lt;libpq-fe.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="user_8h_source.html">user.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for db.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="db_8h__incl.png" border="0" usemap="#ainclude_2opsick_2db_8h" alt=""/></div>
 <map name="ainclude_2opsick_2db_8h" id="ainclude_2opsick_2db_8h">
-<area shape="rect" title="Opsick DB interaction functions." alt="" coords="80,5,215,32"/>
+<area shape="rect" title="Opsick DB interaction functions." alt="" coords="81,5,216,32"/>
 <area shape="rect" title=" " alt="" coords="5,80,73,107"/>
-<area shape="rect" title=" " alt="" coords="105,155,171,181"/>
-<area shape="rect" title=" " alt="" coords="149,80,220,107"/>
-<area shape="rect" href="user_8h.html" title="Contains the opsick_user_metadata struct." alt="" coords="245,80,303,107"/>
-<area shape="rect" title=" " alt="" coords="221,155,327,181"/>
+<area shape="rect" title=" " alt="" coords="107,155,172,181"/>
+<area shape="rect" title=" " alt="" coords="149,80,223,107"/>
+<area shape="rect" href="user_8h.html" title="Contains the opsick_user_metadata struct." alt="" coords="247,80,306,107"/>
+<area shape="rect" title=" " alt="" coords="223,155,330,181"/>
 </map>
 </div>
 </div>
@@ -97,12 +97,12 @@ Include dependency graph for db.h:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ab30f1d3ab716a3bef55b0e920cfc219b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#ab30f1d3ab716a3bef55b0e920cfc219b">opsick_db_init</a> ()</td></tr>
-<tr class="separator:ab30f1d3ab716a3bef55b0e920cfc219b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a140cf78b35662bc9a9bcd628c06d9b28"><td class="memItemLeft" align="right" valign="top">sqlite3 *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a140cf78b35662bc9a9bcd628c06d9b28">opsick_db_connect</a> ()</td></tr>
-<tr class="separator:a140cf78b35662bc9a9bcd628c06d9b28"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c7021cfeaa3522beeba0d6a5ad6b9ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a0c7021cfeaa3522beeba0d6a5ad6b9ec">opsick_db_disconnect</a> (sqlite3 *db)</td></tr>
-<tr class="separator:a0c7021cfeaa3522beeba0d6a5ad6b9ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a277790655c65b7d13ce1197c4c1bfd94"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a277790655c65b7d13ce1197c4c1bfd94">opsick_db_init</a> (const char *dbconn_filepath)</td></tr>
+<tr class="separator:a277790655c65b7d13ce1197c4c1bfd94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85551b047f3c11fb87b8e9e7257f17bc"><td class="memItemLeft" align="right" valign="top">PGconn *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a85551b047f3c11fb87b8e9e7257f17bc">opsick_db_connect</a> ()</td></tr>
+<tr class="separator:a85551b047f3c11fb87b8e9e7257f17bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36c6a53151f5713ed4a8ccf157bc09d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a36c6a53151f5713ed4a8ccf157bc09d8">opsick_db_disconnect</a> (PGconn *dbconn)</td></tr>
+<tr class="separator:a36c6a53151f5713ed4a8ccf157bc09d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50c127ac5529eeb1c52b6e9d3d46685f"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a50c127ac5529eeb1c52b6e9d3d46685f">opsick_db_get_schema_version_number</a> ()</td></tr>
 <tr class="separator:a50c127ac5529eeb1c52b6e9d3d46685f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f5d3b4462ea61dff9dcc8b441386a54"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a3f5d3b4462ea61dff9dcc8b441386a54">opsick_db_get_last_used_userid</a> ()</td></tr>
@@ -111,26 +111,26 @@ Functions</h2></td></tr>
 <tr class="separator:a0c9a3cf6b4f6bcd72fcb25d91c2a2013"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a325a186417cb69a1c104d8887317c38a"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a325a186417cb69a1c104d8887317c38a">opsick_db_get_last_db_schema_version_nr_lookup</a> ()</td></tr>
 <tr class="separator:a325a186417cb69a1c104d8887317c38a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b4b3a809dca62eb15f451b9a021ff8c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a4b4b3a809dca62eb15f451b9a021ff8c">opsick_db_does_user_id_exist</a> (sqlite3 *db, uint64_t user_id)</td></tr>
-<tr class="separator:a4b4b3a809dca62eb15f451b9a021ff8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d495ac923069c9e98fe7ec9219d2076"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a7d495ac923069c9e98fe7ec9219d2076">opsick_db_create_user</a> (sqlite3 *db, const char *pw, uint64_t exp_utc, const char *public_key_ed25519, const char *encrypted_private_key_ed25519, const char *public_key_curve448, const char *encrypted_private_key_curve448, uint64_t *out_user_id)</td></tr>
-<tr class="separator:a7d495ac923069c9e98fe7ec9219d2076"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7728d480f32b48a4816d752872285c4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#af7728d480f32b48a4816d752872285c4">opsick_db_delete_user</a> (sqlite3 *db, uint64_t user_id)</td></tr>
-<tr class="separator:af7728d480f32b48a4816d752872285c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea1399ab7ff475af4a3bb64822a7a02b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#aea1399ab7ff475af4a3bb64822a7a02b">opsick_db_get_user_metadata</a> (sqlite3 *db, uint64_t user_id, struct <a class="el" href="structopsick__user__metadata.html">opsick_user_metadata</a> *out_user_metadata)</td></tr>
-<tr class="separator:aea1399ab7ff475af4a3bb64822a7a02b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a758e14f79384370f6f0c23ca830f7a55"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a758e14f79384370f6f0c23ca830f7a55">opsick_db_set_user_pw</a> (sqlite3 *db, uint64_t user_id, const char *new_pw)</td></tr>
-<tr class="separator:a758e14f79384370f6f0c23ca830f7a55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af50f2a633163cd878c6790bf0d80578e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#af50f2a633163cd878c6790bf0d80578e">opsick_db_set_user_totps</a> (sqlite3 *db, uint64_t user_id, const char *new_totps)</td></tr>
-<tr class="separator:af50f2a633163cd878c6790bf0d80578e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80cec68457658ee99c3645ce9836c4fb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a80cec68457658ee99c3645ce9836c4fb">opsick_db_get_user_body</a> (sqlite3 *db, uint64_t user_id, char **out_body, size_t *out_body_length)</td></tr>
-<tr class="separator:a80cec68457658ee99c3645ce9836c4fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe99a82f8bc3dc0c9e87d7bb0f3dd05c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#abe99a82f8bc3dc0c9e87d7bb0f3dd05c">opsick_db_set_user_body</a> (sqlite3 *db, uint64_t user_id, const char *body)</td></tr>
-<tr class="separator:abe99a82f8bc3dc0c9e87d7bb0f3dd05c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac3711ea3544179ee4804fcdf25e3733"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#aac3711ea3544179ee4804fcdf25e3733">opsick_db_set_user_exp</a> (sqlite3 *db, uint64_t user_id, uint64_t new_exp)</td></tr>
-<tr class="separator:aac3711ea3544179ee4804fcdf25e3733"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9d8083959bf0a6de6f65fca8971ac2e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#ae9d8083959bf0a6de6f65fca8971ac2e">opsick_db_set_user_keys</a> (sqlite3 *db, uint64_t user_id, const char *new_pubkey_ed25519, const char *new_prvkey_ed25519, const char *new_pubkey_curve448, const char *new_prvkey_curve448)</td></tr>
-<tr class="separator:ae9d8083959bf0a6de6f65fca8971ac2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5eb95a243883753776d550c8be05787"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#ac5eb95a243883753776d550c8be05787">opsick_db_does_user_id_exist</a> (PGconn *dbconn, uint64_t user_id)</td></tr>
+<tr class="separator:ac5eb95a243883753776d550c8be05787"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a6ff591b819d0078f3756ef15a71295"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a6a6ff591b819d0078f3756ef15a71295">opsick_db_create_user</a> (PGconn *dbconn, const char *pw, uint64_t exp_utc, const char *public_key_ed25519, const char *encrypted_private_key_ed25519, const char *public_key_curve448, const char *encrypted_private_key_curve448, uint64_t *out_user_id)</td></tr>
+<tr class="separator:a6a6ff591b819d0078f3756ef15a71295"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cc3b5fd838601aec0802103b14015e7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a4cc3b5fd838601aec0802103b14015e7">opsick_db_delete_user</a> (PGconn *dbconn, uint64_t user_id)</td></tr>
+<tr class="separator:a4cc3b5fd838601aec0802103b14015e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5c6c66449827a78fb3d1e5e7d4fa4a6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#ab5c6c66449827a78fb3d1e5e7d4fa4a6">opsick_db_get_user_metadata</a> (PGconn *db, uint64_t user_id, struct <a class="el" href="structopsick__user__metadata.html">opsick_user_metadata</a> *out_user_metadata)</td></tr>
+<tr class="separator:ab5c6c66449827a78fb3d1e5e7d4fa4a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0685b43b7aded3ea41992aed6dd1022"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#ae0685b43b7aded3ea41992aed6dd1022">opsick_db_set_user_pw</a> (PGconn *dbconn, uint64_t user_id, const char *new_pw)</td></tr>
+<tr class="separator:ae0685b43b7aded3ea41992aed6dd1022"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67677e1813d695aa4c2d82ed86d7017b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a67677e1813d695aa4c2d82ed86d7017b">opsick_db_set_user_totps</a> (PGconn *dbconn, uint64_t user_id, const char *new_totps)</td></tr>
+<tr class="separator:a67677e1813d695aa4c2d82ed86d7017b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09b45ebffc3ae4ec662f53bebe83f3fe"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a09b45ebffc3ae4ec662f53bebe83f3fe">opsick_db_get_user_body</a> (PGconn *dbconn, uint64_t user_id, char **out_body, size_t *out_body_length)</td></tr>
+<tr class="separator:a09b45ebffc3ae4ec662f53bebe83f3fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0009e58f312a3cd57401e2ac6aad807e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a0009e58f312a3cd57401e2ac6aad807e">opsick_db_set_user_body</a> (PGconn *dbconn, uint64_t user_id, const char *body)</td></tr>
+<tr class="separator:a0009e58f312a3cd57401e2ac6aad807e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a8ea9b2be0b7c8df97df7852b383442"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a6a8ea9b2be0b7c8df97df7852b383442">opsick_db_set_user_exp</a> (PGconn *dbconn, uint64_t user_id, uint64_t new_exp)</td></tr>
+<tr class="separator:a6a8ea9b2be0b7c8df97df7852b383442"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6e2721c534ad50e3f4eafec757c0c82"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#ae6e2721c534ad50e3f4eafec757c0c82">opsick_db_set_user_keys</a> (PGconn *dbconn, uint64_t user_id, const char *new_pubkey_ed25519, const char *new_prvkey_ed25519, const char *new_pubkey_curve448, const char *new_prvkey_curve448)</td></tr>
+<tr class="separator:ae6e2721c534ad50e3f4eafec757c0c82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73c969a1ce317bc9e287f33b1c3974dd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="db_8h.html#a73c969a1ce317bc9e287f33b1c3974dd">opsick_db_free</a> ()</td></tr>
 <tr class="separator:a73c969a1ce317bc9e287f33b1c3974dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -138,26 +138,26 @@ Functions</h2></td></tr>
 <div class="textblock"><p >Opsick DB interaction functions. </p>
 <dl class="section author"><dt>Author</dt><dd>Raphael Beck </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a140cf78b35662bc9a9bcd628c06d9b28" name="a140cf78b35662bc9a9bcd628c06d9b28"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a140cf78b35662bc9a9bcd628c06d9b28">&#9670;&nbsp;</a></span>opsick_db_connect()</h2>
+<a id="a85551b047f3c11fb87b8e9e7257f17bc" name="a85551b047f3c11fb87b8e9e7257f17bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85551b047f3c11fb87b8e9e7257f17bc">&#9670;&nbsp;</a></span>opsick_db_connect()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">sqlite3 * opsick_db_connect </td>
+          <td class="memname">PGconn * opsick_db_connect </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Connects to the opsick db. </p><dl class="section return"><dt>Returns</dt><dd><code>NULL</code> if connection couldn't be established; the #sqlite3 reference otherwise. </dd></dl>
+<p >Connects to the opsick db. </p><dl class="section return"><dt>Returns</dt><dd><code>NULL</code> if connection couldn't be established; the postgres connection reference otherwise. </dd></dl>
 
 </div>
 </div>
-<a id="a7d495ac923069c9e98fe7ec9219d2076" name="a7d495ac923069c9e98fe7ec9219d2076"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7d495ac923069c9e98fe7ec9219d2076">&#9670;&nbsp;</a></span>opsick_db_create_user()</h2>
+<a id="a6a6ff591b819d0078f3756ef15a71295" name="a6a6ff591b819d0078f3756ef15a71295"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a6ff591b819d0078f3756ef15a71295">&#9670;&nbsp;</a></span>opsick_db_create_user()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -165,8 +165,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int opsick_db_create_user </td>
           <td>(</td>
-          <td class="paramtype">sqlite3 *&#160;</td>
-          <td class="paramname"><em>db</em>, </td>
+          <td class="paramtype">PGconn *&#160;</td>
+          <td class="paramname"><em>dbconn</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -219,6 +219,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p >Adds a new user to the DB. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">dbconn</td><td>Postgres db connection reference to use for the query. </td></tr>
     <tr><td class="paramname">pw</td><td>The user's password (hashed). </td></tr>
     <tr><td class="paramname">exp_utc</td><td>When the user expires (UTC). </td></tr>
     <tr><td class="paramname">public_key_ed25519</td><td>The user's public Ed25519 key. </td></tr>
@@ -233,8 +234,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="af7728d480f32b48a4816d752872285c4" name="af7728d480f32b48a4816d752872285c4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7728d480f32b48a4816d752872285c4">&#9670;&nbsp;</a></span>opsick_db_delete_user()</h2>
+<a id="a4cc3b5fd838601aec0802103b14015e7" name="a4cc3b5fd838601aec0802103b14015e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4cc3b5fd838601aec0802103b14015e7">&#9670;&nbsp;</a></span>opsick_db_delete_user()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -242,8 +243,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int opsick_db_delete_user </td>
           <td>(</td>
-          <td class="paramtype">sqlite3 *&#160;</td>
-          <td class="paramname"><em>db</em>, </td>
+          <td class="paramtype">PGconn *&#160;</td>
+          <td class="paramname"><em>dbconn</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -260,6 +261,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p >Deletes a user from the DB. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">dbconn</td><td>Postgres db connection reference to use for the query. </td></tr>
     <tr><td class="paramname">user_id</td><td>The user ID. </td></tr>
   </table>
   </dd>
@@ -268,8 +270,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a0c7021cfeaa3522beeba0d6a5ad6b9ec" name="a0c7021cfeaa3522beeba0d6a5ad6b9ec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0c7021cfeaa3522beeba0d6a5ad6b9ec">&#9670;&nbsp;</a></span>opsick_db_disconnect()</h2>
+<a id="a36c6a53151f5713ed4a8ccf157bc09d8" name="a36c6a53151f5713ed4a8ccf157bc09d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36c6a53151f5713ed4a8ccf157bc09d8">&#9670;&nbsp;</a></span>opsick_db_disconnect()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -277,23 +279,23 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void opsick_db_disconnect </td>
           <td>(</td>
-          <td class="paramtype">sqlite3 *&#160;</td>
-          <td class="paramname"><em>db</em></td><td>)</td>
+          <td class="paramtype">PGconn *&#160;</td>
+          <td class="paramname"><em>dbconn</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p >Disconnects from the opsick db. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">db</td><td>The #sqlite3 handle to disconnect. </td></tr>
+    <tr><td class="paramname">dbconn</td><td>The postgres connection handle to disconnect. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a4b4b3a809dca62eb15f451b9a021ff8c" name="a4b4b3a809dca62eb15f451b9a021ff8c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4b4b3a809dca62eb15f451b9a021ff8c">&#9670;&nbsp;</a></span>opsick_db_does_user_id_exist()</h2>
+<a id="ac5eb95a243883753776d550c8be05787" name="ac5eb95a243883753776d550c8be05787"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5eb95a243883753776d550c8be05787">&#9670;&nbsp;</a></span>opsick_db_does_user_id_exist()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -301,8 +303,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int opsick_db_does_user_id_exist </td>
           <td>(</td>
-          <td class="paramtype">sqlite3 *&#160;</td>
-          <td class="paramname"><em>db</em>, </td>
+          <td class="paramtype">PGconn *&#160;</td>
+          <td class="paramname"><em>dbconn</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -319,6 +321,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p >Checks whether a given user id exists or not. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">dbconn</td><td>Postgres db connection reference to use for the query. </td></tr>
     <tr><td class="paramname">user_id</td><td>The user id to check. </td></tr>
   </table>
   </dd>
@@ -400,8 +403,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a80cec68457658ee99c3645ce9836c4fb" name="a80cec68457658ee99c3645ce9836c4fb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a80cec68457658ee99c3645ce9836c4fb">&#9670;&nbsp;</a></span>opsick_db_get_user_body()</h2>
+<a id="a09b45ebffc3ae4ec662f53bebe83f3fe" name="a09b45ebffc3ae4ec662f53bebe83f3fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09b45ebffc3ae4ec662f53bebe83f3fe">&#9670;&nbsp;</a></span>opsick_db_get_user_body()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -409,8 +412,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int opsick_db_get_user_body </td>
           <td>(</td>
-          <td class="paramtype">sqlite3 *&#160;</td>
-          <td class="paramname"><em>db</em>, </td>
+          <td class="paramtype">PGconn *&#160;</td>
+          <td class="paramname"><em>dbconn</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -439,6 +442,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p >Retrieves a user's body from the db. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">dbconn</td><td>Postgres db connection reference to use for the query. </td></tr>
     <tr><td class="paramname">user_id</td><td>User id. </td></tr>
     <tr><td class="paramname">out_body</td><td>Pointer to an output body string that will contain the retrieved user body (will be left untouched if the user couldn't be found). This will be malloc'ed on success, so don't forget to free()! </td></tr>
     <tr><td class="paramname">out_body_length</td><td>[OPTIONAL] Where to write the output body length into (can be <code>NULL</code> if you don't need it). </td></tr>
@@ -449,8 +453,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aea1399ab7ff475af4a3bb64822a7a02b" name="aea1399ab7ff475af4a3bb64822a7a02b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aea1399ab7ff475af4a3bb64822a7a02b">&#9670;&nbsp;</a></span>opsick_db_get_user_metadata()</h2>
+<a id="ab5c6c66449827a78fb3d1e5e7d4fa4a6" name="ab5c6c66449827a78fb3d1e5e7d4fa4a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5c6c66449827a78fb3d1e5e7d4fa4a6">&#9670;&nbsp;</a></span>opsick_db_get_user_metadata()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -458,7 +462,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int opsick_db_get_user_metadata </td>
           <td>(</td>
-          <td class="paramtype">sqlite3 *&#160;</td>
+          <td class="paramtype">PGconn *&#160;</td>
           <td class="paramname"><em>db</em>, </td>
         </tr>
         <tr>
@@ -482,6 +486,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p >Retrieves a user's metadata from the db. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">db</td><td>Postgres db connection reference to use for the query. </td></tr>
     <tr><td class="paramname">user_id</td><td>The user ID. </td></tr>
     <tr><td class="paramname">out_user_metadata</td><td>Where to write the found metadata into (this will be left alone if the user wasn't found) </td></tr>
   </table>
@@ -491,21 +496,29 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ab30f1d3ab716a3bef55b0e920cfc219b" name="ab30f1d3ab716a3bef55b0e920cfc219b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab30f1d3ab716a3bef55b0e920cfc219b">&#9670;&nbsp;</a></span>opsick_db_init()</h2>
+<a id="a277790655c65b7d13ce1197c4c1bfd94" name="a277790655c65b7d13ce1197c4c1bfd94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a277790655c65b7d13ce1197c4c1bfd94">&#9670;&nbsp;</a></span>opsick_db_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void opsick_db_init </td>
+          <td class="memname">int opsick_db_init </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>dbconn_filepath</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Initializes the db client, connecting to sqlite and setting up everything that's needed to query the database. This terminates opsick with a status code of <code>-1</code> in case of a failure! </p>
+<p >Initializes the db client, connecting to sqlite and setting up everything that's needed to query the database. </p>
+<p >This terminates opsick with a status code of <code>-1</code> in case of a failure! </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dbconn_filepath</td><td>The full path to the (hopefully well-protected) text file containing the postgres connection string to use for Opsick. Ideally, you'd <code>chown</code> this to the Opsick process owner and <code>chmod</code> this to <code>400</code> (read-only, and only by the file owner and no one else). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>1</code> if the db initialization succeeded; <code>0</code> if it failed (e.g. bad connection). </dd></dl>
 
 </div>
 </div>
@@ -528,8 +541,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="abe99a82f8bc3dc0c9e87d7bb0f3dd05c" name="abe99a82f8bc3dc0c9e87d7bb0f3dd05c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe99a82f8bc3dc0c9e87d7bb0f3dd05c">&#9670;&nbsp;</a></span>opsick_db_set_user_body()</h2>
+<a id="a0009e58f312a3cd57401e2ac6aad807e" name="a0009e58f312a3cd57401e2ac6aad807e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0009e58f312a3cd57401e2ac6aad807e">&#9670;&nbsp;</a></span>opsick_db_set_user_body()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -537,8 +550,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int opsick_db_set_user_body </td>
           <td>(</td>
-          <td class="paramtype">sqlite3 *&#160;</td>
-          <td class="paramname"><em>db</em>, </td>
+          <td class="paramtype">PGconn *&#160;</td>
+          <td class="paramname"><em>dbconn</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -561,6 +574,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p >Updates a user's body in the db. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">dbconn</td><td>Postgres db connection reference to use for the query. </td></tr>
     <tr><td class="paramname">user_id</td><td>User id. </td></tr>
     <tr><td class="paramname">body</td><td>The new body to write into the db. </td></tr>
   </table>
@@ -570,8 +584,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aac3711ea3544179ee4804fcdf25e3733" name="aac3711ea3544179ee4804fcdf25e3733"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aac3711ea3544179ee4804fcdf25e3733">&#9670;&nbsp;</a></span>opsick_db_set_user_exp()</h2>
+<a id="a6a8ea9b2be0b7c8df97df7852b383442" name="a6a8ea9b2be0b7c8df97df7852b383442"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a8ea9b2be0b7c8df97df7852b383442">&#9670;&nbsp;</a></span>opsick_db_set_user_exp()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -579,8 +593,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int opsick_db_set_user_exp </td>
           <td>(</td>
-          <td class="paramtype">sqlite3 *&#160;</td>
-          <td class="paramname"><em>db</em>, </td>
+          <td class="paramtype">PGconn *&#160;</td>
+          <td class="paramname"><em>dbconn</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -603,6 +617,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p >Sets a new expiration datetime (UTC) to a user in the db. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">dbconn</td><td>Postgres db connection reference to use for the query. </td></tr>
     <tr><td class="paramname">user_id</td><td>ID of the user whose expiration date needs to be changed. </td></tr>
     <tr><td class="paramname">new_exp</td><td>The new UTC timestamp of when the user account will become read-only. </td></tr>
   </table>
@@ -612,8 +627,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae9d8083959bf0a6de6f65fca8971ac2e" name="ae9d8083959bf0a6de6f65fca8971ac2e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae9d8083959bf0a6de6f65fca8971ac2e">&#9670;&nbsp;</a></span>opsick_db_set_user_keys()</h2>
+<a id="ae6e2721c534ad50e3f4eafec757c0c82" name="ae6e2721c534ad50e3f4eafec757c0c82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6e2721c534ad50e3f4eafec757c0c82">&#9670;&nbsp;</a></span>opsick_db_set_user_keys()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -621,8 +636,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int opsick_db_set_user_keys </td>
           <td>(</td>
-          <td class="paramtype">sqlite3 *&#160;</td>
-          <td class="paramname"><em>db</em>, </td>
+          <td class="paramtype">PGconn *&#160;</td>
+          <td class="paramname"><em>dbconn</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -663,6 +678,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p >Updates a user's key pairs in the db. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">dbconn</td><td>Postgres db connection reference to use for the query. </td></tr>
     <tr><td class="paramname">user_id</td><td>User id. </td></tr>
     <tr><td class="paramname">new_pubkey_ed25519</td><td>The new ed25519 public key (NUL-terminated C-string). </td></tr>
     <tr><td class="paramname">new_prvkey_ed25519</td><td>The new ed25519 encrypted private key (NUL-terminated C-string). </td></tr>
@@ -675,8 +691,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a758e14f79384370f6f0c23ca830f7a55" name="a758e14f79384370f6f0c23ca830f7a55"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a758e14f79384370f6f0c23ca830f7a55">&#9670;&nbsp;</a></span>opsick_db_set_user_pw()</h2>
+<a id="ae0685b43b7aded3ea41992aed6dd1022" name="ae0685b43b7aded3ea41992aed6dd1022"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0685b43b7aded3ea41992aed6dd1022">&#9670;&nbsp;</a></span>opsick_db_set_user_pw()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -684,8 +700,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int opsick_db_set_user_pw </td>
           <td>(</td>
-          <td class="paramtype">sqlite3 *&#160;</td>
-          <td class="paramname"><em>db</em>, </td>
+          <td class="paramtype">PGconn *&#160;</td>
+          <td class="paramname"><em>dbconn</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -708,6 +724,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p >Changes a user's password in the db. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">dbconn</td><td>Postgres db connection reference to use for the query. </td></tr>
     <tr><td class="paramname">user_id</td><td>User ID whose password you want to change. </td></tr>
     <tr><td class="paramname">new_pw</td><td>The new pw hash. </td></tr>
   </table>
@@ -717,8 +734,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="af50f2a633163cd878c6790bf0d80578e" name="af50f2a633163cd878c6790bf0d80578e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af50f2a633163cd878c6790bf0d80578e">&#9670;&nbsp;</a></span>opsick_db_set_user_totps()</h2>
+<a id="a67677e1813d695aa4c2d82ed86d7017b" name="a67677e1813d695aa4c2d82ed86d7017b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67677e1813d695aa4c2d82ed86d7017b">&#9670;&nbsp;</a></span>opsick_db_set_user_totps()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -726,8 +743,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int opsick_db_set_user_totps </td>
           <td>(</td>
-          <td class="paramtype">sqlite3 *&#160;</td>
-          <td class="paramname"><em>db</em>, </td>
+          <td class="paramtype">PGconn *&#160;</td>
+          <td class="paramname"><em>dbconn</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -750,6 +767,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p >Changes a user's TOTPS (TOTP secret for 2FA) in the db. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">dbconn</td><td>Postgres db connection reference to use for the query. </td></tr>
     <tr><td class="paramname">user_id</td><td>User ID whose TOTPS you want to change. </td></tr>
     <tr><td class="paramname">new_pw</td><td>The new TOTPS (base32 encoded). </td></tr>
   </table>
