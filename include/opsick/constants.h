@@ -148,7 +148,7 @@ extern "C" {
 /**
  * Default user registration password is \c "opsick_registration_password".
  */
-#define OPSICK_DEFAULT_USER_CREATION_PASSWORD_ARGON2_HASH "$argon2id$v=19$m=65536,t=16,p=2$TjUsR2pnVEUsNy04MlFfb1NDNS0zIzVyRlo$DmGyMlGup9futm0YCykv2YagT0ztn28R8DaZ/4hrAjk"
+#define OPSICK_DEFAULT_USER_CREATION_PASSWORD_ARGON2_HASH "$argon2id$v=19$m=65536,t=16,p=2$kgiReuAb6UDkBgssL08W9OoHkkDzNV++5cWzHB5fUbE$JG8ODw0sHhBuROEF3iA8w9RbrUF59UGnOz3bmkY4SAy0MzJ6tL+HG9j2ipxcvHnpZC1H6HeHJqaAb1Yqplevcw"
 
 #pragma endregion
 
