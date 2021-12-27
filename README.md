@@ -2,14 +2,17 @@
 ## A password manager featuring tha _sickest opsec_, ayye
 
 ### What is this?
+
 It's an open-source password manager. This specific repo here is the server-side application, which is written in plain, naked, good old C. No sharp, no plusplus thingy. Just C.
 
 ### But why tho...
+
 Because why not? Every other pw manager out there is either just so bloated, closed-source (proprietary) or slow. Or maybe even all of these things together, dang it!
 
 This right here is as lightweight and as performant as it can possibly get, and you can basically do with it whatever you like. Neat, right?
 
 ### Dependencies
+
 * LibUUID
 * LibPQ
 
@@ -68,6 +71,17 @@ Opsick needs to know how to connect to the opsick postgres database: it looks fo
 * * `/usr/local/share/opsick/dbconn`
 
 In that text file you must have a valid `libpq` connection string. Check out the [postgres documentation](https://www.postgresql.org/docs/8.1/libpq.html#LIBPQ-CONNECT) for more information.
+
+It's highly recommended that you protect that file very well (especially if there are passwords in there).
+
+Ideally, you'd `chmod 700` it (with the owner being the same user who owns the opsick process).
+
+#### PgBouncer
+
+Using [PgBouncer](https://www.pgbouncer.org) instead of direct connection strings to the opsick postgres db is highly recommended, 
+especially when under high loads and with many concurrent client connections and requests.
+
+A useful guide on how to set up PgBouncer can be found here: https://ankane.org/pgbouncer-setup
 
 ### API Documentation
 

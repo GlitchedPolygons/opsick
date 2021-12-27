@@ -274,7 +274,7 @@ void opsick_post_users_create(http_s* request)
         goto exit;
     }
 
-    if (opsick_db_count_users(dbconn) > adminsettings.max_users)
+    if (adminsettings.max_users > 0 && opsick_db_count_users(dbconn) > adminsettings.max_users)
     {
         fprintf(stderr, "ERROR: Failure to create new user server-side using \"opsick_db_create_user()\". The maximum amount of users allowed on the server has been reached! \n");
         http_send_error(request, 403);
