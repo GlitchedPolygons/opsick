@@ -380,7 +380,7 @@ void opsick_post_users_body(http_s* request)
     }
 
     // Check if user is expired.
-    if ((uint64_t)time(0) > user_metadata.exp_utc)
+    if (user_metadata.exp_utc != 0 && user_metadata.exp_utc < (uint64_t)time(0))
     {
         http_send_error(request, 418);
         goto exit;

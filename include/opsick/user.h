@@ -56,7 +56,8 @@ struct opsick_user_metadata
     uint64_t iat_utc;
 
     /**
-     * Unix timestamp of when the user account will expire (become read-only).
+     * Unix timestamp of when the user account will expire (become read-only). <p>
+     * \c 0 means no expiration at all.
      */
     uint64_t exp_utc;
 
