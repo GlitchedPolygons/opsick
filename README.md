@@ -1,4 +1,13 @@
+> [!IMPORTANT]
+>
+> # **NOTICE:**
+>
+> ## Development of this project has been migrated to: https://codeberg.org/GlitchedPolygons/opsick
+>
+> ## All pull requests and issues on GitHub will be ignored from the 16th of August, 2025 onwards.
+
 # opsick
+
 ## A password manager featuring tha _sickest opsec_, ayye
 
 ### What is this?
@@ -37,13 +46,13 @@ The rest of the dependencies should be installed automatically with the below `g
 
 Navigate into a directory where you wish to clone the opsick repository into. Then, run:
 
-`git clone --recursive https://github.com/GlitchedPolygons/opsick`
+`git clone --recursive https://codeberg.org/GlitchedPolygons/opsick`
 
 #### Building
 
 If you choose to build from src, make sure that you have the necessary build tools installed, such as [CMake](https://cmake.org), a compiler, and so on...
 
-Then, either run the [build.sh](https://github.com/GlitchedPolygons/opsick/blob/master/build.sh) shell script **OR** execute the following commands:
+Then, either run the [build.sh](https://codeberg.org/GlitchedPolygons/opsick/src/branch/master/build.sh) shell script **OR** execute the following commands:
 
 ```
 mkdir build
